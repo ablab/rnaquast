@@ -1,0 +1,19 @@
+rnaQUAST
+A tool for assessing quality of transcriptome assemblies using reference genome and its annotation.
+Version: see VERSION
+
+Developed in Center for Algorithmic Biotechnology, Institute of Translational Biomedicine, St. Petersburg State University.
+Developed in Algorithmic Biology Lab of St. Petersburg Academic University of the Russian Academy of Sciences.
+
+Current contributors:
+
+    Elena Bushmanova,
+    Dmitry Antipov,
+    Vladimir Suvorov and
+    Andrey Prjibelski
+
+Installation instructions and manual can be found on the website:
+http://bioinf.spbau.ru/rnaquast
+
+Contact e-mail: rnaquast_support@ablab.spbau.ru
+
