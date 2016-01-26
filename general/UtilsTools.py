@@ -305,7 +305,7 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
     # Basic STAR workflow consists of 2 steps:
     program_name = 'STAR'
 
-    logger.info('Running {}...'.format(program_name))
+    logger.info('  Running {}...'.format(program_name))
 
     # create STAR output directory:
     star_outdir = UtilsPipeline.create_folder(os.path.join(output_dir, 'star_out'))
@@ -367,7 +367,7 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
         logger.error('{program_name} failed! Please add {program_name} in your PATH.'.format(program_name=program_name),
                      exit_with_code=exit_code)
     else:
-        logger.info('  saved to {}.'.format(star_outdir))
+        logger.info('    saved to {}.'.format(star_outdir))
 
     return star_outdir
 
@@ -389,7 +389,7 @@ def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, r
     tophat_outdir = UtilsPipeline.create_folder(os.path.join(output_dir, program_name + '_out'))
 
     logger.print_timestamp()
-    logger.info('Aligning reads by {}...'.format(program_name))
+    logger.info('  Running {}...'.format(program_name))
 
     if bowtie2_index_path is None:
         bowtie2_index_path = get_genome_bowtie2_index(reference_path, logger)
@@ -408,7 +408,7 @@ def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, r
         logger.error('{program_name} failed! Please add {program_name} in your PATH.'.format(program_name=program_name),
                      exit_with_code=exit_code)
 
-    logger.info('  saved to {}.'.format(tophat_outdir))
+    logger.info('    saved to {}.'.format(tophat_outdir))
 
     return tophat_outdir
 

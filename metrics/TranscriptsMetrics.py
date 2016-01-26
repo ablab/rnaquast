@@ -115,7 +115,7 @@ class TranscriptsMetrics():
 
 
     def processing_assembled_psl_file(self, assembled_psl_file, sorted_exons_attr, strand_specific, logger,
-                                      sqlite3_db_genes, well_fully_coverage_thresholds):
+                                      sqlite3_db_genes, type_isoforms, WELL_FULLY_COVERAGE_THRESHOLDS):
         init_time = datetime.now()
         init_time -= init_time
         simple_time = init_time
@@ -141,7 +141,8 @@ class TranscriptsMetrics():
                 best_mapped_aligned_transcripts_coverages, best_mapped_internal_isoforms_coverages,\
                 curr_best_mapped_time, curr_transcript_time = \
                     self.get_best_mapped_from_best_aligned(best_lines, best_alignments, sorted_exons_attr,
-                                                           strand_specific, sqlite3_db_genes, well_fully_coverage_thresholds)
+                                                           strand_specific, sqlite3_db_genes, type_isoforms,
+                                                           WELL_FULLY_COVERAGE_THRESHOLDS)
 
                 best_mapped_time += curr_best_mapped_time
                 transcript_time += curr_transcript_time
@@ -185,7 +186,7 @@ class TranscriptsMetrics():
                         assembly_correctness_time += \
                             self.assembly_correctness_metrics.update_assembly_correctness_metrics\
                             (best_mapped_aligned_transcripts[i_alignment],
-                             best_mapped_aligned_transcripts_coverages[i_alignment], well_fully_coverage_thresholds)
+                             best_mapped_aligned_transcripts_coverages[i_alignment], WELL_FULLY_COVERAGE_THRESHOLDS)
 
                     if self.assembly_completeness_metrics is not None:
                         # update coverage of annotations:
@@ -224,7 +225,7 @@ class TranscriptsMetrics():
 
 
     def get_best_mapped_from_best_aligned(self, best_lines, best_alignments, sorted_exons_attr, strand_specific,
-                                          sqlite3_db_genes, well_fully_coverage_thresholds):
+                                          sqlite3_db_genes, type_isoforms, WELL_FULLY_COVERAGE_THRESHOLDS):
         start_time = datetime.now()
 
         best_aligned_transcripts = []
@@ -234,7 +235,8 @@ class TranscriptsMetrics():
             curr_aligned_transcript, curr_aligned_transcript_coverage, curr_internal_isoforms_coverage, \
             elapsed_transcript_time = \
                 self.get_aligned_transcript_and_coverages(best_alignments[i_line_alignment], sorted_exons_attr,
-                                                          strand_specific, sqlite3_db_genes, well_fully_coverage_thresholds)
+                                                          strand_specific, sqlite3_db_genes, type_isoforms,
+                                                          WELL_FULLY_COVERAGE_THRESHOLDS)
 
             best_aligned_transcripts.append(curr_aligned_transcript)
 
@@ -294,12 +296,13 @@ class TranscriptsMetrics():
 
     # get aligned transcript, transcript coverage and internal isoforms coverage:
     def get_aligned_transcript_and_coverages(self, psl_alignment, sorted_exons_attr, strand_specific, sqlite3_db_genes,
-                                             WELL_FULLY_COVERAGE_THRESHOLDS):
+                                             type_isoforms, WELL_FULLY_COVERAGE_THRESHOLDS):
         # CREATE ALIGNED TRANSCRIPT:
         start_time = datetime.now()
 
         # print 'aligned transcript: ', datetime.now()
-        aligned_transcript = AlignedTranscript.AlignedTranscript(psl_alignment, sorted_exons_attr, strand_specific, sqlite3_db_genes)
+        aligned_transcript = AlignedTranscript.AlignedTranscript(psl_alignment, sorted_exons_attr, strand_specific,
+                                                                 sqlite3_db_genes, type_isoforms)
         # print 'done: ', datetime.now()
 
         elapsed_transcript_time = datetime.now() - start_time

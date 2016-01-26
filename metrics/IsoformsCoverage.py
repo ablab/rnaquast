@@ -199,13 +199,17 @@ class IsoformsCoverage():
         self.annotated_transcripts_num += 1
 
         if id_isoform not in self.num_transcripts_mapped_to_isoform:
-            parent_gene = list(sqlite3_db_genes.parents(id_isoform, featuretype=UtilsAnnotations.type_genes))[0]
+            parent_genes = list(sqlite3_db_genes.parents(id_isoform, featuretype=UtilsAnnotations.default_type_genes))
+            if parent_genes == []:
+                parent_gene_id = id_isoform
+            else:
+                parent_gene_id = parent_genes[0].id
 
             self.num_transcripts_mapped_to_isoform[id_isoform] = 0
 
             self.ids_assembled_isoforms.add(id_isoform)
 
-            self.ids_assembled_genes.add(parent_gene.id)
+            self.ids_assembled_genes.add(parent_gene_id)
 
             self.assembled_fraction[id_isoform] = internal_isoforms_coverage.assembled_fraction[id_isoform]
 
@@ -245,9 +249,13 @@ class IsoformsCoverage():
         for id_isoform in self.num_transcripts_mapped_to_isoform:
             isoform = sqlite3_db_genes[id_isoform]
 
-            parent_gene = list(sqlite3_db_genes.parents(id_isoform, featuretype=UtilsAnnotations.type_genes))[0]
+            parent_genes = list(sqlite3_db_genes.parents(id_isoform, featuretype=UtilsAnnotations.default_type_genes))
+            if parent_genes == []:
+                parent_gene_id = id_isoform
+            else:
+                parent_gene_id = parent_genes[0].id
 
-            children_exons = list(sqlite3_db_genes.children(isoform.id, featuretype=UtilsAnnotations.type_exons, order_by='start'))
+            children_exons = list(sqlite3_db_genes.children(isoform.id, featuretype=UtilsAnnotations.default_type_exons, order_by='start'))
             # for prokaryotes:
             if len(children_exons) == 0:
                 children_exons = [isoform]
@@ -301,24 +309,24 @@ class IsoformsCoverage():
             # isoform well-covered by transcripts if this isoform have more then well-threshold * sumLengthOfIsoform covered bases:
             if self.covered_fraction[id_isoform] >= WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold:
                 self.ids_well_covered_isoforms.add(id_isoform)
-                self.ids_well_covered_genes.add(parent_gene.id)
+                self.ids_well_covered_genes.add(parent_gene_id)
 
             # isoform fully-covered by transcripts if this isoform have more then fully-threshold * sumLengthOfIsoform covered bases:
             if self.covered_fraction[id_isoform] >= WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold:
                 self.ids_fully_covered_isoforms.add(id_isoform)
-                self.ids_fully_covered_genes.add(parent_gene.id)
+                self.ids_fully_covered_genes.add(parent_gene_id)
 
 
             # CONSIDER COVERED BASES BY EACH MAPPED TRANSCRIPT SEPARATELY:
             # isoform well-covered by transcripts if this isoform have more then well-threshold * sumLengthOfIsoform covered bases:
             if self.assembled_fraction[id_isoform] >= WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold:
                 self.ids_well_assembled_isoforms.add(id_isoform)
-                self.ids_well_assembled_genes.add(parent_gene.id)
+                self.ids_well_assembled_genes.add(parent_gene_id)
 
             # isoform fully-covered by transcripts if this isoform have more then fully-threshold * sumLengthOfIsoform covered bases:
             if self.assembled_fraction[id_isoform] >= WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold:
                 self.ids_fully_assembled_isoforms.add(id_isoform)
-                self.ids_fully_assembled_genes.add(parent_gene.id)
+                self.ids_fully_assembled_genes.add(parent_gene_id)
 
             # self.avg_assembled_bases += self.assembled_bases[id_isoform]
             self.avg_assembled_fraction += self.assembled_fraction[id_isoform]

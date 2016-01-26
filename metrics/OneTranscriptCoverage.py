@@ -69,7 +69,7 @@ class OneTranscriptCoverage(object):
 
 
     # set coverage means get all attributes of coverage of alignedTranscript:
-    def get_transcript_coverage(self, aligned_transcript, internal_isoforms_coverage, well_fully_coverage_thresholds):
+    def get_transcript_coverage(self, aligned_transcript, internal_isoforms_coverage, WELL_FULLY_COVERAGE_THRESHOLDS):
         self.transcript_len = aligned_transcript.alignment.query_fragment.size
         self.alignment_len = aligned_transcript.alignment_len
 
@@ -84,9 +84,9 @@ class OneTranscriptCoverage(object):
 
                 self.avg_covered_fraction_block[id_isoform] += self.covered_fraction_blocks[id_isoform][i_block]
 
-                if self.covered_bases_blocks[id_isoform][i_block] > well_fully_coverage_thresholds.well_block_threshold * aligned_transcript.alignment.blocks_sizes[i_block]:
+                if self.covered_fraction_blocks[id_isoform][i_block] >= WELL_FULLY_COVERAGE_THRESHOLDS.well_block_threshold:
                     self.num_well_covered_blocks[id_isoform] += 1
-                if self.covered_bases_blocks[id_isoform][i_block] > well_fully_coverage_thresholds.fully_block_threshold * aligned_transcript.alignment.blocks_sizes[i_block]:
+                if self.covered_fraction_blocks[id_isoform][i_block] >= WELL_FULLY_COVERAGE_THRESHOLDS.fully_block_threshold:
                     self.num_fully_covered_blocks[id_isoform] += 1
 
             self.covered_fraction_whole_transcript[id_isoform] = self.covered_bases[id_isoform] * 1.0 / self.transcript_len

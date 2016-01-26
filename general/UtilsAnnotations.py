@@ -8,11 +8,11 @@ import gffutils
 
 import UtilsGeneral
 
-type_isoforms=['transcript', 'RNA', 'mRNA', 'miRNA', 'ncRNA', 'tRNA']
+default_type_genes = ['gene', 'miRNA_gene']
 
-type_genes = ['gene', 'miRNA_gene']
+default_type_isoforms = ['transcript', 'RNA', 'mRNA', 'miRNA', 'ncRNA', 'tRNA']
 
-type_exons = ['exon', 'coding_exon', 'noncoding_exon']
+default_type_exons = ['exon', 'coding_exon', 'noncoding_exon']
 
 
 # general transform (included all transforms):
@@ -27,7 +27,7 @@ def transform(feature):
 
 
 def transform_fancy_id(feature):
-    if feature.featuretype not in type_genes + type_isoforms:
+    if feature.featuretype not in default_type_genes + default_type_isoforms:
         exon_location = '{}:{}:{}-{}:{}'.format(feature.featuretype, feature.seqid, feature.start, feature.stop, feature.strand)
         feature_id = exon_location
         if feature.featuretype == 'CDS':
@@ -48,22 +48,22 @@ def transform_identical_gene_transcript_id(feature):
 
 # set 1-level parent relation:
 def transform_appropriate_parent(feature):
-    if feature.featuretype in type_isoforms and 'gene_id' in feature.attributes:
+    if feature.featuretype in default_type_isoforms and 'gene_id' in feature.attributes:
         feature.attributes['Parent'] = feature.attributes['gene_id']
-    elif feature.featuretype in type_exons and 'transcript_id' in feature.attributes:
+    elif feature.featuretype in default_type_exons and 'transcript_id' in feature.attributes:
         feature.attributes['Parent'] = feature.attributes['transcript_id']
     return feature
 
 
 def get_id_spec():
     id_spec = {}
-    for type in type_genes:
+    for type in default_type_genes:
         id_spec[type] = ['ID', 'gene_id']
 
-    for type in type_isoforms:
+    for type in default_type_isoforms:
         id_spec[type] = ['ID', 'transcript_id']
 
-    for type in type_exons:
+    for type in default_type_exons:
         id_spec[type] = 'fancy_id'
 
     id_spec['CDS'] = 'fancy_id'
@@ -141,6 +141,50 @@ def create_sqlite3_db(in_gff_path, annotation_label, disable_infer_genes, disabl
     return sqlite3_db_genes
 
 
+def get_type_features(sqlite3_db_genes, default_type_genes, default_type_isoforms, default_type_exons, logger):
+    type_genes = get_type_genes(sqlite3_db_genes, default_type_genes, logger)
+
+    type_isoforms = get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, logger)
+
+    type_exons = get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isoforms, logger)
+
+    return type_genes, type_isoforms, type_exons
+
+
+def get_type_genes(sqlite3_db_genes, default_type_genes, logger):
+    if len(list(sqlite3_db_genes.features_of_type(default_type_genes))) != 0:
+        type_genes = default_type_genes
+    else:
+        type_genes = None
+        logger.error('Annotated genes not founded.', exit_with_code=2, to_stderr=True)
+    return type_genes
+
+
+def get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, logger):
+    if len(list(sqlite3_db_genes.features_of_type(default_type_isoforms))) != 0:
+        type_isoforms = default_type_isoforms
+    elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0:
+        type_isoforms = type_genes
+    else:
+        type_isoforms = None
+        logger.error('Annotated isoforms not founded.', exit_with_code=2, to_stderr=True)
+    return type_isoforms
+
+
+def get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isoforms, logger):
+    if len(list(sqlite3_db_genes.features_of_type(default_type_exons))) != 0:
+        type_exons = default_type_exons
+    # for prokaryotes or bad annotated species:
+    elif len(list(sqlite3_db_genes.features_of_type(type_isoforms))) != 0:
+        type_exons = type_isoforms
+    elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0:
+        type_exons = type_genes
+    else:
+        type_exons = None
+        logger.error('Annotated exons not founded.', exit_with_code=2, to_stderr=True)
+    return type_exons
+
+
 '''def add_transcripts_prokaryotes(genes_db, logger):
     logger.print_timestamp()
     logger.info('Add transcripts equal genes in genes database... ')
@@ -195,7 +239,7 @@ def create_sqlite3_db(in_gff_path, annotation_label, disable_infer_genes, disabl
     return genes_db'''
 
 
-def get_fa_isoforms(sqlite3_db_genes, reference_dict, logger):
+def get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict, logger):
     logger.print_timestamp()
     logger.info("Extracting isoforms sequences...")
 
@@ -204,9 +248,6 @@ def get_fa_isoforms(sqlite3_db_genes, reference_dict, logger):
     isoforms_dict = {}
 
     isoforms = list(sqlite3_db_genes.features_of_type(type_isoforms))
-    # for prokaryotes:
-    if len(isoforms) == 0:
-        isoforms = list(sqlite3_db_genes.features_of_type(type_genes))
 
     for transcript in isoforms:
         if transcript.seqid not in reference_dict:

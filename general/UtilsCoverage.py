@@ -145,26 +145,14 @@ def get_internal_exons(strand, sqlite3_db_genes, target_name, target_starts, tar
     return internal_exons
 
 
-def get_internal_isoforms(sqlite3_db_genes, internal_exons):
-
+def get_internal_isoforms(sqlite3_db_genes, type_isoforms, internal_exons):
     internal_isoforms = set()
-
     for exon in internal_exons:
-        # if exon.id not in sorted_exons_attr.parents:
-        #     sorted_exons_attr.parents[exon.id] = \
-        #         list(db_genes.parents(exon.id, featuretype='transcript',
-        #                               limit=(exon.seqid, 0, sorted_exons_attr.sort_target_ends['None'][exon.seqid][-1]),
-        #                               completely_within=True))
-        # internal_isoforms.update(sorted_exons_attr.parents[exon.id])
-
-        if exon.featuretype in UtilsAnnotations.type_exons:
-            internal_isoforms.update(list(sqlite3_db_genes.parents(exon.id, featuretype=UtilsAnnotations.type_isoforms)))
+        if exon.featuretype in UtilsAnnotations.default_type_exons:
+            internal_isoforms.update(list(sqlite3_db_genes.parents(exon.id, featuretype=type_isoforms)))
         # for prokaryotes:
         else:
             internal_isoforms.update([exon])
-
-        # for id_transcript in exon.attributes['Parent']:
-        #     internal_isoforms.add(db_genes[id_transcript])
 
     return internal_isoforms
 

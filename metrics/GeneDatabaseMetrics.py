@@ -6,7 +6,7 @@ from general import UtilsAnnotations
 class GeneDatabaseMetrics():
     """Class of basic gene database metrics"""
 
-    def __init__(self, sqlite3_db_genes, logger):
+    def __init__(self, sqlite3_db_genes, type_genes, type_isoforms, logger):
         # number of genes in annotations:
         self.genes_num = 0
         # number of protein coding genes in annotations:
@@ -67,19 +67,11 @@ class GeneDatabaseMetrics():
         logger.print_timestamp()
         logger.info('Getting GENE DATABASE metrics...')
 
-        genes = list(sqlite3_db_genes.features_of_type(UtilsAnnotations.type_genes))
+        genes = list(sqlite3_db_genes.features_of_type(type_genes))
 
-        isoforms = list(sqlite3_db_genes.features_of_type(UtilsAnnotations.type_isoforms))
-        # for prokaryotes:
-        if len(isoforms) == 0:
-            logger.warning('Annotated isoforms not founded.')
+        isoforms = list(sqlite3_db_genes.features_of_type(type_isoforms))
 
-            isoforms = genes
-
-        exons = list(sqlite3_db_genes.features_of_type(UtilsAnnotations.type_exons))
-        # for prokaryotes:
-        if len(exons) == 0:
-            logger.warning('Annotated exons not founded.')
+        # exons = list(sqlite3_db_genes.features_of_type(type_exons))
 
         self.genes_num = len(genes)
         self.isoforms_num = len(isoforms)
@@ -96,7 +88,7 @@ class GeneDatabaseMetrics():
                     or ('biotype' in transcript.attributes and transcript.attributes['biotype'][0] == 'protein_coding'):
                 self.protein_coding_isoforms_num += 1
 
-            exons = list(sqlite3_db_genes.children(transcript.id, featuretype=UtilsAnnotations.type_exons, order_by='start'))
+            exons = list(sqlite3_db_genes.children(transcript.id, featuretype=UtilsAnnotations.default_type_exons, order_by='start'))
             # for prokaryotes:
             if len(exons) == 0:
                 exons = [transcript]

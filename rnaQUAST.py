@@ -126,23 +126,28 @@ def main_utils():
                                               args.disable_infer_transcripts, args.store_db, args.output_dir, tmp_dir,
                                               logger)
 
-        db_genes_metrics = GeneDatabaseMetrics.GeneDatabaseMetrics(sqlite3_db_genes, logger)
+        type_genes, type_isoforms, type_exons = \
+            UtilsAnnotations.get_type_features(sqlite3_db_genes, UtilsAnnotations.default_type_genes,
+                                               UtilsAnnotations.default_type_isoforms,
+                                               UtilsAnnotations.default_type_exons, logger)
+
+        db_genes_metrics = GeneDatabaseMetrics.GeneDatabaseMetrics(sqlite3_db_genes, type_genes, type_isoforms, logger)
 
         ALIGNMENT_THRESHOLDS.ERR_SPACE_TARGET_FAKE_BLAT = db_genes_metrics.max_intron_len + 100
         logger.info('\nSets maximum intron size equal {}. Default is 1500000 bp.\n'.format(ALIGNMENT_THRESHOLDS.ERR_SPACE_TARGET_FAKE_BLAT))
 
         # set exons starts / ends and ids for binning strategy:
-        sorted_exons_attr = SortedExonsAttributes.SortedExonsAttributes(sqlite3_db_genes, strands, ids_chrs,
-                                                                        reference_dict, logger)
+        sorted_exons_attr = \
+            SortedExonsAttributes.SortedExonsAttributes(sqlite3_db_genes, type_exons, strands, ids_chrs, reference_dict, logger)
 
 
     reads_coverage = None
     if args.reads_alignment is not None or \
             ((args.single_reads is not None or (args.left_reads is not None and args.right_reads is not None))
-             and args.reference is not None):
+             and args.reference is not None and args.gene_database is not None):
         reads_coverage = \
             ReadsCoverage.ReadsCoverage(args.reads_alignment, args.tophat, args.reference, args.single_reads,
-                                        args.left_reads, args.right_reads, reference_dict, sqlite3_db_genes,
+                                        args.left_reads, args.right_reads, reference_dict, sqlite3_db_genes, type_isoforms,
                                         sorted_exons_attr, args.strand_specific, db_genes_metrics.tot_isoforms_len,
                                         genome_len, tmp_dir, args.threads, WELL_FULLY_COVERAGE_THRESHOLDS, logger)
 
@@ -192,7 +197,7 @@ def main_utils():
             args.blast = True
 
             isoforms_fa_path = os.path.join(tmp_dir, '{}.isoforms.fa'.format(annotation_label))
-            isoforms_list = UtilsGeneral.dict_to_list(UtilsAnnotations.get_fa_isoforms(sqlite3_db_genes, reference_dict, logger))
+            isoforms_list = UtilsGeneral.dict_to_list(UtilsAnnotations.get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict, logger))
             fastaparser.write_fasta(isoforms_fa_path, isoforms_list)
 
             isoforms_blast_db = UtilsTools.get_blast_db(isoforms_fa_path, annotation_label, tmp_dir, logger)
@@ -264,7 +269,7 @@ def main_utils():
                 # UPDATE METRICS BY ASSEMBLED TRANSCRIPTS:
                 transcripts_metrics[i_transcripts].processing_assembled_psl_file\
                     (alignments_reports[i_transcripts].blat_report.assembled_psl_file, sorted_exons_attr,
-                     args.strand_specific, logger, sqlite3_db_genes, WELL_FULLY_COVERAGE_THRESHOLDS)
+                     args.strand_specific, logger, sqlite3_db_genes, type_isoforms, WELL_FULLY_COVERAGE_THRESHOLDS)
 
                 # UPDATE METRICS BY MISASSEMBLED TRANSCRIPTS:
                 # by blat:
