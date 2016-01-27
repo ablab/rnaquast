@@ -529,8 +529,8 @@ class TXTMetricsReport():
 
         assembled_exons_well_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_exon_threshold * 100)) + '%-assembled exons')
         assembled_exons_fully_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled exons')
-        mean_isoform_cov_str = '{:<50}'.format('Mean isoform coverage')
         mean_isoform_assembly_str = '{:<50}'.format('Mean isoform assembly')
+        mean_isoform_cov_str = '{:<50}'.format('Mean isoform coverage')
         mean_exon_cov_str = '{:<50}'.format('Mean exon coverage')
         isoform_well_cov_exons_str = '{:<50}'.format('Avg. percentage of isoform ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_exon_threshold * 100)) + '%-covered exons')
         isoform_fully_cov_exons_str = '{:<50}'.format('Avg. percentage of isoform ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_exon_threshold * 100)) + '%-covered exons')
@@ -604,8 +604,8 @@ class TXTMetricsReport():
             fout.write(assembled_exons_well_str + '\n')
             fout.write(assembled_exons_fully_str + '\n\n')
 
-            fout.write(mean_isoform_cov_str + '\n')
             fout.write(mean_isoform_assembly_str + '\n\n')
+            fout.write(mean_isoform_cov_str + '\n')
 
             fout.write(mean_exon_cov_str + '\n\n')
 

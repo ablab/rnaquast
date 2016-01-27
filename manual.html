@@ -340,11 +340,10 @@ short partial alignments (typically caused by genomic repeats) and then selects 
     <li><b><i>Database coverage</b></i> &ndash; the total number of covered by transcripts bases in all isoforms divided by the total length of all isoforms. </li>
     <li>Duplication ratio &ndash; total number of aligned bases in assembled transcripts divided by the total number of isoform covered bases. This metric does not count neither paralogous genes nor shared exons, only real overlaps of the assembled sequences that are mapped to the same isoform.</li>
     <li>Average number of transcripts mapped to one isoform. </li>
-    <li><b><i>x%-assembled</b></i> &ndash; number of isoforms from the database that have at least x% captured by a single assembled transcript, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default). 95%-assembled isoforms are stored in  <code>&lt;assembly_label>.95%assembled.fasta</code> file.</li>
-    <li><b><i>x%-covered</b></i> &ndash; number of isoforms from the database that have at least x% of bases covered by all alignments, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).</li>
-    <li>x%-assembled exons &ndash; number of exons from the database that have at least x% captured by a single assembled transcript, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).</li>
-    <li><b><i>Mean isoform coverage</b></i> &ndash; coverage of a single isoform is calculated as the number of its bases covered by all assembled transcripts divided by its length; average value is computed for isoforms with > 0 bases covered.</li>
+    <li><b><i>x%-assembled genes</b></i> / isoforms / exons &ndash; number of genes / isoforms / exons from the database that have at least x% captured by a single assembled transcript, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default). 95%-assembled isoforms are stored in <code>&lt;assembly_label>.95%assembled.fasta</code> file.</li>
+    <li><b><i>x%-covered genes</b></i> / isoforms &ndash; number of genes / isoforms from the database that have at least x% of bases covered by all alignments, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).</li>
     <li><b><i>Mean isoform assembly</b></i> &ndash; assembled fraction of a single isoform is calculated as the largest number of its bases captured by a single assembled transcript divided by its length; average value is computed for isoforms with > 0 bases covered.</li>
+    <li><b><i>Mean isoform coverage</b></i> &ndash; coverage of a single isoform is calculated as the number of its bases covered by all assembled transcripts divided by its length; average value is computed for isoforms with > 0 bases covered.</li>
     <li>Mean exon coverage &ndash; coverage of a single exon is calculated as the number of its bases covered by all assembled transcripts divided by its length; average value is computed for exons with > 0 bases covered.</li>
     <li>Average percentage of isoform x%-covered exons, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default). For each isoform rnaQUAST calculates the number of x%-covered exons divided by the total number of exons. Afterwards it computes average value for all covered isoforms.</li>
 </ul>
@@ -352,15 +351,15 @@ short partial alignments (typically caused by genomic repeats) and then selects 
 <p>
 <a href="http://busco.ezlab.org/" target="_blank"> BUSCO</a> metrics. The following metrics are calculated only when <code>--busco</code> option is used (see <a href="#sec3.3">options</a> for details).
 <ul>
-    <li><b><i>Complete</b></i> &ndash;  Percentage of completely recovered genes.</li>
-    <li><b><i>Partial</b></i> &ndash;  Percentage of partially recovered genes.</li>
+    <li><b><i>Complete</b></i> &ndash; Percentage of completely recovered genes.</li>
+    <li><b><i>Partial</b></i> &ndash; Percentage of partially recovered genes.</li>
 </ul>
 
 <p>
 <b><code>specificity.txt</code></b>
 <br>Assembly specificity. To compute the following metrics we use only transcripts that have at least one significant alignment and are not misassembled.
 <ul>
-    <li>Unannotated &ndash; total number of transcripts that do not cover any isoform from the database. Unannotated transcripts are stored in <code>&lt;assembly_label>.unannotated.fasta</code> file.</li>
+    <li><b><i>Unannotated</b></i> &ndash; total number of transcripts that do not cover any isoform from the database. Unannotated transcripts are stored in <code>&lt;assembly_label>.unannotated.fasta</code> file.</li>
     <li><b><i>x%-matched</b></i> &ndash; total number of transcripts that have at least x% covering an isoform from the database, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).</li>
     <li><b><i>Mean fraction of transcript matched</b></i> &ndash; matched fraction of a single transcript is calculated as the number of its bases covering an isoform divided by the transcript length; average value is computed for transcripts with > 0 bases matched.</li>
     <li>Mean  fraction of block matched &ndash; matched fraction of a single block is calculated as the number of its bases covering an isoform divided by the block length; average value is computed for blocks with > 0 bases matched.</li>
