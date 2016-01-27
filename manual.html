@@ -277,6 +277,13 @@ The following text files with reports are contained in <code> comparison_output<
 </ul>
 
 <p>
+Coverage by reads. The following metrics are calculated only when <code>--left_reads, --right_reads or --single_reads</code> options are used (see <a href="#sec3.1">options</a> for details).
+<ul>
+<li><b><i>Database coverage</b></i> &ndash; the total number of covered by reads bases in all isoforms divided by the total length of all isoforms. This metric indicates the upper boundary of the database coverage by transcripts. </li>
+<li>x%-covered genes / isoforms / exons &ndash; number of genes / isoforms / exons from the database that have at least x% of bases covered by all read alignments, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).
+</ul>
+
+<p>
 <b><code>basic_mertics.txt</code></b>
 <br>Basic transcripts metrics calculated without reference genome and gene database.
 <ul>
@@ -333,7 +340,7 @@ short partial alignments (typically caused by genomic repeats) and then selects 
 <b><code>sensitivity.txt</code></b>
 <br>Assembly completeness (sensitivity). For the following metrics (calculated with reference genome and gene database) rnaQUAST attempts to select best-matching database isoforms for every transcript. Note that a single transcript can contribute to multiple isoforms in the case of, for example, paralogous genes or genomic repeats. At the same time, an isoform can be covered by multiple transcripts in the case of fragmented assembly or duplicated transcripts in the assembly.
 <ul>
-    <li><b><i>Database coverage</b></i> &ndash; the total number of covered bases in all isoforms divided by the total length of all isoforms. </li>
+    <li><b><i>Database coverage</b></i> &ndash; the total number of covered by transcripts bases in all isoforms divided by the total length of all isoforms. </li>
     <li>Duplication ratio &ndash; total number of aligned bases in assembled transcripts divided by the total number of isoform covered bases. This metric does not count neither paralogous genes nor shared exons, only real overlaps of the assembled sequences that are mapped to the same isoform.</li>
     <li>Average number of transcripts mapped to one isoform. </li>
     <li><b><i>x%-assembled</b></i> &ndash; number of isoforms from the database that have at least x% captured by a single assembled transcript, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default). 95%-assembled isoforms are stored in  <code>&lt;assembly_label>.95%assembled.fasta</code> file. </li>
@@ -359,8 +366,6 @@ short partial alignments (typically caused by genomic repeats) and then selects 
     <li>Unannotated &ndash; total number of transcripts that do not cover any isoform from the database. Unannotated transcripts are stored in <code>&lt;assembly_label>.unannotated.fasta</code> file.</li>
     <li><b><i>x%-matched</b></i> &ndash; total number of transcripts that have at least x% covering an isoform from the database, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).</li>
     <li><b><i>Mean fraction of transcript matched</b></i> &ndash; matched fraction of a single transcript is calculated as the number of its bases covering an isoform divided by the transcript length; average value is computed for transcripts with > 0 bases matched.</li>
-
-
     <li>Mean  fraction of block matched &ndash; matched fraction of a single block is calculated as the number of its bases covering an isoform divided by the block length; average value is computed for blocks with > 0 bases matched.</li>
     <li>x%-matched blocks &ndash; percentage of blocks that have at least x% covering an isoform from the database, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).</li>
     <li>Matched length &ndash; total number of transcript bases covering isoforms from the database.</li>
