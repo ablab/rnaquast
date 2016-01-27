@@ -8,6 +8,7 @@ from datetime import datetime
 
 import IsoformsCoverage
 
+from general import UtilsPipeline
 
 class CegmaMetrics():
 
@@ -94,10 +95,6 @@ class BuscoMetrics():
 
     # get BUSCO (Benchmarking Universal Single-Copy Orthologs) results
     def get_metrics(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
-        # run BUSCO:
-        logger.print_timestamp()
-        logger.info('  Running BUSCO (Benchmarking Universal Single-Copy Orthologs)...')
-
         busco_completeness_report_path = \
             self.get_busco_completeness_report(args_clade, args_threads, transcripts_path, tmp_dir, label, logger)
 
@@ -105,18 +102,24 @@ class BuscoMetrics():
             self.complete_completeness = self.get_complete_completeness(busco_completeness_report_path)
             self.partial_completeness = self.get_partial_completeness(busco_completeness_report_path)
 
-            logger.info('    saved to {}'.format(busco_completeness_report_path))
+            logger.info('  Done.')
 
 
     def get_busco_completeness_report(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
         busco_completeness_report_path = None
+
+        # run BUSCO:
+        logger.print_timestamp()
+        logger.info('  Running BUSCO (Benchmarking Universal Single-Copy Orthologs)...')
 
         initial_dir = os.getcwd()
 
         os.chdir(tmp_dir)
 
         out_name = label + '_BUSCO'
-        log_out = os.path.join('busco.log')
+        out_dirpath = os.path.join(tmp_dir, 'run_' + out_name)
+        log_out = 'busco.log'
+        logger.info('    Logging to {}...'.format(os.path.join(out_dirpath, log_out)))
 
         busco_run = 'BUSCO_v1.1b1.py'
         command = \
@@ -132,7 +135,6 @@ class BuscoMetrics():
         if exit_code != 0:
             logger.warning(message='BUSCO failed! Please install and add to PATH BUSCO requirements.')
         else:
-            out_dirpath = os.path.join(tmp_dir, 'run_' + out_name)
 
             busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO'.format(label))
 
@@ -167,15 +169,65 @@ class BuscoMetrics():
         return partial_completeness
 
 
-    def print_metrics(self, path_txt_completeness, logger, PRECISION):
+    def print_metrics(self, path_txt_completeness, logger):
         logger.info('      Getting BUSCO transcripts metrics report...')
 
         with open(path_txt_completeness, 'a') as fout:
             fout.write('METRICS OF TRANSCRIPTS WITH BUSCO:\n')
-            fout.write('{:<100}'.format('Complete %completeness') + str(round(self.complete_completeness, PRECISION)) + '\n')
-            fout.write('{:<100}'.format('Partial %completeness') + str(round(self.partial_completeness, PRECISION)) + '\n\n')
+            fout.write('{:<100}'.format('Complete %completeness') + str(self.complete_completeness) + '\n')
+            fout.write('{:<100}'.format('Partial %completeness') + str(self.partial_completeness) + '\n\n')
 
         logger.info('        saved to {}'.format(path_txt_completeness))
+
+
+class GeneMarkS_TMetrics():
+
+    def __init__(self):
+        self.genes = None
+
+
+    # get GeneMarkS-T results
+    def get_metrics(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
+        GeneMarkS_T_report_path = \
+            self.get_GeneMarkS_T_report(args_clade, args_threads, transcripts_path, tmp_dir, label, logger)
+
+        if GeneMarkS_T_report_path is not None:
+            self.genes = self.get_genes_from_report(GeneMarkS_T_report_path)
+
+            logger.info('    saved to {}'.format(GeneMarkS_T_report_path))
+
+
+    def get_GeneMarkS_T_report(self, type_organism, args_threads, transcripts_path, tmp_dir, label, logger):
+        GeneMarkS_T_report_path = None
+
+        # run GeneMarkS-T:
+        logger.print_timestamp()
+        logger.info('  Running GeneMarkS-T (Gene Prediction in Transcripts)...')
+
+        out_dir_path = UtilsPipeline.create_empty_folder(os.path.join(tmp_dir, label + '_GeneMarkS-T'))
+        transcripts_name = os.path.split(transcripts_path)[-1]
+        GeneMarkS_T_report_path_tmp = os.path.join(out_dir_path, transcripts_name + '.lst')
+        log_path = os.path.join(out_dir_path, 'gms.log')
+        logger.info('    Logging to {}...'.format(log_path))
+
+        GeneMarkS_T_run = 'gmst.pl'
+        command = '{} {} --output {}'.format(GeneMarkS_T_run, transcripts_path, GeneMarkS_T_report_path_tmp)
+        if type_organism == 'prokaryotes':
+            command += ' --prok'
+        logger.debug(command)
+
+        exit_code = subprocess.call(command, shell=True)
+        if exit_code != 0:
+            logger.warning(message='GeneMarkS-T failed! Please install and add to PATH GeneMarkS-T requirements.')
+        else:
+            GeneMarkS_T_report_path = GeneMarkS_T_report_path_tmp
+
+        return GeneMarkS_T_report_path
+
+
+    def get_genes_from_report(self, GeneMarkS_T_report_path):
+
+        return self.genes
 
 
 class AssemblyCompletenessMetrics():

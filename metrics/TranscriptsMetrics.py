@@ -65,6 +65,10 @@ class TranscriptsMetrics():
         if args.busco == True and args.clade is not None:
             self.busco_metrics = AssemblyCompletenessMetrics.BuscoMetrics()
 
+        self.gene_marks_t_metrics = None
+        if args.gene_mark == True or not (args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None):
+            self.gene_marks_t_metrics = AssemblyCompletenessMetrics.GeneMarkS_TMetrics()
+
         # INITIALIZE METRICS WITH ALIGNMENT AND ANNOTATION:
         if args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None:
             # ASSEMBLY CORRECTNESS METRICS
@@ -77,7 +81,7 @@ class TranscriptsMetrics():
                 AssemblyCompletenessMetrics.AssemblyCompletenessMetrics()
 
 
-    def get_transcripts_metrics(self, args, reference_dict, transcripts_path, transcripts_dict, sqlite3_db_genes,
+    def get_transcripts_metrics(self, args, type_organism, reference_dict, transcripts_path, transcripts_dict, sqlite3_db_genes,
                                 db_genes_metrics, reads_coverage, logger, tmp_dir, WELL_FULLY_COVERAGE_THRESHOLDS,
                                 TRANSCRIPT_LENS):
         logger.print_timestamp('  ')
@@ -101,12 +105,15 @@ class TranscriptsMetrics():
 
         # GET ASSEMBLY COMPLETENESS METRICS:
         # CEGMA:
-        # if self.cegma_metrics != None:
+        # if self.cegma_metrics is not None:
         #     self.cegma_metrics.get_metrics(args.threads, transcripts_path, tmp_dir, self.label, logger)
 
         # BUSCO:
         if self.busco_metrics is not None:
             self.busco_metrics.get_metrics(args.clade, args.threads, transcripts_path, tmp_dir, self.label, logger)
+
+        if self.gene_marks_t_metrics is not None:
+            self.gene_marks_t_metrics.get_GeneMarkS_T_report(type_organism, args.threads, transcripts_path, tmp_dir, self.label, logger)
 
         if self.assembly_completeness_metrics is not None:
             self.assembly_completeness_metrics.\

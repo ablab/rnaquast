@@ -223,6 +223,18 @@ To run rnaQUAST one needs to provide either FASTA files with transcripts (recomm
 	Run with <a href="https://ccb.jhu.edu/software/tophat/index.shtml" target="_blank"> TopHat tool</a> instead of <a href="https://code.google.com/archive/p/rna-star/" target="_blank"> STAR</a> for analyzing database coverage by reads.
 </p>
 
+<p>
+    <code>--gene_mark </code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+	Run with <a href="http://topaz.gatech.edu/GeneMark/" target="_blank"> GeneMarkS-T</a> gene prediction tool.
+</p>
+
+<p>
+    <code>--prokaryote </code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+	Use this option if genome is prokaryotic.
+</p>
+
 <p>  
     <code>--disable_infer_genes </code><br>
     &nbsp;&nbsp;&nbsp;&nbsp;  Use this option if your GTF file already contains genes records, otherwise gffutils will fix it. Note that gffutils may work for quite a long time.

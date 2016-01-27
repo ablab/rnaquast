@@ -112,6 +112,10 @@ def main_utils():
     # for strand specific data we store + and - keys in dictionaries and only + for non strand specific data:
     strands = UtilsGeneral.get_strands(args, logger)
 
+    type_organism = 'eukaryotes'
+    if args.prokaryote:
+        type_organism = 'prokaryotes'
+
     # USE ANNOTATION:
     sqlite3_db_genes = None
     sorted_exons_attr = None
@@ -131,6 +135,11 @@ def main_utils():
                                                UtilsAnnotations.default_type_isoforms,
                                                UtilsAnnotations.default_type_exons, logger)
 
+        if UtilsAnnotations.default_type_exons == type_exons:
+            type_organism = 'eukaryotes'
+        else:
+            type_organism = 'prokaryotes'
+
         db_genes_metrics = GeneDatabaseMetrics.GeneDatabaseMetrics(sqlite3_db_genes, type_genes, type_isoforms, logger)
 
         ALIGNMENT_THRESHOLDS.ERR_SPACE_TARGET_FAKE_BLAT = db_genes_metrics.max_intron_len + 100
@@ -139,7 +148,6 @@ def main_utils():
         # set exons starts / ends and ids for binning strategy:
         sorted_exons_attr = \
             SortedExonsAttributes.SortedExonsAttributes(sqlite3_db_genes, type_exons, strands, ids_chrs, reference_dict, logger)
-
 
     reads_coverage = None
     if args.reads_alignment is not None or \
@@ -283,7 +291,7 @@ def main_utils():
 
             # GET METRICS:
             transcripts_metrics[i_transcripts].get_transcripts_metrics\
-                (args, reference_dict, args.transcripts[i_transcripts], transcripts_dicts[i_transcripts],
+                (args, type_organism, reference_dict, args.transcripts[i_transcripts], transcripts_dicts[i_transcripts],
                  sqlite3_db_genes, db_genes_metrics, reads_coverage, logger, tmp_dir, WELL_FULLY_COVERAGE_THRESHOLDS,
                  rqconfig.TRANSCRIPT_LENS)
 
