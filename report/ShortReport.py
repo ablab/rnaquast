@@ -423,11 +423,8 @@ class ShortReport():
         #    self.metrics_table.append(fusString + '\n')
 
 
-    def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, precision):
+    def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, relative_database_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, precision):
         database_coverage_str = '{:<50}'.format('Database coverage')
-
-        if reads_coverage is not None:
-            upper_bound_str = '{:<50}'.format('Upper bound')
 
         assembled_well_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
         assembled_fully_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes')
@@ -447,10 +444,10 @@ class ShortReport():
             if transcripts_metrics[i_transcripts].assembly_completeness_metrics != None:
                 isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
 
-                database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, precision))
-
-                if reads_coverage is not None:
-                    upper_bound_str += '{:<25}'.format(round(reads_coverage.fraction_annotation_mapped_by_reads, precision))
+                if relative_database_coverage is not None:
+                    database_coverage_str += '{:<25}'.format(round(relative_database_coverage.database_coverage, precision))
+                else:
+                    database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, precision))
 
                 assembled_well_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_genes)
                 assembled_fully_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_genes)
@@ -473,10 +470,6 @@ class ShortReport():
 
         if transcripts_metrics[0].assembly_completeness_metrics != None:
             self.metrics_table.append(database_coverage_str + '\n')
-
-            if reads_coverage is not None:
-                self.metrics_table.append(upper_bound_str + '\n')
-
             self.metrics_table.append(assembled_well_str + '\n')
             self.metrics_table.append(assembled_fully_str + '\n')
             self.metrics_table.append(covered_well_str + '\n')
