@@ -27,14 +27,14 @@ def get_arguments():
     parser = \
         argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description="QUALITY ASSESSMENT FOR TRANSCRIPTOME ASSEMBLIES %(prog)s v.{}"
-                                              "\n\nUsage:\npython %(prog)s --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION".format(version),
+                                              "\n\nUsage:\npython %(prog)s --transcripts TRANSCRIPTS --reference REFERENCE --gene_database GENE_DATABASE".format(version),
                                               #"    pipeline-2: python %(prog)s -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION
                                               #"    pipeline-1: python %(prog)s -p1 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --alignment ALIGNMENT\n"
                                               #"    pipeline-2: python %(prog)s -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION\n"
                                               #"    pipeline-3: python %(prog)s -p3 --reference REFERENCE --annotation ANNOTATION --assembler ASSEMBLER --left_reads LEFT_READS --right_reads RIGHT_READS\n"
                                               #"    pipeline-4: python %(prog)s -p4 --reference REFERENCE --annotation ANNOTATION --simulator SIMULATOR --par PAR --assembler ASSEMBLER\n",
                                 #epilog='If you don\'t use prepared arguments, please add to PATH samtools, bowtie or bowtie-build for fusion and misassamble analyze.', conflict_handler='resolve', prog=sys.argv[0])
-                                epilog='Don\'t forget to add BLAT / GMAP to PATH.', conflict_handler='resolve', prog=sys.argv[0])
+                                epilog='Don\'t forget to add GMAP (or BLAT) to PATH.', conflict_handler='resolve', prog=sys.argv[0])
 
 
     # PIPELINES:
@@ -48,21 +48,19 @@ def get_arguments():
 
     # INPUT DATA:
     group_input_data = parser.add_argument_group('Input data')
-    group_input_data.add_argument('-psl', '--alignment', help='File with alignment [PSL]', type=str, nargs='+')
-
     group_input_data.add_argument('-r', '--reference',
-                                  help='Single file with reference genome containing all chromosomes/scaffolds in FASTA '
-                                       'format (preferably with *.fasta, *.fa, *.fna, *.ffn or *.frn extension) OR '
-                                       '*.txt file containing the one-per-line list of FASTA files with reference sequences.',
-                                  type=str)
+                                  help='Single file with reference genome in FASTA format OR *.txt file with '
+                                       'one-per-line list of FASTA files with reference sequences', type=str)
 
-    group_input_data.add_argument('-gtf', '--gene_database', help='File with gene database in GTF/GFF format. '
-                                                               'We strongly recommend download this files from GENCODE(http://www.gencodegenes.org/) '
-                                                               'or Ensembl(ftp://ftp.ensembl.org/pub/)', type=str)
+    group_input_data.add_argument('-gtf', '--gene_database',
+                                  help='File with gene database. We recommend to use files downloaded from GENCODE '
+                                       'or Ensembl [GTF/GFF]', type=str)
     #group_input_data.add_argument('-g', '--genes', help='File with gene coordinates in the reference for prokaryotes [GFF]', type=str)
     #group_input_data.add_argument('-o', '--operons', help='File with operon coordinates in the reference for prokaryotes [GFF]', type=str)
 
-    group_input_data.add_argument('-c', '--transcripts', help='Files with transcripts [FASTA]', type=str, nargs='+')
+    group_input_data.add_argument('-c', '--transcripts', help='File(s) with transcripts [FASTA]', type=str, nargs='+')
+
+    group_input_data.add_argument('-psl', '--alignment', help='File(s) with alignment transcripts to reference genome [PSL]', type=str, nargs='+')
 
     group_input_data.add_argument('-sam', '--reads_alignment', help='File with alignment reads to reference genome [SAM]')
 
@@ -76,9 +74,9 @@ def get_arguments():
 
     # BASIC OPTIONS:
     group_basic = parser.add_argument_group('Basic options')
-    group_basic.add_argument('-o', '--output_dir', help='Directory to store all result files [default: rnaQUAST_results/results_<datetime>]', type=str)
-    group_basic.add_argument('-t',  '--threads', help='Maximum number of threads, default: min(number of CPUs / 2, 16)', type=int)
-    group_basic.add_argument('--test', help='Run rnaQUAST on the data from the test_data folder, output to rnaOUAST_test_output', action='store_true')
+    group_basic.add_argument('-o', '--output_dir', help='Directory to store all results [default: rnaQUAST_results/results_<datetime>]', type=str)
+    group_basic.add_argument('--test', help='Run rnaQUAST on the test data from the test_data folder, output directory is rnaOUAST_test_output', action='store_true')
+    group_basic.add_argument('-d', '--debug', help='Report detailed information, typically used only for detecting problems.', action='store_true')
 
     # groupSpecies = group_basic.add_mutually_exclusive_group(required=False)
     # groupSpecies.add_argument('-e', '--eukaryote', help='Genome is eukaryotic', action='store_true')
@@ -86,34 +84,34 @@ def get_arguments():
 
 
     group_advanced = parser.add_argument_group('Advanced options')
-    group_advanced.add_argument('-d', '--debug', help='Report detailed information, typically of interest only when diagnosing problems', action='store_true')
+    group_advanced.add_argument('-t',  '--threads', help='Maximum number of threads, default: min(number of CPUs / 2, 16)', type=int)
 
-    group_advanced.add_argument('--no_plots', help='Do not draw plots (to speed up computation)', action='store_true')
+    group_advanced.add_argument('-l', '--labels', help='Name(s) of assemblies that will be used in the reports', type=str, nargs='+')
 
-    group_advanced.add_argument('-l', '--labels', help='Names of assemblies to use in reports separated by space', type=str, nargs='+')
-
-    group_advanced.add_argument('-ss', '--strand_specific', help='Use strand specific RNAseq data to benefit from knowing whether the read originated from the + or - strand', action='store_true')
-
-    group_advanced.add_argument('-G', '--gmap', help='Run with GMAP alignment tool (http://research-pub.gene.com/gmap/) instead of BLAT', action='store_true')
-
-    # group_advanced.add_argument('-C', '--cegma', help='Run with CEGMA (Core Eukaryotic Genes Mapping Approach)', action='store_true')
-    group_advanced.add_argument('-B', '--busco', help='Run with BUSCO tool (http://busco.ezlab.org/)', action='store_true')
-
-    group_advanced.add_argument('-T', '--tophat', help='Run with TopHat tool (https://ccb.jhu.edu/software/tophat/index.shtml) instead of STAR', action='store_true')
+    group_advanced.add_argument('-ss', '--strand_specific', help='Set if transcripts were assembled using strand specific RNA-Seq data', action='store_true')
 
     group_advanced.add_argument('--min_alignment', help='Minimal alignment size, default: %(default)s', type=int, default=50, required=False)
 
-    group_advanced.add_argument('--lower_threshold', help='Lower threshold for x-assembled/covered metrics, default: %(default)s', type=float, default=0.5, required=False)
-    group_advanced.add_argument('--upper_threshold', help='Upper threshold for x-assembled/covered metrics, default: %(default)s', type=float, default=0.95, required=False)
+    group_advanced.add_argument('--no_plots', help='Do not draw plots (to speed up computation)', action='store_true')
+
+    group_advanced.add_argument('--blat', help='Run with BLAT alignment tool (http://hgwdev.cse.ucsc.edu/~kent/exe/) instead of GMAP', action='store_true')
+
+    group_advanced.add_argument('--busco', help='Run with BUSCO tool (http://busco.ezlab.org/)', action='store_true')
+    # group_advanced.add_argument('-C', '--cegma', help='Run with CEGMA (Core Eukaryotic Genes Mapping Approach)', action='store_true')
+
+    group_advanced.add_argument('--tophat', help='Run with TopHat tool (https://ccb.jhu.edu/software/tophat/index.shtml) instead of STAR', action='store_true')
+
+    group_advanced.add_argument('--lower_threshold', help='Lower threshold for x-assembled/covered/matched metrics, default: %(default)s', type=float, default=0.5, required=False)
+    group_advanced.add_argument('--upper_threshold', help='Upper threshold for x-assembled/covered/matched metrics, default: %(default)s', type=float, default=0.95, required=False)
 
     # group_advanced.add_argument('-ir', '--isoforms_range', help='Range of isoforms lengths involved in metrics', type=int, nargs='+')
     #group_advanced.add_argument('-fma', '--fusion_misassemble_analyze', help='Analyze fusions and misassemblies', action='store_true')
 
 
     group_gffutils = parser.add_argument_group('Gffutils related options')
-    group_gffutils.add_argument('--disable_infer_genes', help='Use this option if your GTF already contains genes records.', action='store_true')
-    group_gffutils.add_argument('--disable_infer_transcripts', help='Use this option if your GTF already contains transcripts records.', action='store_true')
-    group_gffutils.add_argument('--store_db', help='Use this option if you want to store genes database generated by gffutils (to speed up rerun).', action='store_true')
+    group_gffutils.add_argument('--disable_infer_genes', help='Use this option if your GTF file already contains genes records', action='store_true')
+    group_gffutils.add_argument('--disable_infer_transcripts', help='Use this option if your GTF already contains transcripts records', action='store_true')
+    group_gffutils.add_argument('--store_db', help='Save new complete gene database generated by gffutils (speeds up next runs with these database)', action='store_true')
 
 
     group_busco = parser.add_argument_group('BUSCO related options')

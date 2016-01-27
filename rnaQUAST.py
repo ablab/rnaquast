@@ -172,15 +172,16 @@ def main_utils():
 
     # GET PSL ALIGNMENT FILE:
     if args.alignment is None and args.reference is not None and args.transcripts is not None:
-        if args.gmap:
-            args.alignment = UtilsTools.run_gmap(args.reference, args.transcripts, args.labels, args.threads, tmp_dir, logger)
-        else:
+        if args.blat:
             args.alignment = UtilsTools.run_blat(args.database, args.reference, transcripts_dicts, args.labels, args.threads, tmp_dir, logger)
-            #if args.fusion_misassemble_analyze:
-            #    if not (args.left_reads is not None and args.right_reads is not None):
-            #        logger.error('Usage: --left_reads LEFT_READS --right RIGHT_READS for analyse fusions and misassemblies',
-            #                     exit_with_code=2, to_stderr=True)
-            #        sys.exit(2)
+        else:
+            args.alignment = UtilsTools.run_gmap(args.reference, args.transcripts, args.labels, args.threads, tmp_dir, logger)
+
+        #if args.fusion_misassemble_analyze:
+        #    if not (args.left_reads is not None and args.right_reads is not None):
+        #        logger.error('Usage: --left_reads LEFT_READS --right RIGHT_READS for analyse fusions and misassemblies',
+        #                     exit_with_code=2, to_stderr=True)
+        #        sys.exit(2)
 
 
     # FOR MISASSEMBLIES SEARCH:

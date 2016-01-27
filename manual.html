@@ -36,7 +36,7 @@ rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and 
 <b>For impatient people:</b><br>
 
     <ul>
-        <li>You will need Python 2 (2.5 or higher), matplotlib, BLAT (or GMAP) and BLASTN installed on your machine.</li>
+        <li>You will need Python 2 (2.5 or higher), matplotlib, GMAP (or BLAT) and BLASTN installed on your machine.</li>
         <li>Run 
 <pre class="code">
 <code> python rnaQUAST.py --test 
@@ -63,12 +63,12 @@ for the verification.
         <li>matplotlib python package</li>
         <li><a href="https://pythonhosted.org/gffutils/installation.html" target="_blank"> gffutils</a> python package (needs <a href="http://biopython.org/DIST/docs/install/Installation.html" target="_blank"> biopython</a>)</li>
         <li><a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank"> NCBI BLAST+ (blastn)</a> </li>
-        <li><a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" target="_blank"> BLAT aligner</a></li> or <li><a href="http://research-pub.gene.com/gmap/" target="_blank"> GMAP aligner</a></li>
+        <li><a href="http://research-pub.gene.com/gmap/" target="_blank"> GMAP aligner</a></li> or <li><a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" target="_blank"> BLAT aligner</a></li>
     </ul>
 
-<p> Note, that due to the limitations of BLAT, in order to work with reference genomes of size more than 4 Gb a  pslSort is also required.
+<p> Note, that due to the limitations of BLAT, in order to work with reference genomes of size more than 4 Gb a pslSort is also required.
 
-<p> Paths to blastn and BLAT/GMAP should be added to the <code>$PATH</code> environmental variable. 
+<p> Paths to blastn and GMAP (or BLAT) should be added to the <code>$PATH</code> environmental variable.
 To check that everything is installed correctly we recommend to run:<br>
 <pre class="code">
 <code>python rnaQUAST.py --test</code>
@@ -120,9 +120,29 @@ To run rnaQUAST one needs to provide either FASTA files with transcripts (recomm
 </p>                
 
 <p>
-    <code>-psl &lt;ALIGNMENTS ...>, --alignment &lt;ALIGNMENTS, ...> </code><br>
-    &nbsp;&nbsp;&nbsp;&nbsp; File(s) with transcripts alignments in PSL format separated by space.
-</p>                
+    <code>-psl &lt;TRANSCRIPTS_ALIGNMENT ...>, --alignment &lt;TRANSCRIPTS_ALIGNMENT, ...> </code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp; File(s) with alignment transcripts to reference genome in PSL format separated by space.
+</p>
+
+<p>
+    <code>-sam &lt;READS_ALIGNMENT>, --reads_alignment &lt;READS_ALIGNMENT> </code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp; File with alignment reads to reference genome in SAM format.
+</p>
+
+<p>
+    <code>-1 &lt;LEFT_READS>, --left_reads &lt;LEFT_READS> </code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp; File with forward paired-end reads in FASTQ format.
+</p>
+
+<p>
+    <code>-2 &lt;RIGHT_READS>, --right_reads &lt;RIGHT_READS> </code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp; File with reverse paired-end reads in FASTQ format.
+</p>
+
+<p>
+    <code>-s &lt;SINGLE_READS>, --single_reads &lt;SINGLE_READS> </code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp; File with single reads in FASTQ format.
+</p>
 
 
 <a name="sec3.2"></a>
@@ -161,7 +181,7 @@ To run rnaQUAST one needs to provide either FASTA files with transcripts (recomm
 
  <p>
     <code>-l &lt;LABELS ...>, --labels &lt;LABELS ...> </code><br>
-    &nbsp;&nbsp;&nbsp;&nbsp; Names of assemblies that will be used in the reports separated by space and given in the same order as files with transcripts / alignments.
+    &nbsp;&nbsp;&nbsp;&nbsp; Name(s) of assemblies that will be used in the reports separated by space and given in the same order as files with transcripts / alignments.
 </p>                
 
 <p>
@@ -182,12 +202,12 @@ To run rnaQUAST one needs to provide either FASTA files with transcripts (recomm
 </p>
 
 <p>
-    <code>-G, --gmap </code><br>
-    &nbsp;&nbsp;&nbsp;&nbsp; Run with <a href="http://research-pub.gene.com/gmap/" target="_blank"> GMAP alignment tool</a> instead of BLAT.
+    <code>--blat </code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp; Run with <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" target="_blank"> BLAT alignment tool</a> instead of <a href="http://research-pub.gene.com/gmap/" target="_blank"> GMAP</a>.
 </p>
 
 <p>
-    <code>-B, --busco </code><br>
+    <code>--busco </code><br>
     &nbsp;&nbsp;&nbsp;&nbsp;
 	Run <a href="http://busco.ezlab.org/" target="_blank"> BUSCO tool</a>, which detects core genes in the assembly (see <a href="#sec2">Installation & Requirements</a>).
 </p>
@@ -195,6 +215,12 @@ To run rnaQUAST one needs to provide either FASTA files with transcripts (recomm
 <p>
     <code>--clade CLADE</code><br>
     &nbsp;&nbsp;&nbsp;&nbsp; Path to the BUSCO lineage data to be used (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).
+</p>
+
+<p>
+    <code>--tophat </code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+	Run with <a href="https://ccb.jhu.edu/software/tophat/index.shtml" target="_blank"> TopHat tool</a> instead of <a href="https://code.google.com/archive/p/rna-star/" target="_blank"> STAR</a> for analyzing database coverage by reads.
 </p>
 
 <p>  
@@ -271,11 +297,11 @@ The following text files with reports are contained in <code> comparison_output<
     <li><b><i>Aligned</b></i> &ndash; the number of transcripts having at least 1 significant alignment.</li>
     <li><b><i>Uniquely aligned</b></i> &ndash; the number of transcripts having a single significant alignment.</li>
     <li><b><i>Multiply aligned</b></i> &ndash; the number of transcripts having 2 or more significant alignments. Multiply aligned transcripts are stored in <code>&lt;assembly_label>.paralogs.fasta</code> file.</li>
-    <li>Misassembly candidates reported by BLAT (or GMAP) &ndash; transcripts that have discordant best-scored alignment (e.g. partial alignments that are either mapped to different strands or to different chromosomes).</li>
+    <li>Misassembly candidates reported by GMAP (or BLAT) &ndash; transcripts that have discordant best-scored alignment (e.g. partial alignments that are either mapped to different strands or to different chromosomes).</li>
     <li><b><i>Unaligned</b></i> &ndash; the number of transcripts without any significant alignments. Unaligned transcripts are stored in <code>&lt;assembly_label>.unaligned.fasta</code> file.</li>
 </ul>
 <p>
-Number of assembled transcripts = Unaligned + Aligned = Unaligned + (Uniquely aligned + Multiply aligned + Misassembly candidates reported by BLAT (or GMAP)).
+Number of assembled transcripts = Unaligned + Aligned = Unaligned + (Uniquely aligned + Multiply aligned + Misassembly candidates reported by GMAP (or BLAT)).
 
 
 <p>
@@ -298,7 +324,7 @@ Alignment metrics for non-misassembled transcripts
 short partial alignments (typically caused by genomic repeats) and then selects the best-scored spliced alignment for each transcript.
 <ul>
     <li><b><i>Transcripts</b></i>  &ndash; total number of assembled transcripts. </li>
-    <li>Misassembly candidates reported by BLAT (or GMAP) &ndash; transcripts that have discordant best-scored alignment (e.g. partial alignments that are either mapped to different strands or to different chromosomes).</li>
+    <li>Misassembly candidates reported by GMAP (or BLAT) &ndash; transcripts that have discordant best-scored alignment (e.g. partial alignments that are either mapped to different strands or to different chromosomes).</li>
     <li>Misassembly candidates reported by BLASTN &ndash; transcripts are aligned to the isoform sequences extracted from the genome using gene database with BLASTN and then transcripts that have partial alignments to multiple isoforms are selected.</li>
     <li><b><i>Misassemblies</b></i> &ndash; misassembly candidates confirmed by both methods described above. Using both methods simultaneously allows to avoid considering misalignments that can be caused, for  example, by paralogous genes or genomic repeats. Misassembled transcripts are stored in <code>&lt;assembly_label>.misassembled.fasta</code> file.</li>
 </ul>
