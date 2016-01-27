@@ -15,6 +15,7 @@ class CegmaMetrics():
         self.complete_completeness = None
         self.partial_completeness = None
 
+
     def get_metrics(self, args_threads, transcripts_path, tmp_dir, label, logger):
         logger.print_timestamp()
         logger.info('  Getting CEGMA (Core Eukaryotic Genes Mapping Approach) metrics...')
@@ -90,6 +91,7 @@ class BuscoMetrics():
         self.complete_completeness = None
         self.partial_completeness = None
 
+
     # get BUSCO (Benchmarking Universal Single-Copy Orthologs) results
     def get_metrics(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
         # run BUSCO:
@@ -103,7 +105,7 @@ class BuscoMetrics():
             self.complete_completeness = self.get_complete_completeness(busco_completeness_report_path)
             self.partial_completeness = self.get_partial_completeness(busco_completeness_report_path)
 
-            logger.info('  Done.')
+            logger.info('    saved to {}'.format(busco_completeness_report_path))
 
 
     def get_busco_completeness_report(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
@@ -132,7 +134,7 @@ class BuscoMetrics():
         else:
             out_dirpath = os.path.join(tmp_dir, 'run_' + out_name)
 
-            busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_Trinity_BUSCO')
+            busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO'.format(label))
 
         return busco_completeness_report_path
 
@@ -165,13 +167,13 @@ class BuscoMetrics():
         return partial_completeness
 
 
-    def print_metrics(self, path_txt_completeness, logger):
+    def print_metrics(self, path_txt_completeness, logger, PRECISION):
         logger.info('      Getting BUSCO transcripts metrics report...')
 
         with open(path_txt_completeness, 'a') as fout:
             fout.write('METRICS OF TRANSCRIPTS WITH BUSCO:\n')
-            fout.write('{:<100}'.format('Complete %completeness') + str(self.complete_completeness) + '\n')
-            fout.write('{:<100}'.format('Partial %completeness') + str(self.partial_completeness) + '\n\n')
+            fout.write('{:<100}'.format('Complete %completeness') + str(round(self.complete_completeness, PRECISION)) + '\n')
+            fout.write('{:<100}'.format('Partial %completeness') + str(round(self.partial_completeness, PRECISION)) + '\n\n')
 
         logger.info('        saved to {}'.format(path_txt_completeness))
 

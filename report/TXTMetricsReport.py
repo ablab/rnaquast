@@ -577,8 +577,8 @@ class TXTMetricsReport():
 
             busco_metrics = transcripts_metrics[i_transcripts].busco_metrics
             if busco_metrics is not None:
-                busco_complete_str += '{:<25}'.format(busco_metrics.complete_completeness)
-                busco_partial_str += '{:<25}'.format(busco_metrics.partial_completeness)
+                busco_complete_str += '{:<25}'.format(round(busco_metrics.complete_completeness, PRECISION))
+                busco_partial_str += '{:<25}'.format(round(busco_metrics.partial_completeness, PRECISION))
 
         fout = open(self.path_txt_sensitivity, 'w')
 

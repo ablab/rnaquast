@@ -62,7 +62,7 @@ class TranscriptsMetrics():
         # INITIALIZE BUSCO METRICS:
         # metrics by BUSCO:
         self.busco_metrics = None
-        if args.busco == True:
+        if args.busco == True and args.clade is not None:
             self.busco_metrics = AssemblyCompletenessMetrics.BuscoMetrics()
 
         # INITIALIZE METRICS WITH ALIGNMENT AND ANNOTATION:
@@ -105,7 +105,7 @@ class TranscriptsMetrics():
         #     self.cegma_metrics.get_metrics(args.threads, transcripts_path, tmp_dir, self.label, logger)
 
         # BUSCO:
-        if self.busco_metrics is not None and args.clade:
+        if self.busco_metrics is not None:
             self.busco_metrics.get_metrics(args.clade, args.threads, transcripts_path, tmp_dir, self.label, logger)
 
         if self.assembly_completeness_metrics is not None:

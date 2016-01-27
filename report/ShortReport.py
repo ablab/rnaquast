@@ -247,7 +247,7 @@ class ShortReport():
             if transcripts_metrics[0].simple_metrics != None:
                 self.add_alignment_metrics_to_table(transcripts_metrics, PRECISION)
 
-                self.add_fusion_misassemble_metrics_to_table(args, transcripts_metrics, PRECISION)
+                self.add_fusion_misassemble_metrics_to_table(transcripts_metrics)
 
             # ======= ASSEMBLY COMPLETENESS METRICS ===========
             if transcripts_metrics[0].assembly_completeness_metrics != None or transcripts_metrics[0].busco_metrics != None:
@@ -259,7 +259,7 @@ class ShortReport():
                     self.add_assemble_correctness_metrics_to_table(transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
 
-    def add_database_metrics_to_table(self, db_genes_metrics, transcripts_metrics, precision):
+    def add_database_metrics_to_table(self, db_genes_metrics, transcripts_metrics, PRECISION):
         # Database short report metrics:
         tot_genes_num_str = '{:<50}'.format('Genes')
         avg_exons_num_str = '{:<50}'.format('Avg. number of exons per isoform')
@@ -279,7 +279,7 @@ class ShortReport():
             if db_genes_metrics != None:
                 tot_genes_num_str += '{:<25}'.format(db_genes_metrics.genes_num)
 
-                avg_exons_num_str += '{:<25}'.format(round(db_genes_metrics.avg_exons_num, precision))
+                avg_exons_num_str += '{:<25}'.format(round(db_genes_metrics.avg_exons_num, PRECISION))
 
         # tot_protein_coding_genes_num_str += '{:<25}'.format(basic_genes_metrics.num_protein_coding)
 
@@ -338,7 +338,7 @@ class ShortReport():
         # self.metrics_table.append(max_transcript_len_str + '\n')
 
 
-    def add_alignment_metrics_to_table(self, transcripts_metrics, precision):
+    def add_alignment_metrics_to_table(self, transcripts_metrics, PRECISION):
         # Alignment short report metrics:
         num_aligned_str = '{:<50}'.format('Aligned')
         num_uniquely_aligned_str = '{:<50}'.format('Uniquely aligned')
@@ -375,9 +375,9 @@ class ShortReport():
         for i_transcripts in range(len(transcripts_metrics)):
             simple_metrics = transcripts_metrics[i_transcripts].simple_metrics
 
-            avg_aligned_fraction_str += '{:<25}'.format(round(simple_metrics.avg_fraction, precision))
-            avg_alignment_len_str += '{:<25}'.format(round(simple_metrics.avg_alignment_len, precision))
-            avg_mismatches_per_transcript_str += '{:<25}'.format(round(simple_metrics.avg_mismatch_num, precision))
+            avg_aligned_fraction_str += '{:<25}'.format(round(simple_metrics.avg_fraction, PRECISION))
+            avg_alignment_len_str += '{:<25}'.format(round(simple_metrics.avg_alignment_len, PRECISION))
+            avg_mismatches_per_transcript_str += '{:<25}'.format(round(simple_metrics.avg_mismatch_num, PRECISION))
 
             # na50_str += '{:<25}'.format(simple_metrics.na50)
             # avg_blocks_num_str += '{:<25}'.format(round(simple_metrics.avg_blocks_num, precision))
@@ -395,7 +395,7 @@ class ShortReport():
         # self.metrics_table.append(avg_mismatches_str + '\n')
 
 
-    def add_fusion_misassemble_metrics_to_table(self, args, transcripts_metrics, precision):
+    def add_fusion_misassemble_metrics_to_table(self, transcripts_metrics):
         mis_str_together = '{:<50}'.format('Misassemblies')
 
         # mis_str_by_blat = '{:<50}'.format('Misassembly candidates by blat')
@@ -423,7 +423,7 @@ class ShortReport():
         #    self.metrics_table.append(fusString + '\n')
 
 
-    def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, relative_database_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, precision):
+    def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, relative_database_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
         database_coverage_str = '{:<50}'.format('Database coverage')
 
         assembled_well_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
@@ -445,16 +445,16 @@ class ShortReport():
                 isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
 
                 if relative_database_coverage is not None:
-                    database_coverage_str += '{:<25}'.format(round(relative_database_coverage.database_coverage, precision))
+                    database_coverage_str += '{:<25}'.format(round(relative_database_coverage.database_coverage, PRECISION))
                 else:
-                    database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, precision))
+                    database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
 
                 assembled_well_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_genes)
                 assembled_fully_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_genes)
                 covered_well_str += '{:<25}'.format(isoforms_coverage.num_well_covered_genes)
                 covered_fully_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_genes)
-                mean_isoform_cov_str += '{:<25}'.format(round(isoforms_coverage.avg_covered_fraction, precision))
-                mean_isoform_assembly_str += '{:<25}'.format(round(isoforms_coverage.avg_assembled_fraction, precision))
+                mean_isoform_cov_str += '{:<25}'.format(round(isoforms_coverage.avg_covered_fraction, PRECISION))
+                mean_isoform_assembly_str += '{:<25}'.format(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
 
             # cegma_metrics = transcripts_metrics[i_transcripts].cegma_metrics
             # if cegma_metrics != None:
@@ -463,8 +463,8 @@ class ShortReport():
 
             busco_metrics = transcripts_metrics[i_transcripts].busco_metrics
             if busco_metrics != None:
-                busco_complete_str += '{:<25}'.format(busco_metrics.complete_completeness)
-                busco_partial_str += '{:<25}'.format(busco_metrics.partial_completeness)
+                busco_complete_str += '{:<25}'.format(round(busco_metrics.complete_completeness, PRECISION))
+                busco_partial_str += '{:<25}'.format(round(busco_metrics.partial_completeness, PRECISION))
 
         self.metrics_table.append('\n == ASSEMBLY COMPLETENESS (SENSITIVITY) ==\n')
 
@@ -488,7 +488,7 @@ class ShortReport():
             self.metrics_table.append(busco_partial_str + '\n')
 
 
-    def add_assemble_correctness_metrics_to_table(self, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, precision):
+    def add_assemble_correctness_metrics_to_table(self, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
         matched_well_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_transcript_threshold * 100)) + '%-matched')
         matched_fully_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_transcript_threshold * 100)) + '%-matched')
         unannotated_str = '{:<50}'.format('Unannotated')
@@ -500,7 +500,7 @@ class ShortReport():
             matched_well_str += '{:<25}'.format(transcripts_coverage.num_well_covered_transcripts)
             matched_fully_str += '{:<25}'.format(transcripts_coverage.num_fully_covered_transcripts)
             unannotated_str += '{:<25}'.format(transcripts_coverage.num_unannotated_transcripts)
-            mean_transcript_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, precision))
+            mean_transcript_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, PRECISION))
 
         self.metrics_table.append('\n == ASSEMBLY SPECIFICITY ==\n')
         self.metrics_table.append(matched_well_str + '\n')

@@ -87,15 +87,15 @@ Note that gffutils is used to complete gene database in case of missing transcri
         <li><a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank"> NCBI BLAST+ (tblastn)</a> </li>
         <li><a href="http://hmmer.janelia.org/" target="_blank"> HMMER (HMMER 3.1b)</a></li>
         <li><a href="ftp://emboss.open-bio.org/pub/EMBOSS/" target="_blank"> EMBOSS tools 6.x.x (transeq)</a></li>
-        <li><a href="http://busco.ezlab.org/" target="_blank"> BUSCO v1.1</a></li>
+        <li><a href="http://busco.ezlab.org/" target="_blank"> BUSCO v1.1b1</a></li>
         <li>Depending on the species you wish to assess, you should download the appropriate lineage-specific profile libraries: Metazoa, Eukaryota, Arthropoda, Vertebrata, Fungi, or Bacteria from <a href="http://busco.ezlab.org" target="_blank">http://busco.ezlab.org</a> and provide it to rnaQUAST with <code>--clade</code> option.</li>
     </ul>
 <p>
 If you wish to use BUSCO, you should also add paths to tblastn, hmmer, transeq and BUSCO. Since BUSCO requires python3, you may also need to add 
 <pre class="code">
-<code>#!/bin/python3</code>
+<code>#!/usr/bin/env python3</code>
 </pre>
-to the top of <code>BUSCO_v1.1.py</code> executable file.
+to the top of <code>BUSCO_v1.1b1.py</code> executable file.
 
 <a name="sec3"></a>
 <h2>3 Options</h2>
