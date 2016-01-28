@@ -89,8 +89,8 @@ class CegmaMetrics():
 class BuscoMetrics():
 
     def __init__(self):
-        self.complete_completeness = None
-        self.partial_completeness = None
+        self.complete_completeness = 0.0
+        self.partial_completeness = 0.0
 
 
     # get BUSCO (Benchmarking Universal Single-Copy Orthologs) results
@@ -110,14 +110,19 @@ class BuscoMetrics():
         logger.print_timestamp()
         logger.info('  Running BUSCO (Benchmarking Universal Single-Copy Orthologs)...')
 
+        if not os.path.isabs(transcripts_path):
+            transcripts_path = os.path.abspath(transcripts_path)
+        if not os.path.isabs(args_clade):
+            args_clade = os.path.abspath(transcripts_path)
+
         initial_dir = os.getcwd()
 
         os.chdir(tmp_dir)
 
         out_name = label + '_BUSCO'
         out_dirpath = os.path.join(tmp_dir, 'run_' + out_name)
-        log_out = 'busco.log'
-        logger.info('    Logging to {}...'.format(os.path.join(out_dirpath, log_out)))
+        log_out = '{}_busco.log'.format(label)
+        logger.info('    Logging to {}...'.format(os.path.join(tmp_dir, log_out)))
 
         busco_run = 'BUSCO_v1.1b1.py'
         command = \
@@ -281,7 +286,7 @@ class AssemblyCompletenessMetrics():
             self.busco_metrics = BuscoMetrics()
 
         self.gene_marks_t_metrics = None
-        if args.gene_mark == True or not (args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None):
+        if args.gene_mark or not (args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None):
             self.gene_marks_t_metrics = GeneMarkS_TMetrics()
 
 
