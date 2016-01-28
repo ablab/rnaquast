@@ -84,13 +84,14 @@ class SeparatedReport():
             transcripts_metrics.simple_metrics.print_fa_transcripts(transcripts_dict, transcripts_metrics.simple_metrics.ids_unique_aligned,
                                                                     self.path_fa_unique_aligned, logger, transcripts_name='Unique aligned')
 
-        if transcripts_metrics.assembly_correctness_metrics is not None:
-            # UNANNOTATED:
-            transcripts_metrics.assembly_correctness_metrics.print_unannotated_transcripts(transcripts_dict, self.path_fa_unannotated, logger)
-
         if transcripts_metrics.assembly_completeness_metrics is not None:
-            # 90%-ASSEMBLED:
-            transcripts_metrics.assembly_completeness_metrics.print_fully_assembled_isoforms(self.path_fully_assembled_list, logger)
+            if transcripts_metrics.assembly_correctness_metrics.transcripts_coverage is not None:
+                # UNANNOTATED:
+                transcripts_metrics.assembly_correctness_metrics.transcripts_coverage.print_unannotated_transcripts(transcripts_dict, self.path_fa_unannotated, logger)
+
+            if transcripts_metrics.assembly_completeness_metrics.isoforms_coverage is not None:
+                # 90%-ASSEMBLED:
+                transcripts_metrics.assembly_completeness_metrics.isoforms_coverage.print_fully_assembled_isoforms(self.path_fully_assembled_list, logger)
 
 
         logger.info('  Done.')

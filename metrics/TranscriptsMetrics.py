@@ -53,37 +53,18 @@ class TranscriptsMetrics():
             args.fusion_misassemble_analyze = None
             # self.fusion_misassemble_metrics = FusionMisassembleMetrics.FusionMisassembleMetrics(args.fusion_misassemble_analyze, self, transcripts_file, sam_file, logger)
 
-        # INITIALIZE CEGMA METRICS:
-        # metrics by CEGMA:
-        # self.cegma_metrics = None
-        # if args.cegma == True:
-        #     self.cegma_metrics = AssemblyCompletenessMetrics.CegmaMetrics()
-
-        # INITIALIZE BUSCO METRICS:
-        # metrics by BUSCO:
-        self.busco_metrics = None
-        if args.busco == True and args.clade is not None:
-            self.busco_metrics = AssemblyCompletenessMetrics.BuscoMetrics()
-
-        self.gene_marks_t_metrics = None
-        if args.gene_mark == True or not (args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None):
-            self.gene_marks_t_metrics = AssemblyCompletenessMetrics.GeneMarkS_TMetrics()
-
         # INITIALIZE METRICS WITH ALIGNMENT AND ANNOTATION:
-        if args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None:
-            # ASSEMBLY CORRECTNESS METRICS
-            # metrics of coverages of aligned transcripts by annotated isoforms:
-            self.assembly_correctness_metrics = AssemblyCorrectnessMetrics.AssemblyCorrectnessMetrics()
+        # ASSEMBLY CORRECTNESS METRICS
+        self.assembly_correctness_metrics = AssemblyCorrectnessMetrics.AssemblyCorrectnessMetrics(args)
 
-            # ASSEMBLY COMPLETENESS METRICS:
-            # metrics of coverages of annotated isoforms by aligned transcripts:
-            self.assembly_completeness_metrics = \
-                AssemblyCompletenessMetrics.AssemblyCompletenessMetrics()
+        # ASSEMBLY COMPLETENESS METRICS:
+        # metrics of coverages of annotated isoforms by aligned transcripts:
+        self.assembly_completeness_metrics = AssemblyCompletenessMetrics.AssemblyCompletenessMetrics(args)
 
 
-    def get_transcripts_metrics(self, args, type_organism, reference_dict, transcripts_path, transcripts_dict, sqlite3_db_genes,
-                                db_genes_metrics, reads_coverage, logger, tmp_dir, WELL_FULLY_COVERAGE_THRESHOLDS,
-                                TRANSCRIPT_LENS):
+    def get_transcripts_metrics(self, args, type_organism, reference_dict, transcripts_path, transcripts_dict,
+                                sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger, tmp_dir,
+                                WELL_FULLY_COVERAGE_THRESHOLDS, TRANSCRIPT_LENS):
         logger.print_timestamp('  ')
 
         # GET BASIC TRANSCRIPTS METRICS:
@@ -97,27 +78,16 @@ class TranscriptsMetrics():
 
         # GET FUSIONS AND MISASSEMBLIES METRICS:
         if self.fusion_misassemble_metrics is not None:
-            self.fusion_misassemble_metrics.get_metrics(args.gene_database, logger)
+            self.fusion_misassemble_metrics.get_busco_metrics(args.gene_database, logger)
 
         # GET ASSEMBLY CORRECTNESS METRICS:
         if self.assembly_correctness_metrics is not None:
-            self.assembly_correctness_metrics.get_assembly_correctness_metrics(self.basic_metrics, self.simple_metrics, logger)
-
-        # GET ASSEMBLY COMPLETENESS METRICS:
-        # CEGMA:
-        # if self.cegma_metrics is not None:
-        #     self.cegma_metrics.get_metrics(args.threads, transcripts_path, tmp_dir, self.label, logger)
-
-        # BUSCO:
-        if self.busco_metrics is not None:
-            self.busco_metrics.get_metrics(args.clade, args.threads, transcripts_path, tmp_dir, self.label, logger)
-
-        if self.gene_marks_t_metrics is not None:
-            self.gene_marks_t_metrics.get_GeneMarkS_T_report(type_organism, args.threads, transcripts_path, tmp_dir, self.label, logger)
+            self.assembly_correctness_metrics.get_assembly_correctness_metrics(self.simple_metrics, logger)
 
         if self.assembly_completeness_metrics is not None:
             self.assembly_completeness_metrics.\
-                get_assembly_completeness_metrics(sqlite3_db_genes,db_genes_metrics.tot_isoforms_len, reads_coverage,
+                get_assembly_completeness_metrics(args.clade, args.threads, transcripts_path, tmp_dir, self.label, type_organism,
+                                                  sqlite3_db_genes, tot_isoforms_len, reads_coverage,
                                                   WELL_FULLY_COVERAGE_THRESHOLDS, logger)
 
 

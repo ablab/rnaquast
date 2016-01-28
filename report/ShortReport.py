@@ -31,7 +31,6 @@ class ShortReport():
         self.metrics_table = []
         self.set_metrics_table(args, db_genes_metrics, transcripts_metrics, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS)
 
-
         row_n = len(transcripts_metrics) + 1
         # if there are no transcripts, add one row for annotation metrics:
         # if len(transcripts_metrics) == 0:
@@ -234,28 +233,27 @@ class ShortReport():
             name_str += '{:<25}'.format(transcripts_metrics[i_transcripts].label)
         self.metrics_table.append(name_str + '\n')
 
-        if db_genes_metrics != None:
+        if db_genes_metrics is not None:
             # ======= DATABASE METRICS ===========
             self.add_database_metrics_to_table(db_genes_metrics, transcripts_metrics, PRECISION)
 
         if len(transcripts_metrics) >= 1:
             # ======= BASIC TRANSCRIPTS METRICS ===========
-            if transcripts_metrics[0].basic_metrics != None:
+            if transcripts_metrics[0].basic_metrics is not None:
                 self.add_basic_metrics_to_table(transcripts_metrics, PRECISION, TRANSCRIPT_LENS)
 
             # ======= ALIGNMENT METRICS ===========
-            if transcripts_metrics[0].simple_metrics != None:
+            if transcripts_metrics[0].simple_metrics is not None:
                 self.add_alignment_metrics_to_table(transcripts_metrics, PRECISION)
 
                 self.add_fusion_misassemble_metrics_to_table(transcripts_metrics)
 
             # ======= ASSEMBLY COMPLETENESS METRICS ===========
-            if transcripts_metrics[0].assembly_completeness_metrics != None or transcripts_metrics[0].busco_metrics != None:
+            if transcripts_metrics[0].assembly_completeness_metrics is not None:
                 self.add_assemble_completeness_metrics_to_table(transcripts_metrics, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
             # ======= ASSEMBLY CORRECTNESS METRICS ===========
-            if transcripts_metrics[0].assembly_correctness_metrics != None:
-                if transcripts_metrics[0].assembly_correctness_metrics.transcripts_coverage != None:
+            if transcripts_metrics[0].assembly_correctness_metrics is not None:
                     self.add_assemble_correctness_metrics_to_table(transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
 
@@ -289,7 +287,7 @@ class ShortReport():
         # avg_exon_len_str += '{:<25}'.format(round(basic_isoforms_metrics.avg_exon_len, precision))
 
         self.metrics_table.append(' == DATABASE METRICS == \n')
-        if db_genes_metrics != None:
+        if db_genes_metrics is not None:
             self.metrics_table.append(tot_genes_num_str + '\n')
             self.metrics_table.append(avg_exons_num_str + '\n')
 
@@ -440,10 +438,11 @@ class ShortReport():
         busco_complete_str = '{:<50}'.format('Complete')
         busco_partial_str = '{:<50}'.format('Partial')
 
-        for i_transcripts in range(len(transcripts_metrics)):
-            if transcripts_metrics[i_transcripts].assembly_completeness_metrics != None:
-                isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
+        GeneMarkS_T_genes_str = '{:<50}'.format('Genes')
 
+        for i_transcripts in range(len(transcripts_metrics)):
+            isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
+            if isoforms_coverage is not None:
                 if relative_database_coverage is not None:
                     database_coverage_str += '{:<25}'.format(round(relative_database_coverage.database_coverage, PRECISION))
                 else:
@@ -456,19 +455,24 @@ class ShortReport():
                 mean_isoform_cov_str += '{:<25}'.format(round(isoforms_coverage.avg_covered_fraction, PRECISION))
                 mean_isoform_assembly_str += '{:<25}'.format(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
 
-            # cegma_metrics = transcripts_metrics[i_transcripts].cegma_metrics
-            # if cegma_metrics != None:
-            #     cegma_complete_str += '{:<25}'.format(cegma_metrics.complete_completeness)
-            #     cegma_partial_str += '{:<25}'.format(cegma_metrics.partial_completeness)
+            # if transcripts_metrics[i_transcripts].assembly_completeness_metrics.cegma_metrics is not None:
+            #     cegma_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.cegma_metrics
+            #     if cegma_metrics != None:
+            #         cegma_complete_str += '{:<25}'.format(cegma_metrics.complete_completeness)
+            #         cegma_partial_str += '{:<25}'.format(cegma_metrics.partial_completeness)
 
-            busco_metrics = transcripts_metrics[i_transcripts].busco_metrics
-            if busco_metrics != None:
+            busco_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.busco_metrics
+            if busco_metrics is not None:
                 busco_complete_str += '{:<25}'.format(round(busco_metrics.complete_completeness, PRECISION))
                 busco_partial_str += '{:<25}'.format(round(busco_metrics.partial_completeness, PRECISION))
 
-        self.metrics_table.append('\n == ASSEMBLY COMPLETENESS (SENSITIVITY) ==\n')
+            gene_marks_t_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.gene_marks_t_metrics
+            if gene_marks_t_metrics is not None:
+                GeneMarkS_T_genes_str += '{:<25}'.format(gene_marks_t_metrics.genes)
 
-        if transcripts_metrics[0].assembly_completeness_metrics != None:
+        self.metrics_table.append('\n == ASSEMBLY COMPLETENESS (SENSITIVITY) == \n')
+
+        if transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage is not None:
             self.metrics_table.append(database_coverage_str + '\n')
             self.metrics_table.append(assembled_well_str + '\n')
             self.metrics_table.append(assembled_fully_str + '\n')
@@ -482,10 +486,14 @@ class ShortReport():
         #     self.metrics_table.append(cegma_complete_str + '\n')
         #     self.metrics_table.append(cegma_partial_str + '\n')
 
-        if transcripts_metrics[0].busco_metrics != None:
-            self.metrics_table.append('\n == BUSCO METRICS ==\n')
+        if transcripts_metrics[0].assembly_completeness_metrics.busco_metrics is not None:
+            self.metrics_table.append('\n == BUSCO METRICS == \n')
             self.metrics_table.append(busco_complete_str + '\n')
             self.metrics_table.append(busco_partial_str + '\n')
+
+        if transcripts_metrics[0].assembly_completeness_metrics.gene_marks_t_metrics is not None:
+            self.metrics_table.append('\n == GeneMarkS-T METRICS == \n')
+            self.metrics_table.append(GeneMarkS_T_genes_str + '\n')
 
 
     def add_assemble_correctness_metrics_to_table(self, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
@@ -496,14 +504,16 @@ class ShortReport():
 
         for i_transcripts in range(len(transcripts_metrics)):
             transcripts_coverage = transcripts_metrics[i_transcripts].assembly_correctness_metrics.transcripts_coverage
+            if transcripts_coverage is not None:
+                matched_well_str += '{:<25}'.format(transcripts_coverage.num_well_covered_transcripts)
+                matched_fully_str += '{:<25}'.format(transcripts_coverage.num_fully_covered_transcripts)
+                unannotated_str += '{:<25}'.format(transcripts_coverage.num_unannotated_transcripts)
+                mean_transcript_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, PRECISION))
 
-            matched_well_str += '{:<25}'.format(transcripts_coverage.num_well_covered_transcripts)
-            matched_fully_str += '{:<25}'.format(transcripts_coverage.num_fully_covered_transcripts)
-            unannotated_str += '{:<25}'.format(transcripts_coverage.num_unannotated_transcripts)
-            mean_transcript_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, PRECISION))
+        if transcripts_metrics[0].assembly_correctness_metrics.transcripts_coverage is not None:
+            self.metrics_table.append('\n == ASSEMBLY SPECIFICITY == \n')
 
-        self.metrics_table.append('\n == ASSEMBLY SPECIFICITY ==\n')
-        self.metrics_table.append(matched_well_str + '\n')
-        self.metrics_table.append(matched_fully_str + '\n')
-        self.metrics_table.append(unannotated_str + '\n')
-        self.metrics_table.append(mean_transcript_match_str + '\n')
+            self.metrics_table.append(matched_well_str + '\n')
+            self.metrics_table.append(matched_fully_str + '\n')
+            self.metrics_table.append(unannotated_str + '\n')
+            self.metrics_table.append(mean_transcript_match_str + '\n')

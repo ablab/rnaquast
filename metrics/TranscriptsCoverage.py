@@ -1,5 +1,7 @@
 __author__ = 'lenk'
 
+from quast23.libs import fastaparser
+
 
 class TranscriptsCoverage(object):
     """ASSEMBLY CORRECTNESS METRICS: coverage of aligned transcripts over all scaffolds/chromosomes/patches"""
@@ -141,3 +143,15 @@ class TranscriptsCoverage(object):
             self.avg_covered_fraction_block /= self.tot_blocks_num
 
         logger.info('  Done.')
+
+
+    def print_unannotated_transcripts(self, transcripts_dict, path_fa_unannotated, logger):
+        logger.info('    Getting Unannotated transcripts report...')
+
+        unannotated_transcripts = []
+        for id_transcript in self.ids_unannotated_transcripts:
+            unannotated_transcripts.append((id_transcript, transcripts_dict[id_transcript]))
+
+        fastaparser.write_fasta(path_fa_unannotated, unannotated_transcripts)
+
+        logger.info('      saved to {}'.format(path_fa_unannotated))

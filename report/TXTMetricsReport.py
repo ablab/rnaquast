@@ -33,7 +33,7 @@ class TXTMetricsReport():
             self.path_txt_misassemblies = os.path.join(self.txt_reports_dir, 'misassemblies.txt')
             self.get_misassemblies_report(transcripts_metrics, logger)
 
-        if transcripts_metrics[0].assembly_completeness_metrics is not None or transcripts_metrics[0].busco_metrics is not None:
+        if transcripts_metrics[0].assembly_completeness_metrics is not None:
                 self.path_txt_sensitivity = os.path.join(self.txt_reports_dir, 'sensitivity.txt')
                 self.get_sensitivity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
@@ -541,51 +541,58 @@ class TXTMetricsReport():
         busco_complete_str = '{:<50}'.format('Complete')
         busco_partial_str = '{:<50}'.format('Partial')
 
+        GeneMarkS_T_genes_str = '{:<50}'.format('Genes')
+
         for i_transcripts in range(len(transcripts_metrics)):
             if transcripts_metrics[i_transcripts].assembly_completeness_metrics is not None:
-                isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
-
                 name_str += '{:<25}'.format(transcripts_metrics[i_transcripts].label)
 
-                database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
+                isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
+                if isoforms_coverage is not None:
+                    database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
 
-                duplication_str += '{:<25}'.format(round(isoforms_coverage.avg_duplication_ratio, PRECISION))
-                avg_num_transcripts_in_isoform_str += '{:<25}'.format(round(isoforms_coverage.avg_num_transcripts_mapped_to_isoform, PRECISION))
+                    duplication_str += '{:<25}'.format(round(isoforms_coverage.avg_duplication_ratio, PRECISION))
+                    avg_num_transcripts_in_isoform_str += '{:<25}'.format(round(isoforms_coverage.avg_num_transcripts_mapped_to_isoform, PRECISION))
 
-                assembled_well_genes_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_genes)
-                assembled_fully_genes_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_genes)
-                covered_well_genes_str += '{:<25}'.format(isoforms_coverage.num_well_covered_genes)
-                covered_fully_genes_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_genes)
+                    assembled_well_genes_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_genes)
+                    assembled_fully_genes_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_genes)
+                    covered_well_genes_str += '{:<25}'.format(isoforms_coverage.num_well_covered_genes)
+                    covered_fully_genes_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_genes)
 
-                assembled_well_isoforms_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_isoforms)
-                assembled_fully_isoforms_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_isoforms)
-                covered_well_isoforms_str += '{:<25}'.format(isoforms_coverage.num_well_covered_isoforms)
-                covered_fully_isoforms_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_isoforms)
+                    assembled_well_isoforms_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_isoforms)
+                    assembled_fully_isoforms_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_isoforms)
+                    covered_well_isoforms_str += '{:<25}'.format(isoforms_coverage.num_well_covered_isoforms)
+                    covered_fully_isoforms_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_isoforms)
 
-                assembled_exons_well_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_exons)
-                assembled_exons_fully_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_exons)
-                mean_isoform_cov_str += '{:<25}'.format(round(isoforms_coverage.avg_covered_fraction, PRECISION))
-                mean_isoform_assembly_str += '{:<25}'.format(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
-                mean_exon_cov_str += '{:<25}'.format(round(isoforms_coverage.avg_covered_fraction_exons, PRECISION))
-                isoform_well_cov_exons_str += '{:<25}'.format(round(isoforms_coverage.avg_percentage_isoform_well_covered_exons, PRECISION))
-                isoform_fully_cov_exons_str += '{:<25}'.format(round(isoforms_coverage.avg_percentage_isoform_fully_covered_exons, PRECISION))
+                    assembled_exons_well_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_exons)
+                    assembled_exons_fully_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_exons)
+                    mean_isoform_cov_str += '{:<25}'.format(round(isoforms_coverage.avg_covered_fraction, PRECISION))
+                    mean_isoform_assembly_str += '{:<25}'.format(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
+                    mean_exon_cov_str += '{:<25}'.format(round(isoforms_coverage.avg_covered_fraction_exons, PRECISION))
+                    isoform_well_cov_exons_str += '{:<25}'.format(round(isoforms_coverage.avg_percentage_isoform_well_covered_exons, PRECISION))
+                    isoform_fully_cov_exons_str += '{:<25}'.format(round(isoforms_coverage.avg_percentage_isoform_fully_covered_exons, PRECISION))
 
             # cegma_metrics = transcripts_metrics[i_transcripts].cegma_metrics
             # if cegma_metrics is not None:
             #     cegma_complete_str += '{:<25}'.format(cegma_metrics.complete_completeness)
             #     cegma_partial_str += '{:<25}'.format(cegma_metrics.partial_completeness)
 
-            busco_metrics = transcripts_metrics[i_transcripts].busco_metrics
+            busco_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.busco_metrics
             if busco_metrics is not None:
                 busco_complete_str += '{:<25}'.format(round(busco_metrics.complete_completeness, PRECISION))
                 busco_partial_str += '{:<25}'.format(round(busco_metrics.partial_completeness, PRECISION))
+
+            gene_marks_t_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.gene_marks_t_metrics
+            if gene_marks_t_metrics is not None:
+                GeneMarkS_T_genes_str += '{:<25}'.format(gene_marks_t_metrics.genes)
 
         fout = open(self.path_txt_sensitivity, 'w')
 
         fout.write(' == ASSEMBLY COMPLETENESS (SENSITIVITY) ==\n')
 
-        if transcripts_metrics[0].assembly_completeness_metrics is not None:
-            fout.write(name_str + '\n')
+        fout.write(name_str + '\n')
+
+        if transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage is not None:
             fout.write(database_coverage_str + '\n')
 
             fout.write(duplication_str + '\n')
@@ -612,15 +619,19 @@ class TXTMetricsReport():
             fout.write(isoform_well_cov_exons_str + '\n')
             fout.write(isoform_fully_cov_exons_str + '\n\n')
 
-        # if transcripts_metrics[0].cegma_metrics is not None:
+        # if transcripts_metrics[0].assembly_completeness_metrics.cegma_metrics is not None:
         #     fout.write(' == CEGMA METRICS ==\n')
         #     fout.write(cegma_complete_str + '\n')
         #     fout.write(cegma_partial_str + '\n\n')
 
-        if transcripts_metrics[0].busco_metrics is not None:
+        if transcripts_metrics[0].assembly_completeness_metrics.busco_metrics is not None:
             fout.write(' == BUSCO METRICS ==\n')
             fout.write(busco_complete_str + '\n')
             fout.write(busco_partial_str + '\n\n')
+
+        if transcripts_metrics[0].assembly_completeness_metrics.gene_marks_t_metrics is not None:
+            fout.write(' == GeneMarkS-T METRICS ==\n')
+            fout.write(GeneMarkS_T_genes_str + '\n\n')
 
         fout.close()
 
@@ -693,40 +704,44 @@ class TXTMetricsReport():
         matched_len_str = '{:<50}'.format('Matched length')
         unmatched_len_str = '{:<50}'.format('Unmatched length')
 
-
         for i_transcripts in range(len(transcripts_metrics)):
             transcripts_coverage = transcripts_metrics[i_transcripts].assembly_correctness_metrics.transcripts_coverage
 
             name_str += '{:<25}'.format(transcripts_metrics[i_transcripts].label)
 
-            unannotated_str += '{:<25}'.format(transcripts_coverage.num_unannotated_transcripts)
-            matched_well_str += '{:<25}'.format(transcripts_coverage.num_well_covered_transcripts)
-            matched_fully_str += '{:<25}'.format(transcripts_coverage.num_fully_covered_transcripts)
-            mean_transcript_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, precision))
-            mean_block_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_block, precision))
-            matched_blocks_well_str += '{:<25}'.format(round(transcripts_coverage.percentage_well_covered_blocks, precision))
-            matched_blocks_fully_str += '{:<25}'.format(round(transcripts_coverage.percentage_fully_covered_blocks, precision))
-            matched_len_str += '{:<25}'.format(transcripts_coverage.matched_len)
-            unmatched_len_str += '{:<25}'.format(transcripts_coverage.unmatched_len)
+            if transcripts_coverage is not None:
+                unannotated_str += '{:<25}'.format(transcripts_coverage.num_unannotated_transcripts)
+                matched_well_str += '{:<25}'.format(transcripts_coverage.num_well_covered_transcripts)
+                matched_fully_str += '{:<25}'.format(transcripts_coverage.num_fully_covered_transcripts)
+                mean_transcript_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, precision))
+                mean_block_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_block, precision))
+                matched_blocks_well_str += '{:<25}'.format(round(transcripts_coverage.percentage_well_covered_blocks, precision))
+                matched_blocks_fully_str += '{:<25}'.format(round(transcripts_coverage.percentage_fully_covered_blocks, precision))
+                matched_len_str += '{:<25}'.format(transcripts_coverage.matched_len)
+                unmatched_len_str += '{:<25}'.format(transcripts_coverage.unmatched_len)
 
         fout = open(self.path_txt_specificity, 'w')
 
-        fout.write(' == ASSEMBLY SPECIFICITY ==\n')
-        fout.write(name_str + '\n')
-        fout.write(unannotated_str + '\n\n')
 
-        fout.write(matched_well_str + '\n')
-        fout.write(matched_fully_str + '\n\n')
+        if transcripts_metrics[0].assembly_correctness_metrics.transcripts_coverage:
+            fout.write(' == ASSEMBLY SPECIFICITY ==\n')
 
-        fout.write(mean_transcript_match_str + '\n\n')
+            fout.write(name_str + '\n')
 
-        fout.write(mean_block_match_str + '\n\n')
+            fout.write(unannotated_str + '\n\n')
 
-        fout.write(matched_blocks_well_str + '\n')
-        fout.write(matched_blocks_fully_str + '\n\n')
+            fout.write(matched_well_str + '\n')
+            fout.write(matched_fully_str + '\n\n')
 
-        fout.write(matched_len_str + '\n')
-        fout.write(unmatched_len_str + '\n\n')
+            fout.write(mean_transcript_match_str + '\n\n')
+
+            fout.write(mean_block_match_str + '\n\n')
+
+            fout.write(matched_blocks_well_str + '\n')
+            fout.write(matched_blocks_fully_str + '\n\n')
+
+            fout.write(matched_len_str + '\n')
+            fout.write(unmatched_len_str + '\n\n')
 
         fout.close()
 

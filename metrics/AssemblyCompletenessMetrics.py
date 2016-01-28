@@ -94,15 +94,13 @@ class BuscoMetrics():
 
 
     # get BUSCO (Benchmarking Universal Single-Copy Orthologs) results
-    def get_metrics(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
+    def get_busco_metrics(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
         busco_completeness_report_path = \
             self.get_busco_completeness_report(args_clade, args_threads, transcripts_path, tmp_dir, label, logger)
 
         if busco_completeness_report_path is not None:
             self.complete_completeness = self.get_complete_completeness(busco_completeness_report_path)
             self.partial_completeness = self.get_partial_completeness(busco_completeness_report_path)
-
-            logger.info('  Done.')
 
 
     def get_busco_completeness_report(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
@@ -135,8 +133,9 @@ class BuscoMetrics():
         if exit_code != 0:
             logger.warning(message='BUSCO failed! Please install and add to PATH BUSCO requirements.')
         else:
-
             busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO'.format(label))
+
+            logger.info('    saved to {}.'.format(busco_completeness_report_path))
 
         return busco_completeness_report_path
 
@@ -183,18 +182,16 @@ class BuscoMetrics():
 class GeneMarkS_TMetrics():
 
     def __init__(self):
-        self.genes = None
+        self.genes = 0
 
 
     # get GeneMarkS-T results
-    def get_metrics(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
+    def get_GeneMarkS_T_metrics(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger):
         GeneMarkS_T_report_path = \
             self.get_GeneMarkS_T_report(args_clade, args_threads, transcripts_path, tmp_dir, label, logger)
 
         if GeneMarkS_T_report_path is not None:
             self.genes = self.get_genes_from_report(GeneMarkS_T_report_path)
-
-            logger.info('    saved to {}'.format(GeneMarkS_T_report_path))
 
 
     def get_GeneMarkS_T_report(self, type_organism, args_threads, transcripts_path, tmp_dir, label, logger):
@@ -222,10 +219,44 @@ class GeneMarkS_TMetrics():
         else:
             GeneMarkS_T_report_path = GeneMarkS_T_report_path_tmp
 
+            logger.info('    saved to {}'.format(GeneMarkS_T_report_path))
+
         return GeneMarkS_T_report_path
 
 
     def get_genes_from_report(self, GeneMarkS_T_report_path):
+        # GeneMarkS_T_all = []
+
+        with open(GeneMarkS_T_report_path, 'r') as in_handle:
+            f_read_genes = False
+            attributes = {}
+            for line in in_handle:
+                tmp_list = line.strip().split()
+                if tmp_list == []:
+                    f_read_genes = False
+                    continue
+
+                if tmp_list[0:2] == ['Model', 'information:']:
+                    attributes = {}
+                elif tmp_list[0:3] == ['FASTA', 'definition', 'line:']:
+                    attributes['t_name'] = tmp_list[3]
+                    attributes['t_len'] = tmp_list[4][4:]
+                    attributes['path'] = tmp_list[5][6:-1]
+                elif tmp_list == ['#', 'Length']:
+                    attributes['genes'] = []
+                    f_read_genes = True
+                elif f_read_genes:
+                    attributes['genes'].append({})
+                    attributes['genes'][-1]['Gene'] = tmp_list[0]
+                    attributes['genes'][-1]['Strand'] = tmp_list[1]
+                    attributes['genes'][-1]['LeftEnd'] = tmp_list[2]
+                    attributes['genes'][-1]['RightEnd'] = tmp_list[3]
+                    attributes['genes'][-1]['Gene'] = tmp_list[4]
+                    attributes['genes'][-1]['Class'] = tmp_list[5]
+
+                    # GeneMarkS_T_all.append(attributes)
+
+                    self.genes += 1
 
         return self.genes
 
@@ -233,9 +264,25 @@ class GeneMarkS_TMetrics():
 class AssemblyCompletenessMetrics():
     """Class of annotation coverage metrics by aligned transcripts"""
 
-    def __init__(self):
-        # INITIALIZE ASSEMBLY COMPLETENESS METRICS WITH ALIGNMENT AND ANNOTATION:
-        self.isoforms_coverage = IsoformsCoverage.IsoformsCoverage()
+    def __init__(self, args):
+        self.isoforms_coverage = None
+        if args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None:
+            # INITIALIZE ASSEMBLY COMPLETENESS METRICS WITH ALIGNMENT AND ANNOTATION:
+            self.isoforms_coverage = IsoformsCoverage.IsoformsCoverage()
+
+        # INITIALIZE CEGMA METRICS:
+        # self.cegma_metrics = None
+        # if args.cegma:
+        #     self.cegma_metrics = CegmaMetrics()
+
+        # INITIALIZE BUSCO METRICS:
+        self.busco_metrics = None
+        if args.busco and args.clade is not None:
+            self.busco_metrics = BuscoMetrics()
+
+        self.gene_marks_t_metrics = None
+        if args.gene_mark or not (args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None):
+            self.gene_marks_t_metrics = GeneMarkS_TMetrics()
 
 
     # UPDATE COVERAGE OF ANNOTATION BY SPECIFIC ISOFORM:
@@ -250,22 +297,25 @@ class AssemblyCompletenessMetrics():
         return elapsed_time
 
 
-    def get_assembly_completeness_metrics(self, sqlite3_db_genes, tot_isoforms_len, reads_coverage,
-                                          WELL_FULLY_COVERAGE_THRESHOLDS, logger):
+    def get_assembly_completeness_metrics(self, args_clade, threads, transcripts_path, tmp_dir, label, type_organism,
+                                          sqlite3_db_genes, tot_isoforms_len, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, logger):
         # get average metrics of coverage of annotated isoforms (included exons coverages) by aligned transcripts:
         logger.info('  Getting SENSITIVITY metrics...')
 
         # get coverages of annotated isoforms:
-        self.isoforms_coverage.get_isoforms_coverage(sqlite3_db_genes, tot_isoforms_len, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS)
+        if self.isoforms_coverage is not None:
+            self.isoforms_coverage.get_isoforms_coverage(sqlite3_db_genes, tot_isoforms_len, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS)
+
+        # GET ASSEMBLY COMPLETENESS METRICS:
+        # CEGMA:
+        # if self.cegma_metrics is not None:
+        #     self.cegma_metrics.get_metrics(args.threads, transcripts_path, tmp_dir, self.label, logger)
+
+        # BUSCO:
+        if self.busco_metrics is not None:
+            self.busco_metrics.get_busco_metrics(args_clade, threads, transcripts_path, tmp_dir, label, logger)
+
+        if self.gene_marks_t_metrics is not None:
+            self.gene_marks_t_metrics.get_GeneMarkS_T_metrics(type_organism, threads, transcripts_path, tmp_dir, label, logger)
 
         logger.info('  Done.')
-
-
-    def print_fully_assembled_isoforms(self, path_fully_assembled_list, logger):
-        logger.info('    Getting Fully assembled isoforms list...')
-
-        with open(path_fully_assembled_list, 'w') as fout:
-            for id_isoform in self.isoforms_coverage.ids_fully_assembled_isoforms:
-                fout.write(id_isoform + '\n')
-
-        logger.info('      saved to {}'.format(path_fully_assembled_list))

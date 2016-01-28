@@ -426,3 +426,13 @@ class IsoformsCoverage():
         # RELATIVE DATABASE COVERAGE:
         if reads_coverage is not None:
             self.relative_database_coverage = IsoformsCoverage.RelativeDatabaseCoverage(reads_coverage, self)
+
+
+    def print_fully_assembled_isoforms(self, path_fully_assembled_list, logger):
+        logger.info('    Getting Fully assembled isoforms list...')
+
+        with open(path_fully_assembled_list, 'w') as fout:
+            for id_isoform in self.ids_fully_assembled_isoforms:
+                fout.write(id_isoform + '\n')
+
+        logger.info('      saved to {}'.format(path_fully_assembled_list))

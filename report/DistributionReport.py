@@ -19,12 +19,12 @@ class DistributionReport():
 
         # SPECIFICITY:
         if len(transcripts_metrics) != 0:
-            if transcripts_metrics[0].assembly_correctness_metrics != None:
+            if transcripts_metrics[0].assembly_correctness_metrics is not None:
                 self.get_specificity_plots(transcripts_metrics, self.output_dir, precision)
 
         # SENSITIVITY:
         if len(transcripts_metrics) != 0:
-            if transcripts_metrics[0].assembly_completeness_metrics != None:
+            if transcripts_metrics[0].assembly_completeness_metrics is not None:
                 self.get_sensitivity_plots(transcripts_metrics, self.output_dir, precision)
 
         logger.info('  Done.')
@@ -463,9 +463,10 @@ class DistributionReport():
 
     def get_specificity_plots(self, transcripts_metrics, out_dir, precision):
         # DISTRIBUTIONS FOR TRANSCRIPTS ALIGNMENTS
-        self.get_x_matched_plot(transcripts_metrics, out_dir, precision, short_report_visible=True)
+        if transcripts_metrics[0].assembly_correctness_metrics.transcripts_coverage is not None:
+            self.get_x_matched_plot(transcripts_metrics, out_dir, precision, short_report_visible=True)
 
-        self.get_x_matched_blocks_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
+            self.get_x_matched_blocks_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
 
 
     # CONSIDER COVERED BASES BY EACH MAPPED TRANSCRIPT SEPARATELY:
@@ -648,16 +649,17 @@ class DistributionReport():
 
 
     def get_sensitivity_plots(self, transcripts_metrics, out_dir, precision):
-        self.get_x_assembled_plot(transcripts_metrics, out_dir, precision, short_report_visible=True)
+        if transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage is not None:
+            self.get_x_assembled_plot(transcripts_metrics, out_dir, precision, short_report_visible=True)
 
-        self.get_x_covered_plot(transcripts_metrics, out_dir, precision, short_report_visible=True)
+            self.get_x_covered_plot(transcripts_metrics, out_dir, precision, short_report_visible=True)
 
-        self.get_x_assembled_exons_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
+            self.get_x_assembled_exons_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
 
-        self.get_x_covered_exons_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
+            self.get_x_covered_exons_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
 
-        self.get_alignments_per_isoform_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
+            self.get_alignments_per_isoform_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
 
-        # self.get_percentage_well_covered_exons_over_isoforms_distribution(transcripts_metrics, out_dir, precision, short_report_visible=False)
+            # self.get_percentage_well_covered_exons_over_isoforms_distribution(transcripts_metrics, out_dir, precision, short_report_visible=False)
 
-        # self.get_percentage_fully_covered_exons_over_isoforms_distribution(transcripts_metrics, out_dir, precision, short_report_visible=False)
+            # self.get_percentage_fully_covered_exons_over_isoforms_distribution(transcripts_metrics, out_dir, precision, short_report_visible=False)
