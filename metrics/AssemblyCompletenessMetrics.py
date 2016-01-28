@@ -281,7 +281,7 @@ class AssemblyCompletenessMetrics():
             self.busco_metrics = BuscoMetrics()
 
         self.gene_marks_t_metrics = None
-        if args.gene_mark or not (args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None):
+        if args.gene_mark == True or not (args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None):
             self.gene_marks_t_metrics = GeneMarkS_TMetrics()
 
 

@@ -120,6 +120,7 @@ def main_utils():
     sqlite3_db_genes = None
     sorted_exons_attr = None
     db_genes_metrics = None
+    type_genes, type_isoforms, type_exons = UtilsAnnotations.default_type_genes, UtilsAnnotations.default_type_isoforms, UtilsAnnotations.default_type_exons
     if args.gene_database is not None:
         annotation_name = os.path.split(args.gene_database)[1]
         annotation_label = annotation_name[:annotation_name.rfind('.g')]

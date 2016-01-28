@@ -23,7 +23,7 @@ class AlignedTranscript(object):
         self.children_exons_dict = {}
         self.ids_children_exons_dict = {}
 
-        if sqlite3_db_genes != None:
+        if sqlite3_db_genes is not None:
             # internal_exons = self.get_internal_exons(db_genes, strand_specific)
 
             if strand_specific:

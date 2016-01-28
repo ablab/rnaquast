@@ -205,7 +205,7 @@ class AlignmentsReport():
             # fout_low_complexity = open(blat_report.low_complexity_file, 'w')
 
             logger.print_timestamp('  ')
-            logger.info('  Getting BLAT alignments report files...')
+            logger.info('  Getting GMAP (or BLAT) alignments report files...')
 
             blat_report.psl_wout_cross_path = \
                 remove_strange_psl_alignments(psl_file, blat_report.psl_wout_cross_path)

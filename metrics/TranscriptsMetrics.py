@@ -158,14 +158,13 @@ class TranscriptsMetrics():
                             (best_mapped_aligned_transcripts[i_alignment])
 
                     # SET COVERAGES:
-                    if self.assembly_correctness_metrics is not None:
+                    if self.assembly_correctness_metrics.transcripts_coverage is not None and self.assembly_completeness_metrics.isoforms_coverage is not None:
                         # update coverage of transcripts:
                         assembly_correctness_time += \
                             self.assembly_correctness_metrics.update_assembly_correctness_metrics\
                             (best_mapped_aligned_transcripts[i_alignment],
                              best_mapped_aligned_transcripts_coverages[i_alignment], WELL_FULLY_COVERAGE_THRESHOLDS)
 
-                    if self.assembly_completeness_metrics is not None:
                         # update coverage of annotations:
                         id_isoform = best_mapped_aligned_transcripts_coverages[i_alignment].id_mapped_isoform
 
@@ -287,7 +286,8 @@ class TranscriptsMetrics():
         # GET COVERAGES:
         aligned_transcript_coverage = None
         internal_isoforms_coverage = None
-        if self.assembly_correctness_metrics is not None and self.assembly_completeness_metrics is not None:
+        if self.assembly_correctness_metrics.transcripts_coverage is not None and \
+                        self.assembly_completeness_metrics.isoforms_coverage is not None:
             # get coverages:
             aligned_transcript_coverage = \
                 OneTranscriptCoverage.OneTranscriptCoverage(aligned_transcript.ids_internal_isoforms,
