@@ -56,9 +56,6 @@ class ReadsCoverage():
                                        right_reads, reference_dict, sqlite3_db_genes, type_isoforms, sorted_exons_attr,
                                        strand_specific, tot_isoforms_len, genome_len, output_dir, threads,
                                        WELL_FULLY_COVERAGE_THRESHOLDS, logger):
-            logger.print_timestamp()
-            logger.info('Getting database coverage by reads...')
-
             if sam_path is None:
                 if args_tophat:
                     sam_path = \
@@ -69,6 +66,8 @@ class ReadsCoverage():
                         UtilsTools.get_sam_by_STAR(threads, reference_path, None, single_reads, left_reads, right_reads,
                                                           output_dir, None, None, genome_len, logger)
 
+            logger.print_timestamp()
+            logger.info('Getting database coverage by reads...')
 
             with open(sam_path, 'r') as in_handle:
                 for line in in_handle:
@@ -89,7 +88,10 @@ class ReadsCoverage():
                     internal_isoforms = list(UtilsCoverage.get_internal_isoforms(sqlite3_db_genes, type_isoforms, internal_exons))
 
                     for isoform in internal_isoforms:
-                        children_exons = list(sqlite3_db_genes.children(isoform.id, featuretype=UtilsAnnotations.type_exons, order_by='start'))
+                        children_exons = list(sqlite3_db_genes.children(isoform.id, featuretype=UtilsAnnotations.default_type_exons, order_by='start'))
+                        # for prokaryotes:
+                        if len(children_exons) == 0:
+                            children_exons = [isoform]
 
                         exon_starts = [exon.start for exon in children_exons]
                         exon_ends = [exon.end for exon in children_exons]
@@ -109,7 +111,11 @@ class ReadsCoverage():
                                     self.num_reads_covered_pos[isoform.id][id_exon][i_pos] += 1
 
             for id_isoform in self.num_reads_covered_pos:
-                parent_gene = list(sqlite3_db_genes.parents(id_isoform, featuretype=UtilsAnnotations.type_genes))[0]
+                parent_genes = list(sqlite3_db_genes.parents(id_isoform, featuretype=UtilsAnnotations.default_type_genes))
+                if parent_genes == []:
+                    parent_gene_id = id_isoform
+                else:
+                    parent_gene_id = parent_genes[0].id
 
                 self.expressed_fraction_isoform[id_isoform] = 0.0
                 len_isoform = 0
@@ -136,12 +142,12 @@ class ReadsCoverage():
                 self.expressed_fraction_isoform[id_isoform] /= len_isoform
 
                 if self.expressed_fraction_isoform[id_isoform] >= WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold:
-                    self.ids_well_expressed_genes.add(parent_gene.id)
+                    self.ids_well_expressed_genes.add(parent_gene_id)
 
                     self.ids_well_expressed_isoforms.add(id_isoform)
 
                 if self.expressed_fraction_isoform[id_isoform] >= WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold:
-                    self.ids_fully_expressed_genes.add(parent_gene.id)
+                    self.ids_fully_expressed_genes.add(parent_gene_id)
 
                     self.ids_fully_expressed_isoforms.add(id_isoform)
 

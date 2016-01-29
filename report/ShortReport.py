@@ -11,7 +11,7 @@ font = {'family': 'sans-serif', 'style': 'normal', 'weight': 'medium', 'size': 1
 class ShortReport():
     """Class which generate short report"""
 
-    def __init__(self, args, db_genes_metrics, transcripts_metrics, reads_coverage, outdir, separated_reports,
+    def __init__(self, args, db_genes_metrics, transcripts_metrics, outdir, separated_reports,
                  comparison_report, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS):
         self.name = 'short_report'
 
@@ -29,7 +29,7 @@ class ShortReport():
 
         # get table with all short report metrics:
         self.metrics_table = []
-        self.set_metrics_table(args, db_genes_metrics, transcripts_metrics, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS)
+        self.set_metrics_table(args, db_genes_metrics, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS)
 
         row_n = len(transcripts_metrics) + 1
         # if there are no transcripts, add one row for annotation metrics:
@@ -227,7 +227,7 @@ class ShortReport():
 
 
     # generate table with all metrics for short report:
-    def set_metrics_table(self, args, db_genes_metrics, transcripts_metrics, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS):
+    def set_metrics_table(self, args, db_genes_metrics, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS):
         name_str = '{:<50}'.format('METRICS/TRANSCRIPTS')
         for i_transcripts in range(len(transcripts_metrics)):
             name_str += '{:<25}'.format(transcripts_metrics[i_transcripts].label)
@@ -250,7 +250,7 @@ class ShortReport():
 
             # ======= ASSEMBLY COMPLETENESS METRICS ===========
             if transcripts_metrics[0].assembly_completeness_metrics is not None:
-                self.add_assemble_completeness_metrics_to_table(transcripts_metrics, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
+                self.add_assemble_completeness_metrics_to_table(transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
             # ======= ASSEMBLY CORRECTNESS METRICS ===========
             if transcripts_metrics[0].assembly_correctness_metrics is not None:
@@ -421,7 +421,7 @@ class ShortReport():
         #    self.metrics_table.append(fusString + '\n')
 
 
-    def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, relative_database_coverage, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
+    def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
         database_coverage_str = '{:<50}'.format('Database coverage')
 
         assembled_well_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
@@ -443,6 +443,7 @@ class ShortReport():
         for i_transcripts in range(len(transcripts_metrics)):
             isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
             if isoforms_coverage is not None:
+                relative_database_coverage = isoforms_coverage.relative_database_coverage
                 if relative_database_coverage is not None:
                     database_coverage_str += '{:<25}'.format(round(relative_database_coverage.database_coverage, PRECISION))
                 else:

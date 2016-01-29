@@ -311,7 +311,7 @@ def main_utils():
 
     # GET SHORT REPORT:
     short_report = \
-        ShortReport.ShortReport(args, db_genes_metrics, transcripts_metrics, reads_coverage, args.output_dir, separated_reports,
+        ShortReport.ShortReport(args, db_genes_metrics, transcripts_metrics, args.output_dir, separated_reports,
                                 comparison_report, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION,
                                 rqconfig.TRANSCRIPT_LENS)
 
