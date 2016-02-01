@@ -184,7 +184,7 @@ def main_utils():
         if args.blat:
             args.alignment = UtilsTools.run_blat(args.database, args.reference, transcripts_dicts, args.labels, args.threads, tmp_dir, logger)
         else:
-            args.alignment = UtilsTools.run_gmap(args.reference, args.transcripts, args.labels, args.threads, tmp_dir, logger)
+            args.alignment = UtilsTools.run_gmap(args.reference, genome_len, args.transcripts, args.labels, args.threads, tmp_dir, logger)
 
         #if args.fusion_misassemble_analyze:
         #    if not (args.left_reads is not None and args.right_reads is not None):
