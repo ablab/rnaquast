@@ -209,7 +209,7 @@ class GeneMarkS_TMetrics():
         out_dir_path = UtilsPipeline.create_empty_folder(os.path.join(tmp_dir, label + '_GeneMarkS-T'))
         transcripts_name = os.path.split(transcripts_path)[-1]
         GeneMarkS_T_report_path_tmp = os.path.join(out_dir_path, transcripts_name + '.lst')
-        log_path = os.path.join(out_dir_path, 'gms.log')
+        log_path = os.path.join(out_dir_path, 'gmst.log')
         logger.info('    Logging to {}...'.format(log_path))
 
         GeneMarkS_T_run = 'gmst.pl'
@@ -237,6 +237,7 @@ class GeneMarkS_TMetrics():
             attributes = {}
             for line in in_handle:
                 tmp_list = line.strip().split()
+
                 if tmp_list == []:
                     f_read_genes = False
                     continue
@@ -244,9 +245,7 @@ class GeneMarkS_TMetrics():
                 if tmp_list[0:2] == ['Model', 'information:']:
                     attributes = {}
                 elif tmp_list[0:3] == ['FASTA', 'definition', 'line:']:
-                    attributes['t_name'] = tmp_list[3]
-                    attributes['t_len'] = tmp_list[4][4:]
-                    attributes['path'] = tmp_list[5][6:-1]
+                    attributes['t_name'] = tmp_list[3:6]
                 elif tmp_list == ['#', 'Length']:
                     attributes['genes'] = []
                     f_read_genes = True

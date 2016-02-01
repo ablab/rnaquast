@@ -545,6 +545,8 @@ class SAMFileAlignment(Alignment):
 
 
     def set_alignment_from_sam_line(self, text_line, logger, reference_dict):
+        self.line = text_line
+
         parameters_list = text_line.split('\t')
 
         self.flag = int(parameters_list[1])
@@ -567,7 +569,7 @@ class SAMFileAlignment(Alignment):
         self.query_fragment.set_from_sam_line(parameters_list, self.cigar_commands)
         self.target_fragment.set_from_sam_line(parameters_list, self.cigar_commands)
 
-        if reference_dict != None:
+        if reference_dict is not None:
             self.set_aligned_seqs(reference_dict, logger)
 
 
@@ -610,4 +612,6 @@ class SAMFileAlignment(Alignment):
         # print 'target_aligned_seq: ', target_aligned_seq
         if len(self.query_fragment.aligned_seq) != len(self.target_fragment.aligned_seq):
             logger.warning('Unconsistent alignment lengths: q_alen={}, t_alen={}, cigar={}'.format(len(self.query_fragment.aligned_seq), len(self.target_fragment.aligned_seq), self.cigar))
-        # print '\n'
+            print self.target_fragment.starts, self.target_fragment.ends
+            print self.line
+            print '\n'
