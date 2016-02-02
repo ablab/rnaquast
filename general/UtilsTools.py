@@ -223,7 +223,7 @@ def align_transcripts_to_isoforms_by_blastn(transcripts_path, isoforms_blast_db,
 def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_threads, tmp_dir, logger):
     args_alignment = []
 
-    if genome_len < 2**32:
+    if genome_len < 2 ** 32:
         gmap_run = 'gmap'
     else:
         gmap_run = 'gmapl'

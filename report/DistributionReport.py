@@ -470,28 +470,6 @@ class DistributionReport():
 
 
     # CONSIDER COVERED BASES BY EACH MAPPED TRANSCRIPT SEPARATELY:
-    def get_x_assembled_exons_plot(self, transcripts_metrics, out_dir, precision, short_report_visible):
-        # distribution for transcripts by all mapped transcripts at once
-        title_str = 'fraction of exon captured by a single transcript'
-        label_x = 'fraction of exon assembled'
-        label_y = 'number of exons'
-        name_fig = 'x-assembled_exons'
-        step = 0.1
-
-        transcripts_labels = []
-        transcripts_distribution = []
-        for i_transcripts in range(len(transcripts_metrics)):
-            transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.assembled_fraction_exons_distribution)
-
-            str = transcripts_metrics[i_transcripts].label
-            list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_assembled_fraction_exons, precision))]
-
-            transcripts_labels.append(UtilsPictures.get_label(str, list_label))
-
-        UtilsPictures.plot_compare_histogram(out_dir, title_str, transcripts_distribution, transcripts_metrics, transcripts_labels,
-                                             label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
-
-
     # distributions for isoforms:
     def get_x_assembled_plot(self, transcripts_metrics, out_dir, precision, short_report_visible):
         # distribution for transcripts by all mapped transcripts at once
@@ -515,29 +493,29 @@ class DistributionReport():
                                              label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
 
 
-    # CONSIDER COVERED BASES (BY ALL MAPPED TRANSCRIPTS) WITHOUT OVERLAPS:
-    # distributions for exons::
-    def get_x_covered_exons_plot(self, transcripts_metrics, out_dir, precision, short_report_visible):
+    def get_x_assembled_exons_plot(self, transcripts_metrics, out_dir, precision, short_report_visible):
         # distribution for transcripts by all mapped transcripts at once
-        title_str = 'fraction of exon covered by all alignments'
-        label_x = 'fraction of exon covered'
+        title_str = 'fraction of exon captured by a single transcript'
+        label_x = 'fraction of exon assembled'
         label_y = 'number of exons'
-        name_fig = 'x-covered_exons'
+        name_fig = 'x-assembled_exons'
         step = 0.1
 
         transcripts_labels = []
         transcripts_distribution = []
         for i_transcripts in range(len(transcripts_metrics)):
-            transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.covered_fraction_exons_distribution)
+            transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.assembled_fraction_exons_distribution)
 
             str = transcripts_metrics[i_transcripts].label
-            list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_covered_fraction_exons, precision))]
+            list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_assembled_fraction_exons, precision))]
 
             transcripts_labels.append(UtilsPictures.get_label(str, list_label))
 
         UtilsPictures.plot_compare_histogram(out_dir, title_str, transcripts_distribution, transcripts_metrics, transcripts_labels,
                                              label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
 
+
+    # CONSIDER COVERED BASES (BY ALL MAPPED TRANSCRIPTS) WITHOUT OVERLAPS:
     # distributions for isoforms:
     def get_x_covered_plot(self, transcripts_metrics, out_dir, precision, short_report_visible):
         # distribution for transcripts by all mapped transcripts at once
@@ -560,68 +538,92 @@ class DistributionReport():
         UtilsPictures.plot_compare_histogram(out_dir, title_str, transcripts_distribution, transcripts_metrics, transcripts_labels,
                                              label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
 
-    def get_avg_exon_covered_fraction_over_isoforms_distribution(self, transcripts_metrics, out_dir, precision, short_report_visible):
+
+    # distributions for exons::
+    def get_x_covered_exons_plot(self, transcripts_metrics, out_dir, precision, short_report_visible):
         # distribution for transcripts by all mapped transcripts at once
-        title_str = 'average fraction of exon in isoform covered'
-        label_x = 'avg fraction of exon covered'
-        label_y = 'number of isoforms'
-        name_fig = 'avg_exon_in_isoform_fraction_covered'
+        title_str = 'fraction of exon covered by all alignments'
+        label_x = 'fraction of exon covered'
+        label_y = 'number of exons'
+        name_fig = 'x-covered_exons'
         step = 0.1
 
         transcripts_labels = []
         transcripts_distribution = []
         for i_transcripts in range(len(transcripts_metrics)):
-            transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_covered_fraction_exon_distribution)
+            transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.covered_fraction_exons_distribution)
 
             str = transcripts_metrics[i_transcripts].label
-            list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_covered_fraction_exon, precision))]
+            list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_covered_fraction_exons, precision))]
 
             transcripts_labels.append(UtilsPictures.get_label(str, list_label))
 
         UtilsPictures.plot_compare_histogram(out_dir, title_str, transcripts_distribution, transcripts_metrics, transcripts_labels,
                                              label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
 
-    def get_percentage_well_covered_exons_over_isoforms_distribution(self, transcripts_metrics, out_dir, precision, short_report_visible):
+
+    # def get_avg_exon_covered_fraction_over_isoforms_distribution(self, transcripts_metrics, out_dir, precision, short_report_visible):
         # distribution for transcripts by all mapped transcripts at once
-        title_str = 'percentage of well-covered exons in isoform '
-        label_x = 'percentage of isoform well-covered exons'
-        label_y = 'number of isoforms'
-        name_fig = 'well_covered_exons_in_isoform'
-        step = 0.1
+        # title_str = 'average fraction of exon in isoform covered'
+        # label_x = 'avg fraction of exon covered'
+        # label_y = 'number of isoforms'
+        # name_fig = 'avg_exon_in_isoform_fraction_covered'
+        # step = 0.1
+        #
+        # transcripts_labels = []
+        # transcripts_distribution = []
+        # for i_transcripts in range(len(transcripts_metrics)):
+        #     transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_covered_fraction_exon_distribution)
+        #
+        #     str = transcripts_metrics[i_transcripts].label
+        #     list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_covered_fraction_exon, precision))]
+        #
+        #     transcripts_labels.append(UtilsPictures.get_label(str, list_label))
+        #
+        # UtilsPictures.plot_compare_histogram(out_dir, title_str, transcripts_distribution, transcripts_metrics, transcripts_labels,
+        #                                      label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
 
-        transcripts_labels = []
-        transcripts_distribution = []
-        for i_transcripts in range(len(transcripts_metrics)):
-            transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.percentage_well_covered_exons_distribution)
-
-            str = transcripts_metrics[i_transcripts].label
-            list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_percentage_well_covered_exons, precision))]
-
-            transcripts_labels.append(UtilsPictures.get_label(str, list_label))
-
-        UtilsPictures.plot_compare_histogram(out_dir, title_str, transcripts_distribution, transcripts_metrics, transcripts_labels,
-                                             label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
-
-    def get_percentage_fully_covered_exons_over_isoforms_distribution(self, transcripts_metrics, out_dir, precision, short_report_visible):
+    # def get_percentage_well_covered_exons_over_isoforms_distribution(self, transcripts_metrics, out_dir, precision, short_report_visible):
         # distribution for transcripts by all mapped transcripts at once
-        title_str = 'percentage of fully-covered exons in isoform'
-        label_x = 'percentage of isoform fully-covered exons'
-        label_y = 'number of isoforms'
-        name_fig = 'fully_covered_exons_in_isoform'
-        step = 0.1
+        # title_str = 'percentage of well-covered exons in isoform '
+        # label_x = 'percentage of isoform well-covered exons'
+        # label_y = 'number of isoforms'
+        # name_fig = 'well_covered_exons_in_isoform'
+        # step = 0.1
+        #
+        # transcripts_labels = []
+        # transcripts_distribution = []
+        # for i_transcripts in range(len(transcripts_metrics)):
+        #     transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.percentage_well_covered_exons_distribution)
+        #
+        #     str = transcripts_metrics[i_transcripts].label
+        #     list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_percentage_well_covered_exons, precision))]
+        #
+        #     transcripts_labels.append(UtilsPictures.get_label(str, list_label))
+        #
+        # UtilsPictures.plot_compare_histogram(out_dir, title_str, transcripts_distribution, transcripts_metrics, transcripts_labels,
+        #                                      label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
 
-        transcripts_labels = []
-        transcripts_distribution = []
-        for i_transcripts in range(len(transcripts_metrics)):
-            transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.percentage_fully_covered_exons_distribution)
-
-            str = transcripts_metrics[i_transcripts].label
-            list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_percentage_fully_covered_exons, precision))]
-
-            transcripts_labels.append(UtilsPictures.get_label(str, list_label))
-
-        UtilsPictures.plot_compare_histogram(out_dir, title_str, transcripts_distribution, transcripts_metrics, transcripts_labels,
-                                             label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
+    # def get_percentage_fully_covered_exons_over_isoforms_distribution(self, transcripts_metrics, out_dir, precision, short_report_visible):
+        # distribution for transcripts by all mapped transcripts at once
+        # title_str = 'percentage of fully-covered exons in isoform'
+        # label_x = 'percentage of isoform fully-covered exons'
+        # label_y = 'number of isoforms'
+        # name_fig = 'fully_covered_exons_in_isoform'
+        # step = 0.1
+        #
+        # transcripts_labels = []
+        # transcripts_distribution = []
+        # for i_transcripts in range(len(transcripts_metrics)):
+        #     transcripts_distribution.append(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.percentage_fully_covered_exons_distribution)
+        #
+        #     str = transcripts_metrics[i_transcripts].label
+        #     list_label = [('avg', round(transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.avg_percentage_fully_covered_exons, precision))]
+        #
+        #     transcripts_labels.append(UtilsPictures.get_label(str, list_label))
+        #
+        # UtilsPictures.plot_compare_histogram(out_dir, title_str, transcripts_distribution, transcripts_metrics, transcripts_labels,
+        #                                      label_x, label_y, name_fig, short_report_visible, self.pdf_plots_figures, def_step=step)
 
 
     def get_alignments_per_isoform_plot(self, transcripts_metrics, out_dir, precision, short_report_visible):
@@ -647,14 +649,13 @@ class DistributionReport():
                                                 short_report_visible, self.pdf_plots_figures, x_log_scale=x_log_scale, y_log_scale=y_log_scale, def_step=step)
 
 
-
     def get_sensitivity_plots(self, transcripts_metrics, out_dir, precision):
         if transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage is not None:
             self.get_x_assembled_plot(transcripts_metrics, out_dir, precision, short_report_visible=True)
 
-            self.get_x_covered_plot(transcripts_metrics, out_dir, precision, short_report_visible=True)
-
             self.get_x_assembled_exons_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
+
+            self.get_x_covered_plot(transcripts_metrics, out_dir, precision, short_report_visible=True)
 
             self.get_x_covered_exons_plot(transcripts_metrics, out_dir, precision, short_report_visible=False)
 
