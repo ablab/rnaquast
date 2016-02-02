@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>rnaQUAST 1.0 Manual</title>
+    <title>rnaQUAST 1.1 Manual</title>
     <style type="text/css">
         .code {
             background-color: lightgray;
@@ -9,11 +9,13 @@
 </head>
 <body>
 
-<h1>rnaQUAST 1.0 manual</h1>
+<h1>rnaQUAST 1.1 manual</h1>
 
 1. <a href="#sec1">About rnaQUAST</a><br>
-2. <a href="#sec2">Installation  & Requirements</a><br>
-
+2. <a href="#sec2">Installation  & requirements</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.1. <a href="#sec2.1">General requirements</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.2. <a href="#sec2.2">Software for <i>de novo</i> quality assessments</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.3. <a href="#sec2.3">Read alignment software</a><br>
 3. <a href="#sec3">Options</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;3.1. <a href="#sec3.1">Input data options</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;3.2. <a href="#sec3.2">Basic options</a><br>
@@ -30,21 +32,20 @@
 <a name="sec1"></a>
 <h2>1 About rnaQUAST</h2>
 <p>
-rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene data database. rnaQUAST version 1.0.1 was released under GPLv2 on January 13th, 2016 and can be downloaded from <a href="http://bioinf.spbau.ru/en/rnaquast" target="_blank">http://bioinf.spbau.ru/en/rnaquast</a>.
+rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene data database. rnaQUAST version 1.1.0 was released under GPLv2 on February 4th, 2016 and can be downloaded from <a href="http://bioinf.spbau.ru/en/rnaquast" target="_blank">http://bioinf.spbau.ru/en/rnaquast</a>.
 
 <p>
 <b>For impatient people:</b><br>
 
     <ul>
         <li>You will need Python 2 (2.5 or higher), matplotlib, GMAP (or BLAT) and BLASTN installed on your machine.</li>
-        <li>Run 
+        <li>To verify your installation run 
 <pre class="code">
 <code> python rnaQUAST.py --test 
 </code>
 </pre>
-for the verification.
         </li>
-        <li>
+        <li>To run rnaQUAST on your data use the following command
 <pre class="code">
 <code> python rnaQUAST.py \<br>
 --transcripts /PATH/TO/transcripts1.fasta /PATH/TO/ANOTHER/transcripts2.fasta [...] \<br>
@@ -56,7 +57,9 @@ for the verification.
 
 
 <a name="sec2"></a>
-<h2>2 Installation & Requirements</h2>
+<h2>2 Installation & requirements</h2>
+<a name="sec2.1"></a>
+<h3>2.1 General requirements</h3>
 <p>To run rnaQUAST you need:<br>
     <ul>
         <li>python 2 (2.5 or higher)</li>
@@ -74,16 +77,20 @@ To check that everything is installed correctly we recommend to run:<br>
 <code>python rnaQUAST.py --test</code>
 </pre>
 
-
 <p>
 Note that gffutils is used to complete gene database in case of missing transcripts / genes records. For more information, see <a href="#sec3.3">advanced options</a>.
 
 
-<p>When reference genome and gene database are unavailable, we recommend to run BUSCO and GeneMarkS-T in rnaQUAST pipeline.
+<a name="sec2.2"></a>
+<h3>2.2 Software for <i>de novo</i> quality assessment </h3>
+
+<p>
+When reference genome and gene database are unavailable, we recommend to run <a href="http://busco.ezlab.org/" target="_blank">BUSCO</a> and <a href="http://topaz.gatech.edu/GeneMark/" target="_blank"> GeneMarkS-T</a> in rnaQUAST pipeline.
 
 <p>
     <b>BUSCO requirements </b>
-<p>If you wish to detect core genes in the assembly, you should install and add paths to <a href="http://busco.ezlab.org/" target="_blank"> BUSCO v1.1b1</a> and also <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank"> tblastn</a>, <a href="http://hmmer.janelia.org/" target="_blank"> HMMER</a> and <a href="ftp://emboss.open-bio.org/pub/EMBOSS/" target="_blank"> transeq</a>. Since BUSCO requires python3, you may also need to add
+<p>BUSCO allows to detect core genes in the assembled transcripts. To use it you should install <a href="http://busco.ezlab.org/" target="_blank"> BUSCO v1.1b1</a>, <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank"> tblastn</a>, <a href="http://hmmer.janelia.org/" target="_blank"> HMMER</a> and <a href="ftp://emboss.open-bio.org/pub/EMBOSS/" target="_blank"> transeq</a> and add these tools to the <code>$PATH</code> variable.
+<p>Since BUSCO requires python3, you may also need to add
 <pre class="code">
 <code>#!/usr/bin/env python3</code>
 </pre>
@@ -91,11 +98,14 @@ to the top of <code>BUSCO_v1.1b1.py</code> executable file. Depending on the spe
 
 <p>
     <b>GeneMarkS-T requirements</b>
-<p>If you wish to get number of predicted genes in transcripts, you should install and add path to <a href="http://topaz.gatech.edu/GeneMark/" target="_blank"> GeneMarkS-T</a> tool.
+<p><a href="http://topaz.gatech.edu/GeneMark/" target="_blank"> GeneMarkS-T</a> allows to predict genes in the assembled transcripts without reference genome. If you wish to use it in rnaQUAST pipeline, GeneMarkS-T should be properly installed and added to the <code>$PATH</code> variable.
 <p>
 
-    <b>STAR (or TopHat) requirements </b>
-<p>To obtain database coverage by reads you also need to install and add path to <a href="https://code.google.com/archive/p/rna-star/" target="_blank"> STAR</a> (or <a href="https://ccb.jhu.edu/software/tophat/index.shtml" target="_blank"> TopHat</a> + <a href="http://samtools.sourceforge.net/" target="_blank"> SAM tools</a>) aligner. Don't forget to provide rnaQUAST --left_reads, --right_reads or --single_reads. Alternatively you can use --reads_alignment option.
+
+<a name="sec2.3"></a>
+<h3>2.3 Read alignment software</h3>
+<p>
+rnaQUAST is also capable of calculating various statistics using raw reads (e.g. database coverage by reads). To obtain them you need to install <a href="https://code.google.com/archive/p/rna-star/" target="_blank"> STAR</a> aligner (or alternatively <a href="https://ccb.jhu.edu/software/tophat/index.shtml" target="_blank"> TopHat</a> aligner + <a href="http://samtools.sourceforge.net/" target="_blank"> SAM tools</a>) and add it to the <code>$PATH</code> variable. To learn more see <a href="#readopts">input options</a>.
 
 <a name="sec3"></a>
 <h2>3 Options</h2>
@@ -124,9 +134,10 @@ To run rnaQUAST one needs to provide either FASTA files with transcripts (recomm
     &nbsp;&nbsp;&nbsp;&nbsp; File(s) with alignment transcripts to reference genome in PSL format separated by space.
 </p>
 
+<a name="readopts"></a>
 <p>
     <code>-sam &lt;READS_ALIGNMENT>, --reads_alignment &lt;READS_ALIGNMENT> </code><br>
-    &nbsp;&nbsp;&nbsp;&nbsp; File with alignment reads to reference genome in SAM format.
+    &nbsp;&nbsp;&nbsp;&nbsp; File with read alignments to the reference genome in SAM format.
 </p>
 
 <p>
@@ -221,7 +232,7 @@ To run rnaQUAST one needs to provide either FASTA files with transcripts (recomm
 <p>
     <code>--gene_mark </code><br>
     &nbsp;&nbsp;&nbsp;&nbsp;
-	Run with <a href="http://topaz.gatech.edu/GeneMark/" target="_blank"> GeneMarkS-T</a> gene prediction tool. Use <code>--prokaryote</code> option if genome is prokaryotic.
+	Run with <a href="http://topaz.gatech.edu/GeneMark/" target="_blank"> GeneMarkS-T</a> gene prediction tool. Use <code>--prokaryote</code> option if the genome is prokaryotic.
 </p>
 
 <p>
