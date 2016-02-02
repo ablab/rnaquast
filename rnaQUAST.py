@@ -88,7 +88,7 @@ def main_utils():
         if ext_database in args.reference:
             args.database = args.reference
             args.reference = UtilsGeneral.glue_scaffolds_together(args.reference, args.database, tmp_dir, logger)
-        elif fa_flag == False:
+        elif not fa_flag:
             logger.warning('Strange FASTA extension.')
 
     # READ REFERENCE FROM MULTIFASTA:

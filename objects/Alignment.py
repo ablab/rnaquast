@@ -612,6 +612,6 @@ class SAMFileAlignment(Alignment):
         # print 'target_aligned_seq: ', target_aligned_seq
         if len(self.query_fragment.aligned_seq) != len(self.target_fragment.aligned_seq):
             logger.warning('Unconsistent alignment lengths: q_alen={}, t_alen={}, cigar={}'.format(len(self.query_fragment.aligned_seq), len(self.target_fragment.aligned_seq), self.cigar))
-            print self.target_fragment.starts, self.target_fragment.ends
+            print self.target_fragment.starts, self.target_fragment.ends, len(reference_dict[self.target_fragment.name])
             print self.line
             print '\n'

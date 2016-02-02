@@ -97,7 +97,6 @@ def get_arguments():
     group_advanced.add_argument('--tophat', help='Run with TopHat tool (https://ccb.jhu.edu/software/tophat/index.shtml) instead of STAR', action='store_true')
 
     group_advanced.add_argument('--gene_mark', help='Run with GeneMarkS-T tool (http://topaz.gatech.edu/GeneMark/)', action='store_true')
-    group_advanced.add_argument('--prokaryote', help='Use this option if genome is prokaryotic', action='store_true')
     # groupSpecies = group_basic.add_mutually_exclusive_group(required=False)
     # groupSpecies.add_argument('--eukaryote', help='Genome is eukaryotic', action='store_true')
 
@@ -116,6 +115,9 @@ def get_arguments():
 
     group_busco = parser.add_argument_group('BUSCO related options')
     group_busco.add_argument('--clade', help='Path to the BUSCO lineage data to be used (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi)', type=str)
+
+    group_gene_mark = parser.add_argument_group('GeneMarkS-T related options')
+    group_gene_mark.add_argument('--prokaryote', help='Use this option if genome is prokaryotic', action='store_true')
 
     # TOOLS:
     #groupTools = parser.add_argument_group('Tools')

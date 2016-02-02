@@ -60,11 +60,11 @@ class ReadsCoverage():
                 if args_tophat:
                     sam_path = \
                         UtilsTools.get_sam_by_tophat(None, reference_path, single_reads, left_reads, right_reads,
-                                                            output_dir, threads, logger)
+                                                     output_dir, threads, logger)
                 else:
                     sam_path = \
                         UtilsTools.get_sam_by_STAR(threads, reference_path, None, single_reads, left_reads, right_reads,
-                                                          output_dir, None, None, genome_len, logger)
+                                                   output_dir, None, None, genome_len, logger)
 
             logger.print_timestamp()
             logger.info('Getting database coverage by reads...')
