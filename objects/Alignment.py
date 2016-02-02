@@ -550,9 +550,9 @@ class SAMFileAlignment(Alignment):
         parameters_list = text_line.split('\t')
 
         self.flag = int(parameters_list[1])
-        if self.flag == 16:
+        if len(bin(self.flag)[2:]) >= 4 and bin(self.flag)[-4] == 1:
             self.strand = '-'
-        elif self.flag == 0:
+        else:
             self.strand = '+'
 
 
