@@ -389,7 +389,7 @@ short partial alignments (typically caused by genomic repeats) and then selects 
 
 <p>
 <b><code>relative_database_coverage.txt</code></b>
-<br>Relative database coverage metrics calculated as the ratio of the corresponding transcripts metrics to reads coverage metrics. It makes sense because the reads coverage metrics indicate the theoretical upper boundary of the transcripts coverage.
+<br>Relative database coverage metrics calculated as the ratio of the corresponding transcripts metrics to reads coverage metrics. It makes sense because the reads coverage metrics indicate the theoretical upper boundary of the transcripts coverage. The following metrics are calculated only when coverage by reads are known.
 <ul>
 <li><b><i>Database coverage</b></i> &ndash; database coverage by transcripts divided by database coverage by reads.</li>
 <li>x%-assembled genes / isoforms / exons &ndash; x%-assembled by transcripts divided by x%-covered by reads genes / isoforms / exons.</li>
@@ -436,7 +436,7 @@ The following plots are similarly contained in both <code>comparison_output</cod
     <li><code><b><i>x-covered.png</b></i></code> &ndash; a plot in which each point represents the number of isoforms from the database that have at least x% of bases covered by all alignments.</li>
     <li><code>x-assembled_exons.png</code> &ndash; a plot in which each point represents the number of exons from the database that have at least x% captured by a single assembled transcript.</li>
     <li><code>x-covered_exons.png</code> &ndash; a plot in which each point represents the number of exons from the database that have at least x% of bases covered by all alignments.</li>
-<li>alignments_per_isoform.png</code> &ndash; plot showing number of transcripts alignments per isoform</li>
+<li><code>alignments_per_isoform.png</code> &ndash; plot showing number of transcripts alignments per isoform</li>
 </ul>
 
 <p>
