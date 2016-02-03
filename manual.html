@@ -32,13 +32,20 @@
 <a name="sec1"></a>
 <h2>1 About rnaQUAST</h2>
 <p>
-rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene data database. rnaQUAST version 1.1.0 was released under GPLv2 on February 4th, 2016 and can be downloaded from <a href="http://bioinf.spbau.ru/en/rnaquast" target="_blank">http://bioinf.spbau.ru/en/rnaquast</a>.
+rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene data database.
+In addition, rnaQUAST is also capable of estimating gene database coverage by raw reads and <i>de novo</i> quality assessment using thrid-party software.
+
+<p>rnaQUAST version 1.1.0 was released under GPLv2 on February 4th, 2016 and can be downloaded from <a href="http://bioinf.spbau.ru/en/rnaquast" target="_blank">http://bioinf.spbau.ru/en/rnaquast</a>.
 
 <p>
 <b>For impatient people:</b><br>
 
     <ul>
-        <li>You will need Python 2 (2.5 or higher), matplotlib, GMAP (or BLAT) and BLASTN installed on your machine.</li>
+        <li>You will need Python 2 (2.5 or higher), 
+<a href="http://research-pub.gene.com/gmap/" target="_blank"> GMAP</a> (or <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" target="_blank"> BLAT</a>), 
+<a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank">BLASTN</a>, 
+<a href="https://pythonhosted.org/gffutils/installation.html" target="_blank">gffutils</a> and 
+<a href="http://matplotlib.org/" target="_blank">matplotlib</a> installed on your machine and added to the <code>$PATH</code> variable.</li>
         <li>To verify your installation run 
 <pre class="code">
 <code> python rnaQUAST.py --test 
@@ -62,8 +69,8 @@ rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and 
 <h3>2.1 General requirements</h3>
 <p>To run rnaQUAST you need:<br>
     <ul>
-        <li>python 2 (2.5 or higher)</li>
-        <li>matplotlib python package</li>
+        <li>Python 2 (2.5 or higher)</li>
+        <li><a href="http://matplotlib.org/" target="_blank">matplotlib</a> python package</li>
         <li><a href="https://pythonhosted.org/gffutils/installation.html" target="_blank"> gffutils</a> python package (needs <a href="http://biopython.org/DIST/docs/install/Installation.html" target="_blank"> biopython</a>)</li>
         <li><a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank"> NCBI BLAST+ (blastn)</a> </li>
         <li><a href="http://research-pub.gene.com/gmap/" target="_blank"> GMAP</a> (or <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" target="_blank"> BLAT</a>) aligner</li>
@@ -111,7 +118,7 @@ rnaQUAST is also capable of calculating various statistics using raw reads (e.g.
 <h2>3 Options</h2>
 <a name="sec3.1"></a>
 <h3>3.1 Input data options</h3>
-To run rnaQUAST one needs to provide either FASTA files with transcripts (recommended), or align transcripts to the reference genome manually and provide the resulting PSL files.
+To run rnaQUAST you need to provide either FASTA files with transcripts (recommended), or align transcripts to the reference genome manually and provide the resulting PSL files.
 
 <p>
     <code>-r &lt;REFERENCE>, --reference &lt;REFERENCE> </code><br>
@@ -220,7 +227,7 @@ To run rnaQUAST one needs to provide either FASTA files with transcripts (recomm
 <p>
     <code>--busco </code><br>
     &nbsp;&nbsp;&nbsp;&nbsp;
-	Run <a href="http://busco.ezlab.org/" target="_blank"> BUSCO tool</a>, which detects core genes in the assembly (see <a href="#sec2">Installation & Requirements</a>). Use --clade CLADE option to provide path to the BUSCO lineage data (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).
+	Run <a href="http://busco.ezlab.org/" target="_blank"> BUSCO tool</a>, which detects core genes in the assembly (see <a href="#sec2">Installation & Requirements</a>). Use <code>--clade &lt;PATH></code> option to provide path to the BUSCO lineage data (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).
 </p>
 
 <p>
@@ -273,7 +280,7 @@ a sequence from the gene database. Figure below demonstrates how rnaQUAST classi
 <a name="sec4.1">
 <h3>4.1 Reports </h3>
 <p>
-The following text files with reports are contained in <code> comparison_output</code>  directory and include results for all input assemblies. In addition, these report are contained in <code>&lt;assembly_label>_output</code> directories for each separate assembly.
+The following text files with reports are contained in <code> comparison_output</code>  directory and include results for all input assemblies. In addition, these reports are contained in <code>&lt;assembly_label>_output</code> directories for each assembly separately.
 
 <p>
 <b><code>database_metrics.txt</code></b>
@@ -289,15 +296,15 @@ The following text files with reports are contained in <code> comparison_output<
 </ul>
 
 <p>
-Coverage by reads. The following metrics are calculated only when <code>--left_reads</code>, <code>--right_reads</code> or <code>--single_reads</code> options are used (see <a href="#sec3.1">options</a> for details).
+Coverage by reads. The following metrics are calculated only when <code>--left_reads</code>, <code>--right_reads</code>, <code>--single_reads</code> or <code>--sam</code> options are used (see <a href="#readopts">options</a> for details).
 <ul>
-<li>Database coverage &ndash; the total number of covered by reads bases in all isoforms divided by the total length of all isoforms. </li>
-<li>x%-covered genes / isoforms / exons &ndash; number of genes / isoforms / exons from the database that have at least x% of bases covered by all read alignments, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).
+<li>Database coverage &ndash; the total number of bases covered by reads (in all isoforms) divided by the total length of all isoforms. </li>
+<li>x%-covered genes / isoforms / exons &ndash; number of genes / isoforms / exons from the database that have at least x% of bases covered by all reads, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).
 </ul>
 
 <p>
 <b><code>basic_mertics.txt</code></b>
-<br>Basic transcripts metrics calculated without reference genome and gene database.
+<br>Basic transcripts are metrics calculated without reference genome and gene database.
 <ul>
     <li><b><i>Transcripts</b></i> &ndash; total number of assembled transcripts. </li>
     <li><b><i>Transcripts > 500 bp</b></i></li>
@@ -310,37 +317,36 @@ Coverage by reads. The following metrics are calculated only when <code>--left_r
 
 <p>
 <b><code>alignment_metrics.txt</code></b>
-<br>Alignment metrics calculated with reference genome but without gene database. To calculate the following metrics rnaQUAST filters all short partial alignments (see <a href="#sec3.3">options</a>) and attempts to select the best hits for each transcript.
+<br>Alignment metrics are calculated with reference genome but without using gene database. To calculate the following metrics rnaQUAST filters all short partial alignments (see <a href="#sec3.3"><code>--min_alignment</code> option</a>) and attempts to select the best hits for each transcript.
 <ul>
     <li><b><i>Transcripts</b></i> &ndash; total number of assembled transcripts.  </li>
     <li><b><i>Aligned</b></i> &ndash; the number of transcripts having at least 1 significant alignment.</li>
     <li><b><i>Uniquely aligned</b></i> &ndash; the number of transcripts having a single significant alignment.</li>
     <li><b><i>Multiply aligned</b></i> &ndash; the number of transcripts having 2 or more significant alignments. Multiply aligned transcripts are stored in <code>&lt;assembly_label>.paralogs.fasta</code> file.</li>
-    <li>Misassembly candidates reported by GMAP (or BLAT) &ndash; transcripts that have discordant best-scored alignment (e.g. partial alignments that are either mapped to different strands or to different chromosomes).</li>
+    <li>Misassembly candidates reported by GMAP (or BLAT) &ndash; transcripts that have discordant best-scored alignment (partial alignments that are either mapped to different strands / different chromosomes / in reverse order / too far away).</li>
     <li><b><i>Unaligned</b></i> &ndash; the number of transcripts without any significant alignments. Unaligned transcripts are stored in <code>&lt;assembly_label>.unaligned.fasta</code> file.</li>
 </ul>
 <p>
-Number of assembled transcripts = Unaligned + Aligned = Unaligned + (Uniquely aligned + Multiply aligned + Misassembly candidates reported by GMAP (or BLAT)).
+Number of assembled transcripts = Unaligned + Aligned = Unaligned + (Uniquely aligned + Multiply aligned + Misassembly candidates reported by the aligner).
 
 <p>
 Alignment metrics for non-misassembled transcripts
 <ul>
-    <li><b><i>Average aligned fraction.</b></i> Aligned fraction for a single transcript is defined as total number of aligned bases in transcript divided by the total transcript length. </li>
-    <li><b><i>Average alignment length.</b></i> Aligned length for a single transcript is defined as total number of aligned bases in transcript.</li>
+    <li><b><i>Average aligned fraction.</b></i> Aligned fraction for a single transcript is defined as total number of aligned bases in the transcript divided by the total transcript length. </li>
+    <li><b><i>Average alignment length.</b></i> Aligned length for a single transcript is defined as total number of aligned bases in the transcript.</li>
     <li>Average blocks per alignment. A block is defined as a continuous alignment fragment without indels.</li>
     <li>Average block length (see above).</li>
     <li>Average mismatches per transcript &ndash; average number of single nucleotide differences with reference genome per transcript.</li>
-    <li>NA50 &ndash; N50 for alignments</li>
+    <li>NA50 &ndash; N50 for alignments.</li>
 </ul>
 
 <p>
 <a name="misassemblies"></a>
 <b><code>misassemblies.txt</code></b>
-<br>Alignment metrics for misassembled (chimeric) transcripts calculated with reference genome but without gene database. To analyze transcript alignments, rnaQUAST firstly filters out
-short partial alignments (typically caused by genomic repeats) and then selects the best-scored spliced alignment for each transcript.
+<br>
 <ul>
     <li><b><i>Transcripts</b></i>  &ndash; total number of assembled transcripts. </li>
-    <li>Misassembly candidates reported by GMAP (or BLAT) &ndash; transcripts that have discordant best-scored alignment (e.g. partial alignments that are either mapped to different strands or to different chromosomes).</li>
+    <li>Misassembly candidates reported by GMAP (or BLAT) &ndash; transcripts that have discordant best-scored alignment (partial alignments that are either mapped to different strands / different chromosomes / in reverse order / too far away).</li>
     <li>Misassembly candidates reported by BLASTN &ndash; transcripts are aligned to the isoform sequences extracted from the genome using gene database with BLASTN and then transcripts that have partial alignments to multiple isoforms are selected.</li>
     <li><b><i>Misassemblies</b></i> &ndash; misassembly candidates confirmed by both methods described above. Using both methods simultaneously allows to avoid considering misalignments that can be caused, for  example, by paralogous genes or genomic repeats. Misassembled transcripts are stored in <code>&lt;assembly_label>.misassembled.fasta</code> file.</li>
 </ul>
@@ -349,7 +355,7 @@ short partial alignments (typically caused by genomic repeats) and then selects 
 <b><code>sensitivity.txt</code></b>
 <br>Assembly completeness (sensitivity). For the following metrics (calculated with reference genome and gene database) rnaQUAST attempts to select best-matching database isoforms for every transcript. Note that a single transcript can contribute to multiple isoforms in the case of, for example, paralogous genes or genomic repeats. At the same time, an isoform can be covered by multiple transcripts in the case of fragmented assembly or duplicated transcripts in the assembly.
 <ul>
-    <li><b><i>Database coverage</b></i> &ndash; the total number of covered by transcripts bases in all isoforms divided by the total length of all isoforms. </li>
+    <li><b><i>Database coverage</b></i> &ndash; the total number of bases covered by transcripts (in all isoforms) divided by the total length of all isoforms. </li>
     <li>Duplication ratio &ndash; total number of aligned bases in assembled transcripts divided by the total number of isoform covered bases. This metric does not count neither paralogous genes nor shared exons, only real overlaps of the assembled sequences that are mapped to the same isoform.</li>
     <li>Average number of transcripts mapped to one isoform. </li>
     <li><b><i>x%-assembled genes</b></i> / isoforms / exons &ndash; number of genes / isoforms / exons from the database that have at least x% captured by a single assembled transcript, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default). 95%-assembled isoforms are stored in <code>&lt;assembly_label>.95%assembled.fasta</code> file.</li>
