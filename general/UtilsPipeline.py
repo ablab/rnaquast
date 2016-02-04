@@ -60,9 +60,9 @@ def get_arguments():
 
     group_input_data.add_argument('-c', '--transcripts', help='File(s) with transcripts [FASTA]', type=str, nargs='+')
 
-    group_input_data.add_argument('-psl', '--alignment', help='File(s) with alignment transcripts to reference genome [PSL]', type=str, nargs='+')
+    group_input_data.add_argument('-psl', '--alignment', help='File(s) with transcripts alignments to the reference genome [PSL]', type=str, nargs='+')
 
-    group_input_data.add_argument('-sam', '--reads_alignment', help='File with alignment reads to reference genome [SAM]')
+    group_input_data.add_argument('-sam', '--reads_alignment', help='File with reads alignments to the reference genome [SAM]')
 
     group_input_data.add_argument('-1', '--left_reads', help='File with forward paired-end reads [FASTQ]', type=str)
     group_input_data.add_argument('-2', '--right_reads', help='File with reverse paired-end reads [FASTQ]', type=str)
@@ -83,9 +83,9 @@ def get_arguments():
 
     group_advanced.add_argument('-l', '--labels', help='Name(s) of assemblies that will be used in the reports', type=str, nargs='+')
 
-    group_advanced.add_argument('-ss', '--strand_specific', help='Set if transcripts were assembled using strand specific RNA-Seq data', action='store_true')
+    group_advanced.add_argument('-ss', '--strand_specific', help='Set if transcripts were assembled using strand-specific RNA-Seq data', action='store_true')
 
-    group_advanced.add_argument('--min_alignment', help='Minimal alignment size, default: %(default)s', type=int, default=50, required=False)
+    group_advanced.add_argument('--min_alignment', help='Minimal alignment length, default: %(default)s', type=int, default=50, required=False)
 
     group_advanced.add_argument('--no_plots', help='Do not draw plots (to speed up computation)', action='store_true')
 
@@ -117,7 +117,7 @@ def get_arguments():
     group_busco.add_argument('--clade', help='Path to the BUSCO lineage data to be used (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi)', type=str)
 
     group_gene_mark = parser.add_argument_group('GeneMarkS-T related options')
-    group_gene_mark.add_argument('--prokaryote', help='Use this option if genome is prokaryotic', action='store_true')
+    group_gene_mark.add_argument('--prokaryote', help='Use this option if the genome is prokaryotic', action='store_true')
 
     # TOOLS:
     #groupTools = parser.add_argument_group('Tools')
