@@ -424,6 +424,8 @@ class ShortReport():
     def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
         database_coverage_str = '{:<50}'.format('Database coverage')
 
+        relative_database_coverage_str = '{:<50}'.format('Relative database coverage')
+
         assembled_well_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
         assembled_fully_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes')
         covered_well_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered genes')
@@ -449,11 +451,11 @@ class ShortReport():
         for i_transcripts in range(len(transcripts_metrics)):
             isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
             if isoforms_coverage is not None:
+                database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
+
                 relative_database_coverage = isoforms_coverage.relative_database_coverage
                 if relative_database_coverage is not None:
-                    database_coverage_str += '{:<25}'.format(round(relative_database_coverage.database_coverage, PRECISION))
-                else:
-                    database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
+                    relative_database_coverage_str += '{:<25}'.format(round(relative_database_coverage.database_coverage, PRECISION))
 
                 assembled_well_genes_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_genes)
                 assembled_fully_genes_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_genes)
@@ -485,8 +487,13 @@ class ShortReport():
 
         self.metrics_table.append('\n == ASSEMBLY COMPLETENESS (SENSITIVITY) == \n')
 
-        if transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage is not None:
+        isoforms_coverage = transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage
+        if isoforms_coverage is not None:
             self.metrics_table.append(database_coverage_str + '\n')
+
+            relative_database_coverage = isoforms_coverage.relative_database_coverage
+            if relative_database_coverage is not None:
+                self.metrics_table.append(relative_database_coverage_str + '\n')
 
             self.metrics_table.append(assembled_well_genes_str + '\n')
             self.metrics_table.append(assembled_fully_genes_str + '\n')
