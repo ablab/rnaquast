@@ -424,10 +424,16 @@ class ShortReport():
     def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
         database_coverage_str = '{:<50}'.format('Database coverage')
 
-        assembled_well_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
-        assembled_fully_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes')
-        covered_well_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered genes')
-        covered_fully_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered genes')
+        assembled_well_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
+        assembled_fully_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes')
+        covered_well_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered genes')
+        covered_fully_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered genes')
+
+        assembled_well_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled isoforms')
+        assembled_fully_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled isoforms')
+        covered_well_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered isoforms')
+        covered_fully_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered isoforms')
+
 
         mean_isoform_cov_str = '{:<50}'.format('Mean isoform coverage')
         mean_isoform_assembly_str = '{:<50}'.format('Mean isoform assembly')
@@ -449,10 +455,16 @@ class ShortReport():
                 else:
                     database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
 
-                assembled_well_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_genes)
-                assembled_fully_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_genes)
-                covered_well_str += '{:<25}'.format(isoforms_coverage.num_well_covered_genes)
-                covered_fully_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_genes)
+                assembled_well_genes_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_genes)
+                assembled_fully_genes_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_genes)
+                covered_well_genes_str += '{:<25}'.format(isoforms_coverage.num_well_covered_genes)
+                covered_fully_genes_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_genes)
+
+                assembled_well_isoforms_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_isoforms)
+                assembled_fully_isoforms_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_isoforms)
+                covered_well_isoforms_str += '{:<25}'.format(isoforms_coverage.num_well_covered_isoforms)
+                covered_fully_isoforms_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_isoforms)
+
                 mean_isoform_cov_str += '{:<25}'.format(round(isoforms_coverage.avg_covered_fraction, PRECISION))
                 mean_isoform_assembly_str += '{:<25}'.format(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
 
@@ -475,10 +487,17 @@ class ShortReport():
 
         if transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage is not None:
             self.metrics_table.append(database_coverage_str + '\n')
-            self.metrics_table.append(assembled_well_str + '\n')
-            self.metrics_table.append(assembled_fully_str + '\n')
-            self.metrics_table.append(covered_well_str + '\n')
-            self.metrics_table.append(covered_fully_str + '\n')
+
+            self.metrics_table.append(assembled_well_genes_str + '\n')
+            self.metrics_table.append(assembled_fully_genes_str + '\n')
+            self.metrics_table.append(covered_well_genes_str + '\n')
+            self.metrics_table.append(covered_fully_genes_str + '\n')
+
+            self.metrics_table.append(assembled_well_isoforms_str + '\n')
+            self.metrics_table.append(assembled_fully_isoforms_str + '\n')
+            self.metrics_table.append(covered_well_isoforms_str + '\n')
+            self.metrics_table.append(covered_fully_isoforms_str + '\n')
+
             self.metrics_table.append(mean_isoform_cov_str + '\n')
             self.metrics_table.append(mean_isoform_assembly_str + '\n')
 

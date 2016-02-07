@@ -60,9 +60,9 @@ def get_arguments():
 
     group_input_data.add_argument('-c', '--transcripts', help='File(s) with transcripts [FASTA]', type=str, nargs='+')
 
-    group_input_data.add_argument('-psl', '--alignment', help='File(s) with transcripts alignments to the reference genome [PSL]', type=str, nargs='+')
+    group_input_data.add_argument('-psl', '--alignment', help='File(s) with transcript alignments to the reference genome [PSL]', type=str, nargs='+')
 
-    group_input_data.add_argument('-sam', '--reads_alignment', help='File with reads alignments to the reference genome [SAM]')
+    group_input_data.add_argument('-sam', '--reads_alignment', help='File with read alignments to the reference genome [SAM]')
 
     group_input_data.add_argument('-1', '--left_reads', help='File with forward paired-end reads [FASTQ]', type=str)
     group_input_data.add_argument('-2', '--right_reads', help='File with reverse paired-end reads [FASTQ]', type=str)

@@ -138,13 +138,13 @@ To run rnaQUAST you need to provide either FASTA files with transcripts (recomme
 
 <p>
     <code>-psl &lt;TRANSCRIPTS_ALIGNMENT ...>, --alignment &lt;TRANSCRIPTS_ALIGNMENT, ...> </code><br>
-    &nbsp;&nbsp;&nbsp;&nbsp; File(s) with transcripts alignments to the reference genome in PSL format separated by space.
+    &nbsp;&nbsp;&nbsp;&nbsp; File(s) with transcript alignments to the reference genome in PSL format separated by space.
 </p>
 
 <a name="readopts"></a>
 <p>
     <code>-sam &lt;READS_ALIGNMENT>, --reads_alignment &lt;READS_ALIGNMENT> </code><br>
-    &nbsp;&nbsp;&nbsp;&nbsp; File with reads alignments to the reference genome in SAM format.
+    &nbsp;&nbsp;&nbsp;&nbsp; File with read alignments to the reference genome in SAM format.
 </p>
 
 <p>
@@ -305,7 +305,7 @@ Coverage by reads. The following metrics are calculated only when <code>--left_r
 
 <p>
 <b><code>basic_mertics.txt</code></b>
-<br>Basic transcripts are metrics calculated without reference genome and gene database.
+<br>Basic transcripts metrics are calculated without reference genome and gene database.
 <ul>
     <li><b><i>Transcripts</b></i> &ndash; total number of assembled transcripts. </li>
     <li><b><i>Transcripts > 500 bp</b></i></li>
@@ -328,7 +328,7 @@ Coverage by reads. The following metrics are calculated only when <code>--left_r
     <li><b><i>Unaligned</b></i> &ndash; the number of transcripts without any significant alignments. Unaligned transcripts are stored in <code>&lt;assembly_label>.unaligned.fasta</code> file.</li>
 </ul>
 <p>
-Number of assembled transcripts = Unaligned + Aligned = Unaligned + (Uniquely aligned + Multiply aligned + Misassembly candidates reported by the aligner).
+Number of assembled transcripts = Unaligned + Aligned = Unaligned + (Uniquely aligned + Multiply aligned + Misassembly candidates reported by GMAP (or BLAT)).
 
 <p>
 Alignment metrics for non-misassembled transcripts
@@ -396,10 +396,10 @@ Alignment metrics for non-misassembled transcripts
 
 <p>
 <b><code>relative_database_coverage.txt</code></b>
-<br>Relative database coverage metrics are calculated only when raw reads (or read alignments) are provided. rnaQUAST uses read alignments to estimate the upper bound of the database coverage and the number of x-covered genes / isoforms (see <a href="#readcov">read coverage</a>) and computes the following metrics:
+<br>Relative database coverage metrics are calculated only when raw reads (or read alignments) are provided. rnaQUAST uses read alignments to estimate the upper bound of the database coverage and the number of x-covered genes / isoforms / exons (see <a href="#readcov">read coverage</a>) and computes the following metrics:
  
 <ul>
-<li><b><i>Relative database coverage</b></i> &ndash; ratio between transcripts database coverage divided and reads database coverage.</li>
+<li><b><i>Relative database coverage</b></i> &ndash; ratio between transcripts database coverage and reads database coverage.</li>
 <li>Relative x%-assembled genes / isoforms / exons &ndash; ratio between transcripts x%-assembled and reads x%-covered genes / isoforms / exons.</li>
 <li>Relative x%-covered genes / isoforms / exons &ndash; ratio between transcripts x%-covered and reads x%-covered genes / isoforms / exons.</li>
 </ul>
@@ -444,7 +444,7 @@ The following plots are similarly contained in both <code>comparison_output</cod
     <li><code><b><i>x-covered.png</b></i></code> &ndash; a plot in which each point represents the number of isoforms from the database that have at least x% of bases covered by all alignments.</li>
     <li><code>x-assembled_exons.png</code> &ndash; a plot in which each point represents the number of exons from the database that have at least x% captured by a single assembled transcript.</li>
     <li><code>x-covered_exons.png</code> &ndash; a plot in which each point represents the number of exons from the database that have at least x% of bases covered by all alignments.</li>
-<li><code>alignments_per_isoform.png</code> &ndash; plot showing number of transcripts alignments per isoform</li>
+<li><code>alignments_per_isoform.png</code> &ndash; plot showing number of transcript alignments per isoform</li>
 </ul>
 
 <p>

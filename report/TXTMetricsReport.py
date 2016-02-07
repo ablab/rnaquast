@@ -136,25 +136,25 @@ class TXTMetricsReport():
 
         database_coverage_str = '{:<50}'.format('Database coverage')
 
-        well_assembled_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
-        fully_assembled_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes')
+        well_assembled_genes_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
+        fully_assembled_genes_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes')
 
-        well_covered_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered genes')
-        fully_covered_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered genes')
-
-
-        well_assembled_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled isoforms')
-        fully_assembled_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled isoforms')
-
-        well_covered_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered isoforms')
-        fully_covered_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered isoforms')
+        well_covered_genes_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered genes')
+        fully_covered_genes_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered genes')
 
 
-        well_assembled_exons_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_exon_threshold * 100)) + '%-assembled exons')
-        fully_assembled_exons_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_exon_threshold * 100)) + '%-assembled exons')
+        well_assembled_isoforms_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled isoforms')
+        fully_assembled_isoforms_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled isoforms')
 
-        well_covered_exons_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_exon_threshold * 100)) + '%-covered exons')
-        fully_covered_exons_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_exon_threshold * 100)) + '%-covered exons')
+        well_covered_isoforms_str = '{:<50}'.format(str('Relative ' + int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered isoforms')
+        fully_covered_isoforms_str = '{:<50}'.format(str('Relative ' + int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered isoforms')
+
+
+        well_assembled_exons_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_exon_threshold * 100)) + '%-assembled exons')
+        fully_assembled_exons_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_exon_threshold * 100)) + '%-assembled exons')
+
+        well_covered_exons_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_exon_threshold * 100)) + '%-covered exons')
+        fully_covered_exons_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_exon_threshold * 100)) + '%-covered exons')
 
         for i_transcripts in range(len(transcripts_metrics)):
             relative_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.relative_database_coverage
