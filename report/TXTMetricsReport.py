@@ -134,7 +134,7 @@ class TXTMetricsReport():
 
         name_str = '{:<50}'.format('METRICS/TRANSCRIPTS')
 
-        database_coverage_str = '{:<50}'.format('Database coverage')
+        database_coverage_str = '{:<50}'.format('Relative database coverage')
 
         well_assembled_genes_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
         fully_assembled_genes_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes')
