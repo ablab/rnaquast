@@ -146,8 +146,8 @@ class TXTMetricsReport():
         well_assembled_isoforms_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled isoforms')
         fully_assembled_isoforms_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled isoforms')
 
-        well_covered_isoforms_str = '{:<50}'.format(str('Relative ' + int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered isoforms')
-        fully_covered_isoforms_str = '{:<50}'.format(str('Relative ' + int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered isoforms')
+        well_covered_isoforms_str = '{:<50}'.format(str('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100))) + '%-covered isoforms')
+        fully_covered_isoforms_str = '{:<50}'.format(str('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100))) + '%-covered isoforms')
 
 
         well_assembled_exons_str = '{:<50}'.format('Relative ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_exon_threshold * 100)) + '%-assembled exons')
