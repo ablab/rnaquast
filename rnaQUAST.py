@@ -59,6 +59,8 @@ def main_utils():
     args.output_dir = UtilsPipeline.create_output_folder(args.output_dir, program_name)
     # create temporary directory:
     tmp_dir = UtilsPipeline.create_empty_folder(os.path.join(args.output_dir, 'tmp'))
+    # create directory for log files:
+    log_dir = UtilsPipeline.create_empty_folder(os.path.join(args.output_dir, 'logs'))
 
     # SET LOGGER:
     if args.debug:
@@ -66,7 +68,7 @@ def main_utils():
         logger.set_up_console_handler(debug=True)
     else:
         logger.set_up_console_handler()
-    logger.set_up_file_handler(args.output_dir)
+    logger.set_up_file_handler(log_dir)
     logger.print_command_line([os.path.realpath(__file__)] + sys.argv[1:], wrap_after=None)
     logger.start()
 
@@ -158,7 +160,7 @@ def main_utils():
             ReadsCoverage.ReadsCoverage(args.reads_alignment, args.tophat, args.reference, args.single_reads,
                                         args.left_reads, args.right_reads, reference_dict, sqlite3_db_genes, type_isoforms,
                                         sorted_exons_attr, args.strand_specific, db_genes_metrics.tot_isoforms_len,
-                                        genome_len, tmp_dir, args.threads, WELL_FULLY_COVERAGE_THRESHOLDS, logger)
+                                        genome_len, tmp_dir, args.threads, WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)
 
 
     if args.transcripts is not None:
@@ -182,9 +184,11 @@ def main_utils():
     # GET PSL ALIGNMENT FILE:
     if args.alignment is None and args.reference is not None and args.transcripts is not None:
         if args.blat:
-            args.alignment = UtilsTools.run_blat(args.database, args.reference, transcripts_dicts, args.labels, args.threads, tmp_dir, logger)
+            args.alignment = UtilsTools.run_blat(args.database, args.reference, transcripts_dicts, args.labels,
+                                                 args.threads, tmp_dir, logger, log_dir)
         else:
-            args.alignment = UtilsTools.run_gmap(args.reference, genome_len, args.transcripts, args.labels, args.threads, tmp_dir, logger)
+            args.alignment = UtilsTools.run_gmap(args.reference, genome_len, args.transcripts, args.labels,
+                                                 args.threads, tmp_dir, logger, log_dir)
 
         #if args.fusion_misassemble_analyze:
         #    if not (args.left_reads is not None and args.right_reads is not None):
@@ -210,7 +214,7 @@ def main_utils():
             isoforms_list = UtilsGeneral.dict_to_list(UtilsAnnotations.get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict, logger))
             fastaparser.write_fasta(isoforms_fa_path, isoforms_list)
 
-            isoforms_blast_db = UtilsTools.get_blast_db(isoforms_fa_path, annotation_label, tmp_dir, logger)
+            isoforms_blast_db = UtilsTools.get_blast_db(isoforms_fa_path, annotation_label, tmp_dir, logger, log_dir)
 
 
     # LOGGING INPUT DATA:
@@ -264,7 +268,7 @@ def main_utils():
             if args.blast == True:
                 blast_alignments.append\
                     (UtilsTools.align_transcripts_to_isoforms_by_blastn
-                     (args.transcripts[i_transcripts], isoforms_blast_db, tmp_dir, args.labels[i_transcripts], logger))
+                     (args.transcripts[i_transcripts], isoforms_blast_db, tmp_dir, args.labels[i_transcripts], logger, log_dir))
             else:
                 blast_alignments.append(None)
 
@@ -294,8 +298,8 @@ def main_utils():
             tot_isoforms_len = None if db_genes_metrics is None else db_genes_metrics.tot_isoforms_len
             transcripts_metrics[i_transcripts].get_transcripts_metrics\
                 (args, type_organism, reference_dict, args.transcripts[i_transcripts], transcripts_dicts[i_transcripts],
-                 sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger, tmp_dir, WELL_FULLY_COVERAGE_THRESHOLDS,
-                 rqconfig.TRANSCRIPT_LENS)
+                 sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger, tmp_dir, log_dir,
+                 WELL_FULLY_COVERAGE_THRESHOLDS, rqconfig.TRANSCRIPT_LENS)
 
             # GET SEPARATED REPORT:
             separated_reports[i_transcripts].get_separated_report\

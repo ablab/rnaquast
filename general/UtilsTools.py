@@ -14,9 +14,10 @@ import rqconfig
 import UtilsGeneral
 import UtilsPipeline
 
+import parallel_blat_run
 
-def run_blat(args_database, args_reference, transcripts_dicts, args_labels, args_threads, tmp_dir, logger):
-    import parallel_blat_run
+
+def run_blat(args_database, args_reference, transcripts_dicts, args_labels, args_threads, tmp_dir, logger, log_dir):
 
     blat_run = os.path.join(rqconfig.rnaOUAST_LOCATION, '.', 'blat')
     if not os.path.isfile(blat_run):
@@ -46,7 +47,7 @@ def run_blat(args_database, args_reference, transcripts_dicts, args_labels, args
 
             args_alignment.append(parallel_blat_run.parallel_blat_run(
                 transcripts_dicts[i_transcripts], reference_pathes, args_threads, tmp_dir,
-                args_labels[i_transcripts], logger))
+                args_labels[i_transcripts], logger, log_dir))
 
             end_time = datetime.datetime.now()
             spent_time = end_time - start_time
@@ -136,7 +137,7 @@ def get_upper_case_database_split_chr(database, tmp_dir, logger):
     return reference_pathes
 
 
-def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, output_dir, label):
+def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, output_dir, label, log_out_1):
     tmp_out_names_psl = []
 
     # create folder for alignments one file with transcripts to several chromosomes/scaffolds/patches:
@@ -151,6 +152,7 @@ def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, outp
         alignment_dir_i = os.path.join(output_dir, 'tmp')
 
     for i_reference in range(len(reference_pathes)):
+
         if len(reference_pathes) > 1:
             tmp_out_names_psl.append(os.path.join(alignment_dir_i, '{}.{}.psl'.format(label, i_reference)))
         else:
@@ -163,7 +165,8 @@ def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, outp
         if not os.path.isfile(blat_run):
             blat_run = "blat"
 
-        command = '{} {} {} {} -q=rna -trimHardA -trimT -noHead'.format(blat_run, reference_pathes[i_reference], transcripts_path, tmp_out_names_psl[-1])
+        command = '{} {} {} {} -q=rna -trimHardA -trimT -noHead 1>> {}'.\
+            format(blat_run, reference_pathes[i_reference], transcripts_path, tmp_out_names_psl[-1], log_out_1)
         exit_code = subprocess.call(command, shell=True)
         if exit_code != 0:
             #logger.error(message='blat failed!', exit_with_code=2, to_stderr=True)
@@ -183,7 +186,8 @@ def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, outp
 
         if not os.path.isfile(pslSort_run):
             pslSort_run = "pslSort"
-        command = '{} dirs {} {} {} -nohead'.format(pslSort_run, OUTPSL, tmp_alignment_dir_i, alignment_dir_i)
+        command = '{} dirs {} {} {} -nohead 1>> {}'.\
+            format(pslSort_run, OUTPSL, tmp_alignment_dir_i, alignment_dir_i, log_out_1)
         exit_code = subprocess.call(command, shell=True)
         if exit_code != 0:
             #logger.error(message='pslSort failed! File with reference more than 4G, please install pslSort '
@@ -201,15 +205,40 @@ def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, outp
     return OUTPSL
 
 
-def align_transcripts_to_isoforms_by_blastn(transcripts_path, isoforms_blast_db, tmp_dir, label, logger):
+def get_blast_db(isoforms_fa_path, gene_database_label, tmp_dir, logger, log_dir):
+    program_name = 'makeblastdb'
+
+    log_out = os.path.join(log_dir, program_name + '.log')
+
+    logger.print_timestamp()
+    logger.info('Getting blast database for {}'.format(isoforms_fa_path))
+
+    isoforms_blast_db = os.path.join(tmp_dir, '{}.isoforms'.format(gene_database_label))
+
+    command = '{} -in {} -dbtype nucl -out {} >> {}'.format(program_name, isoforms_fa_path, isoforms_blast_db, log_out)
+    exit_code = subprocess.call(command, shell=True)
+    if exit_code != 0:
+        logger.error(message='{} failed!'.format(program_name), exit_with_code=exit_code, to_stderr=True)
+        sys.exit(exit_code)
+
+    logger.info('  saved to {}'.format(isoforms_blast_db))
+
+    return isoforms_blast_db
+
+
+def align_transcripts_to_isoforms_by_blastn(transcripts_path, isoforms_blast_db, tmp_dir, label, logger, log_dir):
+    program_name = 'blastn'
+
+    log_out = os.path.join(log_dir, label + '.' + program_name + '.log')
+
     logger.print_timestamp('  ')
     logger.info('  Aligning {} to {} by blastn...'.format(transcripts_path, isoforms_blast_db))
 
     alignment_isoforms_path = '{}.blast6'.format(os.path.join(tmp_dir, label))
 
-    command = 'blastn -query {} -out {} -db {} -num_alignments 10 -evalue 0.01 -outfmt "6 qseqid sseqid pident length ' \
-              'mismatch gapopen qstart qend sstart send evalue bitscore sstrand"'.\
-        format(transcripts_path, alignment_isoforms_path, isoforms_blast_db)
+    command = '{} -query {} -out {} -db {} -num_alignments 10 -evalue 0.01 -outfmt "6 qseqid sseqid pident length ' \
+              'mismatch gapopen qstart qend sstart send evalue bitscore sstrand 1>> {}"'.\
+        format(program_name, transcripts_path, alignment_isoforms_path, isoforms_blast_db, log_out)
     exit_code = subprocess.call(command, shell=True)
     if exit_code != 0:
         logger.error(message='blastn failed!', exit_with_code=exit_code, to_stderr=True)
@@ -217,10 +246,12 @@ def align_transcripts_to_isoforms_by_blastn(transcripts_path, isoforms_blast_db,
 
     logger.info('    saved to {}'.format(alignment_isoforms_path))
 
+    logger.info('    log can be found in {}.'.format(log_out))
+
     return alignment_isoforms_path
 
 
-def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_threads, tmp_dir, logger):
+def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_threads, tmp_dir, logger, log_dir):
     args_alignment = []
 
     if genome_len < 2 ** 32:
@@ -229,6 +260,9 @@ def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_thr
         gmap_run = 'gmapl'
 
     gmap_build = 'gmap_build'
+
+    gmap_build_logger_out_path = os.path.join(log_dir, gmap_build + '.out.log')
+    gmap_build_logger_err_path = os.path.join(log_dir, gmap_build + '.err.log')
 
     args_reference = UtilsGeneral.get_upper_case_fasta(args_reference, tmp_dir, logger)
 
@@ -244,21 +278,27 @@ def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_thr
 
     start_time = datetime.datetime.now()
 
-    command = '{gmap_build} -D {tmp_dir} -d {ref_index_name} {reference}'.\
-        format(gmap_build=gmap_build, tmp_dir=tmp_dir, ref_index_name=ref_label, reference=args_reference)
+    command = '{gmap_build} -D {tmp_dir} -d {ref_index_name} {reference} 1>> {log_out_1} 2>> {log_out_2}'.\
+        format(gmap_build=gmap_build, tmp_dir=tmp_dir, ref_index_name=ref_label, reference=args_reference,
+               log_out_1=gmap_build_logger_out_path, log_out_2=gmap_build_logger_err_path)
     exit_code = subprocess.call(command, shell=True)
+
+    logger.info('  logs can be found in {} and {}.'.format(gmap_build_logger_out_path, gmap_build_logger_err_path))
+
     if exit_code != 0:
         logger.error(message='{} failed!'.format(gmap_build), exit_with_code=exit_code, to_stderr=True)
-        sys.exit(exit_code)
 
     end_time = datetime.datetime.now()
     spent_time = end_time - start_time
-    logger.info('\nGMAP_BUILD TIME: {}\n\n'.format(spent_time))
 
     logger.info('  saved to {}'.format(os.path.join(tmp_dir, ref_label)))
 
+    logger.info('\nGMAP_BUILD TIME: {}\n\n'.format(spent_time))
+
     # align (gmap):
     for i_transcripts in range(len(args_transcripts)):
+        gmap_run_logger_err_path = os.path.join(log_dir, gmap_run + '.' + args_labels[i_transcripts] + '.err.log')
+
         logger.print_timestamp()
         logger.info('Aligning {} to {}...'.format(args_labels[i_transcripts], ref_label))
 
@@ -266,12 +306,16 @@ def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_thr
 
         start_time = datetime.datetime.now()
 
-        command = '{gmap} -D {tmp_dir} -d {ref_index_name} {transcripts} --format=1 -t {threads} -O > {alignment_out}'.\
-            format(gmap=gmap_run, tmp_dir=tmp_dir, ref_index_name=ref_label, transcripts=args_transcripts[i_transcripts], threads=args_threads, alignment_out=alignment_psl_path)
+        command = '{gmap} -D {tmp_dir} -d {ref_index_name} {transcripts} --format=1 -t {threads} -O > {alignment_out}' \
+                  ' 2>> {log_out_2}'.\
+            format(gmap=gmap_run, tmp_dir=tmp_dir, ref_index_name=ref_label, transcripts=args_transcripts[i_transcripts],
+                   threads=args_threads, alignment_out=alignment_psl_path, log_out_2=gmap_run_logger_err_path)
         exit_code = subprocess.call(command, shell=True)
+
+        logger.info('  log can be found in {}.'.format(gmap_run_logger_err_path))
+
         if exit_code != 0:
             logger.error(message='{} failed!'.format(gmap_run), exit_with_code=exit_code, to_stderr=True)
-            sys.exit(exit_code)
 
         end_time = datetime.datetime.now()
         spent_time = end_time - start_time
@@ -284,36 +328,20 @@ def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_thr
     return args_alignment
 
 
-def get_blast_db(isoforms_fa_path, gene_database_label, tmp_dir, logger):
-    logger.print_timestamp()
-    logger.info('Getting blast database for {}'.format(isoforms_fa_path))
-
-    isoforms_blast_db = os.path.join(tmp_dir, '{}.isoforms'.format(gene_database_label))
-
-    command = 'makeblastdb -in {} -dbtype nucl -out {}'.format(isoforms_fa_path, isoforms_blast_db)
-    exit_code = subprocess.call(command, shell=True)
-    if exit_code != 0:
-        logger.error(message='makeblastdb failed!', exit_with_code=exit_code, to_stderr=True)
-        sys.exit(exit_code)
-
-    logger.info('  saved to {}'.format(isoforms_blast_db))
-
-    return isoforms_blast_db
-
-
 # https://github.com/alexdobin/STAR/releases
 # It is strongly recommended to include major chromosomes as well as un-placed and un-localized scaffolds.
 def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_reads, output_dir,
-             sjdbGTFtagExonParentTranscript, sjdbGTFtagExonParentGene, genome_len, logger):
+             sjdbGTFtagExonParentTranscript, sjdbGTFtagExonParentGene, genome_len, logger, log_dir):
     # Basic STAR workflow consists of 2 steps:
     program_name = 'STAR'
+
+    star_logger_path = os.path.join(log_dir, program_name + '.log')
 
     logger.info('Running {}...'.format(program_name))
 
     # create STAR output directory:
     star_outdir = UtilsPipeline.create_folder(os.path.join(output_dir, 'star_out'))
-    out_sorted_bam_path = os.path.join(star_outdir, 'Aligned.sortedByCoord.out.bam')
-    star_log = os.path.join(star_outdir, 'star.log')
+    # out_sorted_bam_path = os.path.join(star_outdir, 'Aligned.sortedByCoord.out.bam')
 
     # 1 Generating genome indexes files (supplied the reference genome sequences (FASTA files)
     # and annotations (GTF file))
@@ -338,15 +366,15 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
         if gtf_path is not None:
             command += ' --sjdbGTFfile {gtf} --sjdbGTFtagExonParentTranscript {parent_transcript} --sjdbGTFtagExonParentGene {parent_gene}'.\
                 format(gtf=gtf_path, parent_transcript=sjdbGTFtagExonParentTranscript, parent_gene=sjdbGTFtagExonParentGene)
-        command += ' | tee {star_log}'.format(star_log=star_log)
+        command += ' >> {log_out}'.format(log_out=star_logger_path)
 
         logger.print_timestamp()
         logger.info('  ' + command)
 
         exit_code = subprocess.call(command, shell=True)
         if exit_code != 0:
-            logger.error('{program_name_mode} failed! Please add {program_name} in your PATH.'.
-                         format(program_name_mode=program_name + mode, program_name=program_name), exit_with_code=exit_code)
+            logger.error('{program_name_mode} failed!'. format(program_name_mode=program_name + mode,
+                                                               program_name=program_name))
         else:
             command = 'mv {} {}'.format(tmp_genome_dir, star_outdir)
             subprocess.call(command, shell=True)
@@ -360,42 +388,51 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
         readFilesIn += left_reads + ' ' + right_reads
     command = '{program_name} --runThreadN {threads} --genomeDir {genome_dir} --readFilesIn {readFilesIn} ' \
               '--outFileNamePrefix {out_file_name_prefix} --outSAMtype SAM ' \
-              '--limitBAMsortRAM 1000706316 | tee {star_log}'.\
+              '--limitBAMsortRAM 1000706316 >> {log_out}'.\
         format(program_name=program_name, threads=threads, genome_dir=genome_dir, readFilesIn=readFilesIn,
-               out_file_name_prefix=star_outdir + '/', star_log=star_log)
+               out_file_name_prefix=star_outdir + '/', log_out=star_logger_path)
     logger.print_timestamp()
     logger.info('  ' + command)
     exit_code = subprocess.call(command, shell=True)
     if exit_code != 0:
-        logger.error('{program_name} failed! Please add {program_name} in your PATH.'.format(program_name=program_name),
-                     exit_with_code=exit_code)
+        star_outdir = None
+
+        logger.error('{program_name} failed!'.format(program_name=program_name))
     else:
         logger.info('  saved to {}.'.format(star_outdir))
+
+    logger.info('  log can be found in {}.'.format(star_logger_path))
 
     return star_outdir
 
 
 def get_sam_by_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_reads, output_dir,
-                           sjdbGTFtagExonParentTranscript, sjdbGTFtagExonParentGene, genome_len, logger):
+                           sjdbGTFtagExonParentTranscript, sjdbGTFtagExonParentGene, genome_len, logger, log_dir):
     star_outdir = run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_reads, output_dir,
-                           sjdbGTFtagExonParentTranscript, sjdbGTFtagExonParentGene, genome_len, logger)
+                           sjdbGTFtagExonParentTranscript, sjdbGTFtagExonParentGene, genome_len, logger, log_dir)
 
-    out_sam_path = os.path.join(star_outdir, 'Aligned.out.sam')
+    if star_outdir is not None:
+        out_sam_path = os.path.join(star_outdir, 'Aligned.out.sam')
+    else:
+        out_sam_path = None
 
     return out_sam_path
 
 
 # https://ccb.jhu.edu/software/tophat/manual.shtml
-def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, reads_2_path, output_dir, threads, logger):
+def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, reads_2_path, output_dir, threads,
+               logger, log_dir):
     program_name = 'tophat'
+
+    tophat_logger_path = os.path.join(log_dir, program_name + '.log')
 
     tophat_outdir = UtilsPipeline.create_folder(os.path.join(output_dir, program_name + '_out'))
 
+    if bowtie2_index_path is None:
+        bowtie2_index_path = get_genome_bowtie2_index(reference_path, logger, log_dir)
+
     logger.print_timestamp()
     logger.info('Running {}...'.format(program_name))
-
-    if bowtie2_index_path is None:
-        bowtie2_index_path = get_genome_bowtie2_index(reference_path, logger)
 
     reads = ''
     if single_reads is not None:
@@ -404,26 +441,35 @@ def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, r
         reads += reads_1_path + ' ' + reads_2_path
 
     command = \
-        '{program_name} -o {output_dir} {index} {reads} -p {threads}'.\
-            format(program_name=program_name, output_dir=tophat_outdir, index=bowtie2_index_path, reads=reads, threads=threads)
+        '{program_name} -o {output_dir} {index} {reads} -p {threads} 2>> {log_out}'.\
+            format(program_name=program_name, output_dir=tophat_outdir, index=bowtie2_index_path, reads=reads,
+                   threads=threads, log_out=tophat_logger_path)
     exit_code = subprocess.call(command, shell=True)
     if exit_code != 0:
-        logger.error('{program_name} failed! Please add {program_name} in your PATH.'.format(program_name=program_name),
-                     exit_with_code=exit_code)
+        tophat_outdir = None
 
-    logger.info('  saved to {}.'.format(tophat_outdir))
+        logger.error('{program_name} failed!'. format(program_name=program_name))
+    else:
+        logger.info('  saved to {}.'.format(tophat_outdir))
+
+    logger.info('  log can be found in {}.'.format(tophat_logger_path))
 
     return tophat_outdir
 
 
-def get_sam_by_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, reads_2_path, output_dir, threads, logger):
-    tophat_outdir = run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, reads_2_path, output_dir, threads, logger)
+def get_sam_by_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, reads_2_path, output_dir,
+                      threads, logger, log_dir):
+    tophat_outdir = run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, reads_2_path,
+                               output_dir, threads, logger, log_dir)
 
-    out_bam_path = os.path.join(tophat_outdir, 'accepted_hits.bam')
+    if tophat_outdir is not None:
+        out_bam_path = os.path.join(tophat_outdir, 'accepted_hits.bam')
+
+        out_sam_path = bam2sam(out_bam_path, tophat_outdir, logger)
+    else:
+        out_sam_path = None
 
     # out_sorted_bam_path = get_sort_bam(out_bam_path, tophat_outdir, logger, type='position')
-
-    out_sam_path = bam2sam(out_bam_path, tophat_outdir, logger)
 
     return out_sam_path
 
@@ -496,7 +542,6 @@ def get_sort_bam(in_bam_path, output_dir, logger, type='name'):
         logger.error('{program_name} failed! Please add {program_name} in your PATH.'.format(program_name=program_name),
                      exit_with_code=exit_code)
 
-
     logger.info('  saved to {}.'.format(out_bam_path))
 
     return out_bam_path
@@ -504,22 +549,27 @@ def get_sort_bam(in_bam_path, output_dir, logger, type='name'):
 
 # Please note that it is highly recommended that a FASTA file with the sequence(s) the genome being indexed
 # be present in the same directory with the Bowtie index files and having the name <genome_index_base>.fa.
-def get_genome_bowtie2_index(reference_path, logger):
+def get_genome_bowtie2_index(reference_path, logger, log_dir):
     program_name = 'bowtie2-build'
+
+    bowtie_logger_path = os.path.join(log_dir, program_name + '.log')
 
     logger.print_timestamp()
     logger.info('Indexing {reference} by {program_name}...'.format(reference=reference_path, program_name=program_name))
 
     out_bowtie2_index_path = reference_path[:reference_path.rfind('.fa')]
 
-    command = '{program_name} {reference} {index}'.format(program_name=program_name, reference=reference_path,
-                                                          index=out_bowtie2_index_path)
+    command = '{program_name} {reference} {index} >> {log_out}'.format(program_name=program_name, reference=reference_path,
+                                                          index=out_bowtie2_index_path, log_out=bowtie_logger_path)
     exit_code = subprocess.call(command, shell=True)
     if exit_code != 0:
-        logger.error('{program_name} failed! Please add {program_name} in your PATH.'.format(program_name=program_name))
-        sys.exit(2)
+        out_bowtie2_index_path = None
 
-    logger.info('  saved to {}.*.'.format(out_bowtie2_index_path))
+        logger.error('{program_name} failed!'.format(program_name=program_name))
+    else:
+        logger.info('  saved to {}.*.'.format(out_bowtie2_index_path))
+
+    logger.info('  log can be found in {}.'.format(bowtie_logger_path))
 
     return out_bowtie2_index_path
 

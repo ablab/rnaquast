@@ -30,8 +30,6 @@ class TranscriptsMetrics():
 
         # METRICS WITH ALIGNMENT:
         self.simple_metrics = None
-        # fusions and misassemblies metrics:
-        self.fusion_misassemble_metrics = None
 
         # METRCIS WITH ALIGNMENT AND ANNOTATION
         # coverages of aligned transcripts by annotated isoform:
@@ -63,7 +61,7 @@ class TranscriptsMetrics():
 
 
     def get_transcripts_metrics(self, args, type_organism, reference_dict, transcripts_path, transcripts_dict,
-                                sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger, tmp_dir,
+                                sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger, tmp_dir, log_dir,
                                 WELL_FULLY_COVERAGE_THRESHOLDS, TRANSCRIPT_LENS):
         logger.print_timestamp('  ')
 
@@ -76,10 +74,6 @@ class TranscriptsMetrics():
             self.simple_metrics.get_metrics(args.blast, reference_dict, transcripts_dict, self.basic_metrics.number,
                                             logger)
 
-        # GET FUSIONS AND MISASSEMBLIES METRICS:
-        if self.fusion_misassemble_metrics is not None:
-            self.fusion_misassemble_metrics.get_busco_metrics(args.gene_database, logger)
-
         # GET ASSEMBLY CORRECTNESS METRICS:
         if self.assembly_correctness_metrics is not None:
             self.assembly_correctness_metrics.get_assembly_correctness_metrics(self.simple_metrics, logger)
@@ -88,7 +82,7 @@ class TranscriptsMetrics():
             self.assembly_completeness_metrics.\
                 get_assembly_completeness_metrics(args.clade, args.threads, transcripts_path, tmp_dir, self.label, type_organism,
                                                   sqlite3_db_genes, tot_isoforms_len, reads_coverage,
-                                                  WELL_FULLY_COVERAGE_THRESHOLDS, logger)
+                                                  WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)
 
 
     def processing_assembled_psl_file(self, assembled_psl_file, sorted_exons_attr, strand_specific, logger,

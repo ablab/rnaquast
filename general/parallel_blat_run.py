@@ -19,7 +19,9 @@ import UtilsTools
 
 logger = log.get_logger('parallel_blat_run')
 
-def parallel_blat_run(transcripts_dict, reference_pathes, threads, tmp_dir, label, logger):
+def parallel_blat_run(transcripts_dict, reference_pathes, threads, tmp_dir, label, logger, log_dir):
+    log_out_1 = os.path.join(log_dir, label + '.blat.out.log')
+
     logger.print_timestamp()
     logger.info('Getting psl files by BLAT for {}...'.format(label))
 
@@ -42,10 +44,9 @@ def parallel_blat_run(transcripts_dict, reference_pathes, threads, tmp_dir, labe
 
     # PARALLEL RUNS BLAT:
     tmp_names_psl = Parallel(n_jobs=us_threads)(delayed(UtilsTools.align_fa_transcripts_to_psl_by_blat)
-                                                (transcripts_pathes_threads[i_thread], reference_pathes, output_dirs[i_thread], label)
+                                                (transcripts_pathes_threads[i_thread], reference_pathes,
+                                                 output_dirs[i_thread], label, log_out_1)
                                                 for i_thread in range(us_threads))
-
-    logger.info('Done.')
 
     # GLUING PSL FILES:
     f_pathes = ''
@@ -58,9 +59,9 @@ def parallel_blat_run(transcripts_dict, reference_pathes, threads, tmp_dir, labe
     command = 'cat {} >> {}'.format(f_pathes, out_name_psl)
     exit_code = subprocess.call(command, shell=True)
     if exit_code != 0:
-        logger.error(message='cat failed!', exit_with_code=2, to_stderr=True)
-        sys.exit(2)
-    logger.info('  saved to {}'.format(out_name_psl))
+        logger.error(message='cat failed!', exit_with_code=exit_code, to_stderr=True)
+    logger.info('  saved to {}.'.format(out_name_psl))
+    logger.info('  logs can be found in {}.'.format(log_out_1))
 
     # REMOVE TEMPORARY DIRECTORIES FOR THREADS:
     logger.debug('Remove temporary directories...')
