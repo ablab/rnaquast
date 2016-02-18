@@ -319,11 +319,12 @@ def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_thr
 
         end_time = datetime.datetime.now()
         spent_time = end_time - start_time
-        logger.info('\nGMAP TIME: {}\n\n'.format(spent_time))
 
         args_alignment.append(alignment_psl_path)
 
         logger.info('  saved to {}'.format(alignment_psl_path))
+
+        logger.info('\nGMAP TIME: {}\n\n'.format(spent_time))
 
     return args_alignment
 
@@ -335,8 +336,10 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
     # Basic STAR workflow consists of 2 steps:
     program_name = 'STAR'
 
-    star_logger_path = os.path.join(log_dir, program_name + '.log')
+    star_logger_out_path = os.path.join(log_dir, program_name + '.out.log')
+    star_logger_err_path = os.path.join(log_dir, program_name + '.err.log')
 
+    logger.print_timestamp()
     logger.info('Running {}...'.format(program_name))
 
     # create STAR output directory:
@@ -366,12 +369,15 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
         if gtf_path is not None:
             command += ' --sjdbGTFfile {gtf} --sjdbGTFtagExonParentTranscript {parent_transcript} --sjdbGTFtagExonParentGene {parent_gene}'.\
                 format(gtf=gtf_path, parent_transcript=sjdbGTFtagExonParentTranscript, parent_gene=sjdbGTFtagExonParentGene)
-        command += ' >> {log_out}'.format(log_out=star_logger_path)
+        command += ' 1>> {log_out_1} 2>> {log_out_2}'.format(log_out_1=star_logger_out_path, log_out_2=star_logger_err_path)
 
         logger.print_timestamp()
         logger.info('  ' + command)
 
         exit_code = subprocess.call(command, shell=True)
+
+        logger.info('    logs can be found in {} and {}.'.format(star_logger_out_path, star_logger_err_path))
+
         if exit_code != 0:
             logger.error('{program_name_mode} failed!'. format(program_name_mode=program_name + mode,
                                                                program_name=program_name))
@@ -388,9 +394,9 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
         readFilesIn += left_reads + ' ' + right_reads
     command = '{program_name} --runThreadN {threads} --genomeDir {genome_dir} --readFilesIn {readFilesIn} ' \
               '--outFileNamePrefix {out_file_name_prefix} --outSAMtype SAM ' \
-              '--limitBAMsortRAM 1000706316 >> {log_out}'.\
+              '--limitBAMsortRAM 1000706316 1>> {log_out_1} 2>> {log_out_2}'.\
         format(program_name=program_name, threads=threads, genome_dir=genome_dir, readFilesIn=readFilesIn,
-               out_file_name_prefix=star_outdir + '/', log_out=star_logger_path)
+               out_file_name_prefix=star_outdir + '/', log_out_1=star_logger_out_path, log_out_2=star_logger_err_path)
     logger.print_timestamp()
     logger.info('  ' + command)
     exit_code = subprocess.call(command, shell=True)
@@ -401,7 +407,7 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
     else:
         logger.info('  saved to {}.'.format(star_outdir))
 
-    logger.info('  log can be found in {}.'.format(star_logger_path))
+    logger.info('  logs can be found in {} and {}.'.format(star_logger_out_path, star_logger_err_path))
 
     return star_outdir
 
@@ -424,7 +430,7 @@ def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, r
                logger, log_dir):
     program_name = 'tophat'
 
-    tophat_logger_path = os.path.join(log_dir, program_name + '.log')
+    tophat_logger_err_path = os.path.join(log_dir, program_name + '.err.log')
 
     tophat_outdir = UtilsPipeline.create_folder(os.path.join(output_dir, program_name + '_out'))
 
@@ -441,9 +447,9 @@ def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, r
         reads += reads_1_path + ' ' + reads_2_path
 
     command = \
-        '{program_name} -o {output_dir} {index} {reads} -p {threads} 2>> {log_out}'.\
+        '{program_name} -o {output_dir} {index} {reads} -p {threads} 2>> {log_out_2}'.\
             format(program_name=program_name, output_dir=tophat_outdir, index=bowtie2_index_path, reads=reads,
-                   threads=threads, log_out=tophat_logger_path)
+                   threads=threads, log_out_2=tophat_logger_err_path)
     exit_code = subprocess.call(command, shell=True)
     if exit_code != 0:
         tophat_outdir = None
@@ -452,7 +458,7 @@ def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, r
     else:
         logger.info('  saved to {}.'.format(tophat_outdir))
 
-    logger.info('  log can be found in {}.'.format(tophat_logger_path))
+    logger.info('  log can be found in {}.'.format(tophat_logger_err_path))
 
     return tophat_outdir
 
@@ -552,15 +558,18 @@ def get_sort_bam(in_bam_path, output_dir, logger, type='name'):
 def get_genome_bowtie2_index(reference_path, logger, log_dir):
     program_name = 'bowtie2-build'
 
-    bowtie_logger_path = os.path.join(log_dir, program_name + '.log')
+    bowtie_logger_out_path = os.path.join(log_dir, program_name + '.out.log')
+
+    bowtie_logger_err_path = os.path.join(log_dir, program_name + '.err.log')
 
     logger.print_timestamp()
     logger.info('Indexing {reference} by {program_name}...'.format(reference=reference_path, program_name=program_name))
 
     out_bowtie2_index_path = reference_path[:reference_path.rfind('.fa')]
 
-    command = '{program_name} {reference} {index} >> {log_out}'.format(program_name=program_name, reference=reference_path,
-                                                          index=out_bowtie2_index_path, log_out=bowtie_logger_path)
+    command = '{program_name} {reference} {index} 1>> {log_out_1} 2>> {log_out_2}'.\
+        format(program_name=program_name, reference=reference_path, index=out_bowtie2_index_path,
+               log_out_1=bowtie_logger_out_path, log_out_2=bowtie_logger_err_path)
     exit_code = subprocess.call(command, shell=True)
     if exit_code != 0:
         out_bowtie2_index_path = None
@@ -569,7 +578,7 @@ def get_genome_bowtie2_index(reference_path, logger, log_dir):
     else:
         logger.info('  saved to {}.*.'.format(out_bowtie2_index_path))
 
-    logger.info('  log can be found in {}.'.format(bowtie_logger_path))
+    logger.info('  logs can be found in {} and {}.'.format(bowtie_logger_out_path, bowtie_logger_err_path))
 
     return out_bowtie2_index_path
 
