@@ -190,7 +190,7 @@ def get_default_folder_name_for_results(program_name):
 
 
 def get_num_threads(threads, logger):
-    if threads == None:
+    if threads is None:
         try:
             threads = min(multiprocessing.cpu_count() / 2, 16)
         except:
@@ -274,7 +274,7 @@ def run_rnaQUAST_on_debug_data(args, rquast_dirpath, program_name):
 
 def create_output_folder(output_dir, program_name):
     # if --output_dir not use, create default folder for results:
-    if output_dir == None:
+    if output_dir is None:
         output_dir = get_default_folder_name_for_results(program_name)
         path_results = create_folder(os.path.split(output_dir)[0])
     # create output directory:
@@ -318,16 +318,16 @@ def create_comparison_report_folders(transcripts_metrics, output_dir):
 def create_metrics_folders(transcripts_metrics, outdir):
     # BASIC AND SIMPLE:
     basic_simple_dir = None
-    if transcripts_metrics.basic_metrics != None or transcripts_metrics.simple_metrics != None:
+    if transcripts_metrics.basic_metrics is not None or transcripts_metrics.simple_metrics is not None:
         basic_simple_dir = create_folder(os.path.join(outdir, 'basic'))
 
     assembly_correctness_dir = None
     assembly_completeness_dir = None
-    if transcripts_metrics.assembly_correctness_metrics != None:
+    if transcripts_metrics.assembly_correctness_metrics is not None:
         # ASSEMBLY CORRECTNESS:
         assembly_correctness_dir = create_folder(os.path.join(outdir, 'specificity'))
 
-    if transcripts_metrics.assembly_completeness_metrics != None or transcripts_metrics.cegma_metrics != None:
+    if transcripts_metrics.assembly_completeness_metrics is not None or transcripts_metrics.cegma_metrics is not None:
         # ASSEMBLY COMPLETENESS:
         assembly_completeness_dir = create_folder(os.path.join(outdir, 'sensitivity'))
 

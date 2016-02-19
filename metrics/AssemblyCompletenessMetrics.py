@@ -113,7 +113,9 @@ class BuscoMetrics():
         if not os.path.isabs(transcripts_path):
             transcripts_path = os.path.abspath(transcripts_path)
         if not os.path.isabs(args_clade):
-            args_clade = os.path.abspath(transcripts_path)
+            args_clade = os.path.abspath(args_clade)
+        if not os.path.isabs(log_dir):
+            log_dir = os.path.abspath(log_dir)
 
         initial_dir = os.getcwd()
 
@@ -121,13 +123,14 @@ class BuscoMetrics():
 
         out_name = label + '_BUSCO'
         out_dirpath = os.path.join(tmp_dir, 'run_' + out_name)
-        log_out = '{}.busco.log'.format(label)
+        log_out = os.path.join(log_dir, '{}.busco.out.log'.format(label))
+        log_err = os.path.join(log_dir, '{}.busco.err.log'.format(label))
 
-        busco_run = 'BUSCO_v1.1b1.py'
+        program_name = 'BUSCO_v1.1b1.py'
         command = \
-            '{busco} -o {output_dir} -in {transcripts} -l {clade} -m trans -f -c {threads} > {log_out}'.\
-                format(busco=busco_run, output_dir=out_name, transcripts=transcripts_path, clade=args_clade,
-                       threads=args_threads, log_out=log_out)
+            '{busco} -o {output_dir} -in {transcripts} -l {clade} -m trans -f -c {threads} 1>> {log_out_1} 2>> {log_out_2}'.\
+                format(busco=program_name, output_dir=out_name, transcripts=transcripts_path, clade=args_clade,
+                       threads=args_threads, log_out_1=log_out, log_out_2=log_err)
         logger.debug(command)
 
         exit_code = subprocess.call(command, shell=True)
@@ -135,13 +138,13 @@ class BuscoMetrics():
         os.chdir(initial_dir)
 
         if exit_code != 0:
-            logger.error(message='BUSCO failed! Please install and add to PATH BUSCO requirements.')
+            logger.error(message='{} failed!'.format(program_name))
         else:
             busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO'.format(label))
 
             logger.info('    saved to {}.'.format(busco_completeness_report_path))
 
-        logger.info('  log can be found in {}.'.format(os.path.join(log_dir, log_out)))
+        logger.info('    logs can be found in {} and {}.'.format(log_out, log_err))
 
         return busco_completeness_report_path
 
