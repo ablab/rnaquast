@@ -241,7 +241,7 @@ def align_transcripts_to_isoforms_by_blastn(transcripts_path, isoforms_blast_db,
         format(program_name, transcripts_path, alignment_isoforms_path, isoforms_blast_db, log_out)
     exit_code = subprocess.call(command, shell=True)
     if exit_code != 0:
-        logger.error(message='blastn failed!', exit_with_code=exit_code, to_stderr=True)
+        logger.error(message='{} failed for {}!'.format(program_name, label), exit_with_code=exit_code, to_stderr=True)
         sys.exit(exit_code)
 
     logger.info('    saved to {}'.format(alignment_isoforms_path))
@@ -315,7 +315,8 @@ def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_thr
         logger.info('  log can be found in {}.'.format(gmap_run_logger_err_path))
 
         if exit_code != 0:
-            logger.error(message='{} failed!'.format(gmap_run), exit_with_code=exit_code, to_stderr=True)
+            logger.error(message='{} failed for {}!'.format(gmap_run, args_labels[i_transcripts]),
+                         exit_with_code=exit_code, to_stderr=True)
 
         end_time = datetime.datetime.now()
         spent_time = end_time - start_time

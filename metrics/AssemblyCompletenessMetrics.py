@@ -133,7 +133,7 @@ class BuscoMetrics():
         os.chdir(initial_dir)
 
         if exit_code != 0:
-            logger.error(message='{} failed!'.format(program_name))
+            logger.error(message='{} failed for {}!'.format(program_name, label))
         else:
             busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO'.format(label))
 
@@ -233,7 +233,7 @@ class GeneMarkS_TMetrics():
         os.chdir(initial_dir)
 
         if exit_code != 0:
-            logger.error(message='GeneMarkS-T failed!')
+            logger.error(message='GeneMarkS-T failed for {}!'.format(label))
         else:
             GeneMarkS_T_report_path = GeneMarkS_T_report_path_tmp
 
