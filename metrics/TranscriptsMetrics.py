@@ -80,7 +80,8 @@ class TranscriptsMetrics():
 
         if self.assembly_completeness_metrics is not None:
             self.assembly_completeness_metrics.\
-                get_assembly_completeness_metrics(args.clade, args.threads, transcripts_path, tmp_dir, self.label, type_organism,
+                get_assembly_completeness_metrics(args.clade, args.threads, args.strand_specific, transcripts_path,
+                                                  tmp_dir, self.label, type_organism,
                                                   sqlite3_db_genes, tot_isoforms_len, reads_coverage,
                                                   WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)
 

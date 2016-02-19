@@ -4,6 +4,8 @@ import os
 
 import subprocess
 
+import shutil
+
 from datetime import datetime
 
 import IsoformsCoverage
@@ -188,15 +190,15 @@ class GeneMarkS_TMetrics():
 
 
     # get GeneMarkS-T results
-    def get_GeneMarkS_T_metrics(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
+    def get_GeneMarkS_T_metrics(self, args_clade, args_threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir):
         GeneMarkS_T_report_path = \
-            self.get_GeneMarkS_T_report(args_clade, args_threads, transcripts_path, tmp_dir, label, logger, log_dir)
+            self.get_GeneMarkS_T_report(args_clade, args_threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir)
 
         if GeneMarkS_T_report_path is not None:
             self.genes = self.get_genes_from_report(GeneMarkS_T_report_path)
 
 
-    def get_GeneMarkS_T_report(self, type_organism, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
+    def get_GeneMarkS_T_report(self, type_organism, args_threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir):
         GeneMarkS_T_report_path = None
 
         # run GeneMarkS-T:
@@ -204,18 +206,32 @@ class GeneMarkS_TMetrics():
         logger.info('  Running GeneMarkS-T (Gene Prediction in Transcripts)...')
 
         out_dir_path = UtilsPipeline.create_empty_folder(os.path.join(tmp_dir, label + '_GeneMarkS-T'))
+
+        initial_dir = os.getcwd()
+
+        os.chdir(out_dir_path)
+
         transcripts_name = os.path.split(transcripts_path)[-1]
         GeneMarkS_T_report_path_tmp = os.path.join(out_dir_path, transcripts_name + '.lst')
-        log_path = os.path.join(log_dir, label + '.GeneMarkS_T.log')
+        tmp_log_path = os.path.join(out_dir_path, 'gms.log')
+        log_out_path = os.path.join(log_dir, label + '.GeneMarkS_T.out.log')
+        log_err_path = os.path.join(log_dir, label + '.GeneMarkS_T.err.log')
 
         GeneMarkS_T_run = 'gmst.pl'
         command = '{} {} --output {} 2>> {}'.format(GeneMarkS_T_run, transcripts_path, GeneMarkS_T_report_path_tmp,
-                                                    log_path)
+                                                    log_err_path)
         if type_organism == 'prokaryotes':
             command += ' --prok'
+
+        if args_ss:
+            command += ' --strand direct'
+
         logger.debug(command)
 
         exit_code = subprocess.call(command, shell=True)
+
+        os.chdir(initial_dir)
+
         if exit_code != 0:
             logger.error(message='GeneMarkS-T failed!')
         else:
@@ -223,7 +239,9 @@ class GeneMarkS_TMetrics():
 
             logger.info('    saved to {}'.format(GeneMarkS_T_report_path))
 
-        logger.info('  log can be found in {}.'.format(os.path.join(log_dir, log_path)))
+        shutil.move(tmp_log_path, log_out_path)
+
+        logger.info('    logs can be found in {} and {}.'.format(log_out_path, log_err_path))
 
         return GeneMarkS_T_report_path
 
@@ -300,7 +318,7 @@ class AssemblyCompletenessMetrics():
         return elapsed_time
 
 
-    def get_assembly_completeness_metrics(self, args_clade, threads, transcripts_path, tmp_dir, label, type_organism,
+    def get_assembly_completeness_metrics(self, args_clade, threads, args_ss, transcripts_path, tmp_dir, label, type_organism,
                                           sqlite3_db_genes, tot_isoforms_len, reads_coverage,
                                           WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir):
         # get average metrics of coverage of annotated isoforms (included exons coverages) by aligned transcripts:
@@ -320,6 +338,6 @@ class AssemblyCompletenessMetrics():
             self.busco_metrics.get_busco_metrics(args_clade, threads, transcripts_path, tmp_dir, label, logger, log_dir)
 
         if self.gene_marks_t_metrics is not None:
-            self.gene_marks_t_metrics.get_GeneMarkS_T_metrics(type_organism, threads, transcripts_path, tmp_dir, label, logger, log_dir)
+            self.gene_marks_t_metrics.get_GeneMarkS_T_metrics(type_organism, threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir)
 
         logger.info('  Done.')
