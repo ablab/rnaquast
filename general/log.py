@@ -34,6 +34,7 @@ class QLogger(object):
     _num_nf_errors = 0
 
     _list_warnings = []
+    _list_non_fatal_errors = []
 
     def __init__(self, name):
         self._name = name
@@ -92,6 +93,11 @@ class QLogger(object):
             self._logger.info('\nWARNINGS:')
             for warning_msg in self._list_warnings:
                 self._logger.info('  WARNING: ' + str(warning_msg) if warning_msg else '')
+
+        if self._num_nf_errors != 0:
+            self._logger.info('\nnon-fatal ERRORs:')
+            for non_fatal_error_msg in self._list_non_fatal_errors:
+                self._logger.info('  non-fatal ERROR: ' + str(non_fatal_error_msg) if non_fatal_error_msg else '')
 
         self._logger.info('\nThank you for using {}!\n'.format(self._name))
         if check_test:
@@ -160,6 +166,7 @@ class QLogger(object):
             exit(exit_with_code)
         else:
             self._num_nf_errors += 1
+            self._list_non_fatal_errors.append(message)
 
     def exception(self, e, exit_code=0):
         if self._logger.handlers:
