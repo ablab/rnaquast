@@ -45,6 +45,8 @@ def main_utils():
     # parse running string of main program and get all arguments:
     args = UtilsPipeline.get_arguments()
 
+    UtilsPipeline.get_abspath_input_data(args)
+
     WELL_FULLY_COVERAGE_THRESHOLDS = rqconfig.well_fully_coverage_thresholds(args.lower_threshold, args.upper_threshold)
 
     ALIGNMENT_THRESHOLDS = rqconfig.alignment_thresholds()

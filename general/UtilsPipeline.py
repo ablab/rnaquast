@@ -347,3 +347,37 @@ def create_empty_folder(dir):
     dir = create_folder(dir)
 
     return dir
+
+
+def get_abspath_input_data(args):
+    if args.reference is not None and not os.path.isabs(args.reference):
+        args.reference = os.path.abspath(args.reference)
+
+    if args.gene_database is not None and not os.path.isabs(args.gene_database):
+        args.gene_database = os.path.abspath(args.gene_database)
+
+    if args.transcripts is not None:
+        for i_transcripts in range(len(args.transcripts)):
+            if not os.path.isabs(args.transcripts[i_transcripts]):
+                args.transcripts[i_transcripts] = os.path.abspath(args.transcripts[i_transcripts])
+
+    if args.alignment is not None and not os.path.isabs(args.alignment):
+        args.alignment = os.path.abspath(args.alignment)
+
+    if args.reads_alignment is not None and not os.path.isabs(args.reads_alignment):
+        args.reads_alignment = os.path.abspath(args.reads_alignment)
+
+    if args.left_reads is not None and not os.path.isabs(args.left_reads):
+        args.left_reads = os.path.abspath(args.left_reads)
+
+    if args.right_reads is not None and not os.path.isabs(args.right_reads):
+        args.right_reads = os.path.abspath(args.right_reads)
+
+    if args.single_reads is not None and not os.path.isabs(args.single_reads):
+        args.single_reads = os.path.abspath(args.single_reads)
+
+    if args.output_dir is not None and not os.path.isabs(args.output_dir):
+        args.output_dir = os.path.abspath(args.output_dir)
+
+    if args.clade is not None and not os.path.isabs(args.clade):
+        args.clade = os.path.abspath(args.clade)

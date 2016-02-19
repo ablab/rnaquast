@@ -110,13 +110,6 @@ class BuscoMetrics():
         logger.print_timestamp()
         logger.info('  Running BUSCO (Benchmarking Universal Single-Copy Orthologs)...')
 
-        if not os.path.isabs(transcripts_path):
-            transcripts_path = os.path.abspath(transcripts_path)
-        if not os.path.isabs(args_clade):
-            args_clade = os.path.abspath(args_clade)
-        if not os.path.isabs(log_dir):
-            log_dir = os.path.abspath(log_dir)
-
         initial_dir = os.getcwd()
 
         os.chdir(tmp_dir)
@@ -131,7 +124,7 @@ class BuscoMetrics():
             '{busco} -o {output_dir} -in {transcripts} -l {clade} -m trans -f -c {threads} 1>> {log_out_1} 2>> {log_out_2}'.\
                 format(busco=program_name, output_dir=out_name, transcripts=transcripts_path, clade=args_clade,
                        threads=args_threads, log_out_1=log_out, log_out_2=log_err)
-        logger.debug(command)
+        logger.debug('    ' + command)
 
         exit_code = subprocess.call(command, shell=True)
 
