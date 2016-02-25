@@ -232,8 +232,7 @@ def main_utils():
         #    sam_file_tmp = args.sam_file[i_transcripts]
         #else:
         transcripts_metrics.append(
-            TranscriptsMetrics.TranscriptsMetrics(args, args.transcripts[i_transcripts], type_organism, tmp_dir,
-                                                  args.labels[i_transcripts], args.threads, logger, log_dir))
+            TranscriptsMetrics.TranscriptsMetrics(args, args.labels[i_transcripts]))
 
         # INITIALIZE SEPARATED REPORTS:
         separated_reports.append(SeparatedReport.SeparatedReport(args.labels[i_transcripts], args.output_dir, transcripts_metrics[i_transcripts], WELL_FULLY_COVERAGE_THRESHOLDS))
@@ -302,8 +301,8 @@ def main_utils():
             tot_isoforms_len = None if db_genes_metrics is None else db_genes_metrics.tot_isoforms_len
             transcripts_metrics[i_transcripts].get_transcripts_metrics\
                 (args, type_organism, reference_dict, args.transcripts[i_transcripts], transcripts_dicts[i_transcripts],
-                 sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger, tmp_dir, log_dir,
-                 WELL_FULLY_COVERAGE_THRESHOLDS, rqconfig.TRANSCRIPT_LENS)
+                 args.labels[i_transcripts], args.threads, sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger,
+                 tmp_dir, log_dir, WELL_FULLY_COVERAGE_THRESHOLDS, rqconfig.TRANSCRIPT_LENS)
 
             # GET SEPARATED REPORT:
             separated_reports[i_transcripts].get_separated_report\

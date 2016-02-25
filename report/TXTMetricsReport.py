@@ -541,7 +541,7 @@ class TXTMetricsReport():
         busco_complete_str = '{:<50}'.format('Complete')
         busco_partial_str = '{:<50}'.format('Partial')
 
-        GeneMarkS_T_genes_str = '{:<50}'.format('Genes')
+        geneMarkS_T_genes_str = '{:<50}'.format('Genes')
 
         for i_transcripts in range(len(transcripts_metrics)):
             if transcripts_metrics[i_transcripts].assembly_completeness_metrics is not None:
@@ -581,10 +581,15 @@ class TXTMetricsReport():
             if busco_metrics is not None:
                 busco_complete_str += '{:<25}'.format(round(busco_metrics.complete_completeness, PRECISION))
                 busco_partial_str += '{:<25}'.format(round(busco_metrics.partial_completeness, PRECISION))
+            else:
+                busco_complete_str += '{:<25}'.format('0')
+                busco_partial_str += '{:<25}'.format('0')
 
             geneMarkS_T_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.geneMarkS_T_metrics
             if geneMarkS_T_metrics is not None:
-                GeneMarkS_T_genes_str += '{:<25}'.format(geneMarkS_T_metrics.genes)
+                geneMarkS_T_genes_str += '{:<25}'.format(geneMarkS_T_metrics.genes)
+            else:
+                geneMarkS_T_genes_str += '{:<25}'.format('0')
 
         fout = open(self.path_txt_sensitivity, 'w')
 
@@ -624,14 +629,14 @@ class TXTMetricsReport():
         #     fout.write(cegma_complete_str + '\n')
         #     fout.write(cegma_partial_str + '\n\n')
 
-        if transcripts_metrics[0].assembly_completeness_metrics.busco_metrics is not None:
+        if busco_complete_str.strip().split()[1:].count('0') != len(transcripts_metrics):
             fout.write(' == BUSCO METRICS ==\n')
             fout.write(busco_complete_str + '\n')
             fout.write(busco_partial_str + '\n\n')
 
-        if transcripts_metrics[0].assembly_completeness_metrics.geneMarkS_T_metrics is not None:
+        if geneMarkS_T_genes_str.strip().split()[1:].count('0') != len(transcripts_metrics):
             fout.write(' == GeneMarkS-T METRICS ==\n')
-            fout.write(GeneMarkS_T_genes_str + '\n\n')
+            fout.write(geneMarkS_T_genes_str + '\n\n')
 
         fout.close()
 

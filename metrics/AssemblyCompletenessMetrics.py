@@ -259,6 +259,7 @@ class GeneMarkS_TMetrics():
 
     def get_genes_from_report(self, GeneMarkS_T_report_path):
         # GeneMarkS_T_all = []
+        self.genes = 0
 
         with open(GeneMarkS_T_report_path, 'r') as in_handle:
             f_read_genes = False
@@ -296,7 +297,7 @@ class GeneMarkS_TMetrics():
 class AssemblyCompletenessMetrics():
     """Class of annotation coverage metrics by aligned transcripts"""
 
-    def __init__(self, args, transcripts_path, type_organism, tmp_dir, label, threads, logger, log_dir):
+    def __init__(self, args):
         self.isoforms_coverage = None
         if args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None:
             # INITIALIZE ASSEMBLY COMPLETENESS METRICS WITH ALIGNMENT AND ANNOTATION:
@@ -309,17 +310,9 @@ class AssemblyCompletenessMetrics():
 
         # INITIALIZE BUSCO METRICS:
         self.busco_metrics = None
-        if args.busco and args.clade is not None:
-            self.busco_metrics = \
-                BuscoMetrics.get_busco_metrics(args.clade, threads, transcripts_path, tmp_dir, label, logger, log_dir)
 
         # INITIALIZE GeneMarkS-T METRICS:
         self.geneMarkS_T_metrics = None
-        if args.gene_mark or not (args.gene_database is not None and args.alignment is not None and
-                                          args.reference is not None and args.transcripts is not None):
-            self.geneMarkS_T_metrics = \
-                GeneMarkS_TMetrics.get_GeneMarkS_T_metrics(type_organism, threads, args.strand_specific,
-                                                           transcripts_path, tmp_dir, label, logger, log_dir)
 
 
     # UPDATE COVERAGE OF ANNOTATION BY SPECIFIC ISOFORM:
@@ -334,8 +327,9 @@ class AssemblyCompletenessMetrics():
         return elapsed_time
 
 
-    def get_assembly_completeness_metrics(self, sqlite3_db_genes, tot_isoforms_len, reads_coverage,
-                                          WELL_FULLY_COVERAGE_THRESHOLDS, logger):
+    def get_assembly_completeness_metrics(self, args, sqlite3_db_genes, tot_isoforms_len, reads_coverage, transcripts_path,
+                                          type_organism, tmp_dir, label, threads, WELL_FULLY_COVERAGE_THRESHOLDS,
+                                          logger, log_dir):
         # get average metrics of coverage of annotated isoforms (included exons coverages) by aligned transcripts:
         logger.info('  Getting SENSITIVITY metrics...')
 
@@ -346,5 +340,15 @@ class AssemblyCompletenessMetrics():
         # CEGMA:
         # if self.cegma_metrics is not None:
         #     self.cegma_metrics.get_metrics(args.threads, transcripts_path, tmp_dir, self.label, logger)
+
+        if args.busco and args.clade is not None:
+            self.busco_metrics = \
+                BuscoMetrics.get_busco_metrics(args.clade, threads, transcripts_path, tmp_dir, label, logger, log_dir)
+
+        if args.gene_mark or not (args.gene_database is not None and args.alignment is not None and
+                                          args.reference is not None and args.transcripts is not None):
+            self.geneMarkS_T_metrics = \
+                GeneMarkS_TMetrics.get_GeneMarkS_T_metrics(type_organism, threads, args.strand_specific,
+                                                           transcripts_path, tmp_dir, label, logger, log_dir)
 
         logger.info('  Done.')

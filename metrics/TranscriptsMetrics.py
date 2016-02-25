@@ -22,7 +22,7 @@ import OneTranscriptCoverage
 class TranscriptsMetrics():
     """Class of metrics of assembled transcripts with and without alignments and annotations"""
 
-    def __init__(self, args, transcripts_path, type_organism, tmp_dir, label, threads, logger, log_dir):
+    def __init__(self, args, label):
         self.label = label
 
         # METRICS WITHOUT ALIGNMENT:
@@ -58,11 +58,10 @@ class TranscriptsMetrics():
         # ASSEMBLY COMPLETENESS METRICS:
         # metrics of coverages of annotated isoforms by aligned transcripts:
         self.assembly_completeness_metrics = \
-            AssemblyCompletenessMetrics.AssemblyCompletenessMetrics(args, transcripts_path, type_organism, tmp_dir,
-                                                                    label, threads, logger, log_dir)
+            AssemblyCompletenessMetrics.AssemblyCompletenessMetrics(args)
 
 
-    def get_transcripts_metrics(self, args, type_organism, reference_dict, transcripts_path, transcripts_dict,
+    def get_transcripts_metrics(self, args, type_organism, reference_dict, transcripts_path, transcripts_dict, label, threads,
                                 sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger, tmp_dir, log_dir,
                                 WELL_FULLY_COVERAGE_THRESHOLDS, TRANSCRIPT_LENS):
         logger.print_timestamp('  ')
@@ -82,8 +81,9 @@ class TranscriptsMetrics():
 
         if self.assembly_completeness_metrics is not None:
             self.assembly_completeness_metrics. \
-                get_assembly_completeness_metrics(sqlite3_db_genes, tot_isoforms_len, reads_coverage,
-                                                  WELL_FULLY_COVERAGE_THRESHOLDS, logger)
+                get_assembly_completeness_metrics(args, sqlite3_db_genes, tot_isoforms_len, reads_coverage,
+                                                  transcripts_path, type_organism, tmp_dir, label, threads,
+                                                  WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)
 
 
     def processing_assembled_psl_file(self, assembled_psl_file, sorted_exons_attr, strand_specific, logger,

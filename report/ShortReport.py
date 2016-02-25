@@ -446,7 +446,7 @@ class ShortReport():
         busco_complete_str = '{:<50}'.format('Complete')
         busco_partial_str = '{:<50}'.format('Partial')
 
-        GeneMarkS_T_genes_str = '{:<50}'.format('Genes')
+        geneMarkS_T_genes_str = '{:<50}'.format('Genes')
 
         for i_transcripts in range(len(transcripts_metrics)):
             isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
@@ -480,10 +480,15 @@ class ShortReport():
             if busco_metrics is not None:
                 busco_complete_str += '{:<25}'.format(round(busco_metrics.complete_completeness, PRECISION))
                 busco_partial_str += '{:<25}'.format(round(busco_metrics.partial_completeness, PRECISION))
+            else:
+                busco_complete_str += '{:<25}'.format('0')
+                busco_partial_str += '{:<25}'.format('0')
 
             geneMarkS_T_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.geneMarkS_T_metrics
             if geneMarkS_T_metrics is not None:
-                GeneMarkS_T_genes_str += '{:<25}'.format(geneMarkS_T_metrics.genes)
+                geneMarkS_T_genes_str += '{:<25}'.format(geneMarkS_T_metrics.genes)
+            else:
+                geneMarkS_T_genes_str += '{:<25}'.format('0')
 
         self.metrics_table.append('\n == ASSEMBLY COMPLETENESS (SENSITIVITY) == \n')
 
@@ -513,14 +518,14 @@ class ShortReport():
         #     self.metrics_table.append(cegma_complete_str + '\n')
         #     self.metrics_table.append(cegma_partial_str + '\n')
 
-        if transcripts_metrics[0].assembly_completeness_metrics.busco_metrics is not None:
+        if busco_complete_str.strip().split()[1:].count('0') != len(transcripts_metrics):
             self.metrics_table.append('\n == BUSCO METRICS == \n')
             self.metrics_table.append(busco_complete_str + '\n')
             self.metrics_table.append(busco_partial_str + '\n')
 
-        if transcripts_metrics[0].assembly_completeness_metrics.geneMarkS_T_metrics is not None:
+        if geneMarkS_T_genes_str.strip().split()[1:].count('0') != len(transcripts_metrics):
             self.metrics_table.append('\n == GeneMarkS-T METRICS == \n')
-            self.metrics_table.append(GeneMarkS_T_genes_str + '\n')
+            self.metrics_table.append(geneMarkS_T_genes_str + '\n')
 
 
     def add_assemble_correctness_metrics_to_table(self, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
