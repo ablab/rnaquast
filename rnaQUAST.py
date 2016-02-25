@@ -231,7 +231,9 @@ def main_utils():
         #if args.sam_file is not None:
         #    sam_file_tmp = args.sam_file[i_transcripts]
         #else:
-        transcripts_metrics.append(TranscriptsMetrics.TranscriptsMetrics(args, args.labels[i_transcripts]))
+        transcripts_metrics.append(
+            TranscriptsMetrics.TranscriptsMetrics(args, args.transcripts[i_transcripts], type_organism, tmp_dir,
+                                                  args.labels[i_transcripts], args.threads, logger, log_dir))
 
         # INITIALIZE SEPARATED REPORTS:
         separated_reports.append(SeparatedReport.SeparatedReport(args.labels[i_transcripts], args.output_dir, transcripts_metrics[i_transcripts], WELL_FULLY_COVERAGE_THRESHOLDS))

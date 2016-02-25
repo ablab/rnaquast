@@ -24,7 +24,7 @@ def run_blat(args_database, args_reference, transcripts_dicts, args_labels, args
         blat_run = "blat"
 
     if UtilsGeneral.which(blat_run) is None:
-        logger.warning('BLAT not found! Please add BLAT to PATH for ALIGNMENT metrics.')
+        logger.error('BLAT not found! Please add BLAT to PATH for ALIGNMENT metrics.')
     else:
         # for single file with scaffolds/patches/chromosomes:
         # split big single file with reference to files with scaffolds/patches/chromosomes
@@ -81,7 +81,7 @@ def get_database_split_chr(output_dir, reference_path, logger):
         for line in fin:
             if line[0] == '>':
                 file_chr_name = line.strip().split(' ')[0][1:] + '.fa'
-                if fout2 != None:
+                if fout2 is not None:
                     fout2.close()
 
                 chrs_file_path = os.path.join(database_dir, file_chr_name)

@@ -582,9 +582,9 @@ class TXTMetricsReport():
                 busco_complete_str += '{:<25}'.format(round(busco_metrics.complete_completeness, PRECISION))
                 busco_partial_str += '{:<25}'.format(round(busco_metrics.partial_completeness, PRECISION))
 
-            gene_marks_t_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.gene_marks_t_metrics
-            if gene_marks_t_metrics is not None:
-                GeneMarkS_T_genes_str += '{:<25}'.format(gene_marks_t_metrics.genes)
+            geneMarkS_T_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.geneMarkS_T_metrics
+            if geneMarkS_T_metrics is not None:
+                GeneMarkS_T_genes_str += '{:<25}'.format(geneMarkS_T_metrics.genes)
 
         fout = open(self.path_txt_sensitivity, 'w')
 
@@ -629,7 +629,7 @@ class TXTMetricsReport():
             fout.write(busco_complete_str + '\n')
             fout.write(busco_partial_str + '\n\n')
 
-        if transcripts_metrics[0].assembly_completeness_metrics.gene_marks_t_metrics is not None:
+        if transcripts_metrics[0].assembly_completeness_metrics.geneMarkS_T_metrics is not None:
             fout.write(' == GeneMarkS-T METRICS ==\n')
             fout.write(GeneMarkS_T_genes_str + '\n\n')
 

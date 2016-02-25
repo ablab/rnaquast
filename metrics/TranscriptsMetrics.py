@@ -22,7 +22,7 @@ import OneTranscriptCoverage
 class TranscriptsMetrics():
     """Class of metrics of assembled transcripts with and without alignments and annotations"""
 
-    def __init__(self, args, label):
+    def __init__(self, args, transcripts_path, type_organism, tmp_dir, label, threads, logger, log_dir):
         self.label = label
 
         # METRICS WITHOUT ALIGNMENT:
@@ -57,7 +57,9 @@ class TranscriptsMetrics():
 
         # ASSEMBLY COMPLETENESS METRICS:
         # metrics of coverages of annotated isoforms by aligned transcripts:
-        self.assembly_completeness_metrics = AssemblyCompletenessMetrics.AssemblyCompletenessMetrics(args)
+        self.assembly_completeness_metrics = \
+            AssemblyCompletenessMetrics.AssemblyCompletenessMetrics(args, transcripts_path, type_organism, tmp_dir,
+                                                                    label, threads, logger, log_dir)
 
 
     def get_transcripts_metrics(self, args, type_organism, reference_dict, transcripts_path, transcripts_dict,
@@ -79,11 +81,9 @@ class TranscriptsMetrics():
             self.assembly_correctness_metrics.get_assembly_correctness_metrics(self.simple_metrics, logger)
 
         if self.assembly_completeness_metrics is not None:
-            self.assembly_completeness_metrics.\
-                get_assembly_completeness_metrics(args.clade, args.threads, args.strand_specific, transcripts_path,
-                                                  tmp_dir, self.label, type_organism,
-                                                  sqlite3_db_genes, tot_isoforms_len, reads_coverage,
-                                                  WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)
+            self.assembly_completeness_metrics. \
+                get_assembly_completeness_metrics(sqlite3_db_genes, tot_isoforms_len, reads_coverage,
+                                                  WELL_FULLY_COVERAGE_THRESHOLDS, logger)
 
 
     def processing_assembled_psl_file(self, assembled_psl_file, sorted_exons_attr, strand_specific, logger,

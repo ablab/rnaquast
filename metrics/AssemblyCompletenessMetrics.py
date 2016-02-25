@@ -90,24 +90,27 @@ class CegmaMetrics():
 
 class BuscoMetrics():
 
-    def __init__(self):
-        self.complete_completeness = 0.0
-        self.partial_completeness = 0.0
+    def __init__(self, busco_completeness_report_path):
+        self.complete_completeness = BuscoMetrics.get_complete_completeness(busco_completeness_report_path)
+        self.partial_completeness = BuscoMetrics.get_partial_completeness(busco_completeness_report_path)
 
 
     # get BUSCO (Benchmarking Universal Single-Copy Orthologs) results
-    def get_busco_metrics(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
+    @classmethod
+    def get_busco_metrics(cls, args_clade, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
+        busco_metrics = None
+
         busco_completeness_report_path = \
-            self.get_busco_completeness_report(args_clade, args_threads, transcripts_path, tmp_dir, label, logger, log_dir)
+            BuscoMetrics.get_busco_completeness_report(args_clade, args_threads, transcripts_path, tmp_dir, label,
+                                                       logger, log_dir)
 
         if busco_completeness_report_path is not None:
-            self.complete_completeness = self.get_complete_completeness(busco_completeness_report_path)
-            self.partial_completeness = self.get_partial_completeness(busco_completeness_report_path)
+            busco_metrics = cls(busco_completeness_report_path)
 
+        return busco_metrics
 
-    def get_busco_completeness_report(self, args_clade, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
-        busco_completeness_report_path = None
-
+    @classmethod
+    def get_busco_completeness_report(cls, args_clade, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
         # run BUSCO:
         logger.print_timestamp()
         logger.info('  Running BUSCO (Benchmarking Universal Single-Copy Orthologs)...')
@@ -120,6 +123,8 @@ class BuscoMetrics():
         out_dirpath = os.path.join(tmp_dir, 'run_' + out_name)
         log_out = os.path.join(log_dir, '{}.busco.out.log'.format(label))
         log_err = os.path.join(log_dir, '{}.busco.err.log'.format(label))
+        tmp_busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO'.format(label))
+        busco_completeness_report_path = None
 
         program_name = 'BUSCO_v1.1b1.py'
         command = \
@@ -132,10 +137,10 @@ class BuscoMetrics():
 
         os.chdir(initial_dir)
 
-        if exit_code != 0:
+        if exit_code != 0 or not os.path.exists(tmp_busco_completeness_report_path):
             logger.error(message='{} failed for {}!'.format(program_name, label))
         else:
-            busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO'.format(label))
+            busco_completeness_report_path = tmp_busco_completeness_report_path
 
             logger.info('    saved to {}.'.format(busco_completeness_report_path))
 
@@ -143,8 +148,8 @@ class BuscoMetrics():
 
         return busco_completeness_report_path
 
-
-    def get_complete_completeness(self, busco_completeness_report_path):
+    @classmethod
+    def get_complete_completeness(cls, busco_completeness_report_path):
         with open(busco_completeness_report_path, 'r') as fin_handle:
             for line in fin_handle:
                 tmp = line.strip().split()
@@ -157,8 +162,8 @@ class BuscoMetrics():
 
         return complete_completeness
 
-
-    def get_partial_completeness(self, busco_completeness_report_path):
+    @classmethod
+    def get_partial_completeness(cls, busco_completeness_report_path):
         with open(busco_completeness_report_path, 'r') as fin_handle:
             for line in fin_handle:
                 tmp = line.strip().split()
@@ -185,22 +190,27 @@ class BuscoMetrics():
 
 class GeneMarkS_TMetrics():
 
-    def __init__(self):
-        self.genes = 0
-
+    def __init__(self, GeneMarkS_T_report_path):
+        self.genes = self.get_genes_from_report(GeneMarkS_T_report_path)
 
     # get GeneMarkS-T results
-    def get_GeneMarkS_T_metrics(self, args_clade, args_threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir):
+    @classmethod
+    def get_GeneMarkS_T_metrics(cls, args_clade, args_threads, args_ss, transcripts_path, tmp_dir,
+                                label, logger, log_dir):
+        geneMarkS_T_metrics = None
+
         GeneMarkS_T_report_path = \
-            self.get_GeneMarkS_T_report(args_clade, args_threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir)
+            GeneMarkS_TMetrics.get_GeneMarkS_T_report(args_clade, args_threads, args_ss, transcripts_path, tmp_dir,
+                                                      label, logger, log_dir)
 
         if GeneMarkS_T_report_path is not None:
-            self.genes = self.get_genes_from_report(GeneMarkS_T_report_path)
+            geneMarkS_T_metrics = cls(GeneMarkS_T_report_path)
+
+        return geneMarkS_T_metrics
 
 
-    def get_GeneMarkS_T_report(self, type_organism, args_threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir):
-        GeneMarkS_T_report_path = None
-
+    @classmethod
+    def get_GeneMarkS_T_report(cls, type_organism, args_threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir):
         # run GeneMarkS-T:
         logger.print_timestamp()
         logger.info('  Running GeneMarkS-T (Gene Prediction in Transcripts)...')
@@ -212,13 +222,14 @@ class GeneMarkS_TMetrics():
         os.chdir(out_dir_path)
 
         transcripts_name = os.path.split(transcripts_path)[-1]
-        GeneMarkS_T_report_path_tmp = os.path.join(out_dir_path, transcripts_name + '.lst')
+        tmp_GeneMarkS_T_report_path = os.path.join(out_dir_path, transcripts_name + '.lst')
+        GeneMarkS_T_report_path = None
         tmp_log_path = os.path.join(out_dir_path, 'gms.log')
         log_out_path = os.path.join(log_dir, label + '.GeneMarkS_T.out.log')
         log_err_path = os.path.join(log_dir, label + '.GeneMarkS_T.err.log')
 
         GeneMarkS_T_run = 'gmst.pl'
-        command = '{} {} --output {} 2>> {}'.format(GeneMarkS_T_run, transcripts_path, GeneMarkS_T_report_path_tmp,
+        command = '{} {} --output {} 2>> {}'.format(GeneMarkS_T_run, transcripts_path, tmp_GeneMarkS_T_report_path,
                                                     log_err_path)
         if type_organism == 'prokaryotes':
             command += ' --prok'
@@ -232,10 +243,10 @@ class GeneMarkS_TMetrics():
 
         os.chdir(initial_dir)
 
-        if exit_code != 0:
+        if exit_code != 0 or not os.path.exists(tmp_GeneMarkS_T_report_path):
             logger.error(message='GeneMarkS-T failed for {}!'.format(label))
         else:
-            GeneMarkS_T_report_path = GeneMarkS_T_report_path_tmp
+            GeneMarkS_T_report_path = tmp_GeneMarkS_T_report_path
 
             logger.info('    saved to {}'.format(GeneMarkS_T_report_path))
 
@@ -285,7 +296,7 @@ class GeneMarkS_TMetrics():
 class AssemblyCompletenessMetrics():
     """Class of annotation coverage metrics by aligned transcripts"""
 
-    def __init__(self, args):
+    def __init__(self, args, transcripts_path, type_organism, tmp_dir, label, threads, logger, log_dir):
         self.isoforms_coverage = None
         if args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None:
             # INITIALIZE ASSEMBLY COMPLETENESS METRICS WITH ALIGNMENT AND ANNOTATION:
@@ -299,11 +310,16 @@ class AssemblyCompletenessMetrics():
         # INITIALIZE BUSCO METRICS:
         self.busco_metrics = None
         if args.busco and args.clade is not None:
-            self.busco_metrics = BuscoMetrics()
+            self.busco_metrics = \
+                BuscoMetrics.get_busco_metrics(args.clade, threads, transcripts_path, tmp_dir, label, logger, log_dir)
 
-        self.gene_marks_t_metrics = None
-        if args.gene_mark or not (args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None):
-            self.gene_marks_t_metrics = GeneMarkS_TMetrics()
+        # INITIALIZE GeneMarkS-T METRICS:
+        self.geneMarkS_T_metrics = None
+        if args.gene_mark or not (args.gene_database is not None and args.alignment is not None and
+                                          args.reference is not None and args.transcripts is not None):
+            self.geneMarkS_T_metrics = \
+                GeneMarkS_TMetrics.get_GeneMarkS_T_metrics(type_organism, threads, args.strand_specific,
+                                                           transcripts_path, tmp_dir, label, logger, log_dir)
 
 
     # UPDATE COVERAGE OF ANNOTATION BY SPECIFIC ISOFORM:
@@ -318,9 +334,8 @@ class AssemblyCompletenessMetrics():
         return elapsed_time
 
 
-    def get_assembly_completeness_metrics(self, args_clade, threads, args_ss, transcripts_path, tmp_dir, label, type_organism,
-                                          sqlite3_db_genes, tot_isoforms_len, reads_coverage,
-                                          WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir):
+    def get_assembly_completeness_metrics(self, sqlite3_db_genes, tot_isoforms_len, reads_coverage,
+                                          WELL_FULLY_COVERAGE_THRESHOLDS, logger):
         # get average metrics of coverage of annotated isoforms (included exons coverages) by aligned transcripts:
         logger.info('  Getting SENSITIVITY metrics...')
 
@@ -328,16 +343,8 @@ class AssemblyCompletenessMetrics():
         if self.isoforms_coverage is not None:
             self.isoforms_coverage.get_isoforms_coverage(sqlite3_db_genes, tot_isoforms_len, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS)
 
-        # GET ASSEMBLY COMPLETENESS METRICS:
         # CEGMA:
         # if self.cegma_metrics is not None:
         #     self.cegma_metrics.get_metrics(args.threads, transcripts_path, tmp_dir, self.label, logger)
-
-        # BUSCO:
-        if self.busco_metrics is not None:
-            self.busco_metrics.get_busco_metrics(args_clade, threads, transcripts_path, tmp_dir, label, logger, log_dir)
-
-        if self.gene_marks_t_metrics is not None:
-            self.gene_marks_t_metrics.get_GeneMarkS_T_metrics(type_organism, threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir)
 
         logger.info('  Done.')
