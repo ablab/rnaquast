@@ -26,89 +26,103 @@ class ShortReport():
 
 
     @classmethod
-    def get_metrics_labels(cls, metrics_types, TRANSCRIPT_LENS, WELL_FULLY_COVERAGE_THRESHOLDS):
-        metrics_labels = \
-            {metrics_types[0]:
-                 ['Genes',
-                  'Avg. number of exons per isoform'],
-             metrics_types[1]:
-                 ['Transcripts',
-                 'Transcripts > {} bp'.format(str(TRANSCRIPT_LENS[0])),
-                 'Transcripts > {} bp'.format(str(TRANSCRIPT_LENS[1]))],
-             metrics_types[2]:
-                  ['Aligned',
-                   'Uniquely aligned',
-                   'Multiply aligned',
-                   'Unaligned'],
-             metrics_types[3]:
-                 ['Avg. aligned fraction',
-                  'Avg. alignment length',
-                  'Avg. mismatches per transcript'],
-             metrics_types[4]:
-                 ['Misassemblies'],
-             metrics_types[5]:
-                 ['Database coverage',
-                  'Relative database coverage',
-                  str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes',
-                  str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes',
-                  str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered genes',
-                  str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered genes',
-                  str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled isoforms',
-                  str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled isoforms',
-                  str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered isoforms',
-                  str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered isoforms',
-                  'Mean isoform coverage',
-                  'Mean isoform assembly'],
-             metrics_types[6]:
-                  ['Complete',
-                  'Partial'],
-             metrics_types[7]:
-                 ['Predicted genes'],
-             metrics_types[8]:
-                 [str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_transcript_threshold * 100)) + '%-matched',
-                  str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_transcript_threshold * 100)) + '%-matched',
-                  'Unannotated',
-                  'Mean fraction of transcript matched']}
+    def get_metrics_labels(cls, TRANSCRIPT_LENS, WELL_FULLY_COVERAGE_THRESHOLDS):
+        metrics_labels = ['Genes',
+                          'Avg. number of exons per isoform',
+                          'Transcripts',
+                          'Transcripts > {} bp'.format(str(TRANSCRIPT_LENS[0])),
+                          'Transcripts > {} bp'.format(str(TRANSCRIPT_LENS[1])),
+                          'Aligned',
+                          'Uniquely aligned',
+                          'Multiply aligned',
+                          'Unaligned',
+                          'Avg. aligned fraction',
+                          'Avg. alignment length',
+                          'Avg. mismatches per transcript',
+                          'Misassemblies',
+                          'Database coverage',
+                          'Relative database coverage',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered genes',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered genes',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled isoforms',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled isoforms',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered isoforms',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered isoforms',
+                          'Mean isoform coverage',
+                          'Mean isoform assembly',
+                          'Complete',
+                          'Partial',
+                          'Predicted genes',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_transcript_threshold * 100)) + '%-matched',
+                          str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_transcript_threshold * 100)) + '%-matched',
+                          'Unannotated',
+                          'Mean fraction of transcript matched']
         return metrics_labels
 
 
     @classmethod
-    def get_best_type(cls, metrics_labels, metrics_types):
+    def get_metrics_type_labels_dict(cls, metrics_types, metrics_labels):
+        metrics_type_labels_dict = \
+            {metrics_types[0]: metrics_labels[0:2],
+             metrics_types[1]: metrics_labels[2:5],
+             metrics_types[2]: metrics_labels[5:9],
+             metrics_types[3]: metrics_labels[9:12],
+             metrics_types[4]: metrics_labels[12],
+             metrics_types[5]: metrics_labels[13:25],
+             metrics_types[6]: metrics_labels[25:27],
+             metrics_types[7]: metrics_labels[27],
+             metrics_types[8]: metrics_labels[28:]}
+        return metrics_type_labels_dict
+
+
+    @classmethod
+    def get_best_type(cls, metrics_labels):
         # absent if there are no best values
         # 1 if the max value is the best value
         # -1 if the min value is the best value
         # 2 if the max relative value (i.e. divided by the total number of transcripts in the corresponding assembly) is the best value
         # -2 if the min relative value (i.e. divided by the total number of transcripts in the corresponding assembly) is the best value
-        best_type = {metrics_labels[metrics_types[1]][1]: 2, metrics_labels[metrics_types[1]][2]: 2,
+        best_type = {metrics_labels[3]: 2, metrics_labels[4]: 2,
 
-                     metrics_labels[metrics_types[2]][0]: 2, metrics_labels[metrics_types[2]][3]: -2,
+                     metrics_labels[5]: 2, metrics_labels[8]: -2,
 
-                     metrics_labels[metrics_types[3]][0]: 1, metrics_labels[metrics_types[3]][1]: 1, metrics_labels[metrics_types[3]][2]: -1,
+                     metrics_labels[9]: 1, metrics_labels[10]: 1, metrics_labels[11]: -1,
 
-                     metrics_labels[metrics_types[4]][0]: -2,
+                     metrics_labels[12]: -2,
 
-                     metrics_labels[metrics_types[5]][0]: 1, metrics_labels[metrics_types[5]][1]: 1, metrics_labels[metrics_types[5]][2]: 1, metrics_labels[metrics_types[5]][3]: 1,
-                     metrics_labels[metrics_types[5]][4]: 1, metrics_labels[metrics_types[5]][5]: 1, metrics_labels[metrics_types[5]][6]: 1, metrics_labels[metrics_types[5]][7]: 1,
-                     metrics_labels[metrics_types[5]][8]: 1, metrics_labels[metrics_types[5]][9]: 1, metrics_labels[metrics_types[5]][10]: 1, metrics_labels[metrics_types[5]][11]: 1,
+                     metrics_labels[13]: 1, metrics_labels[14]: 1, metrics_labels[15]: 1, metrics_labels[16]: 1,
+                     metrics_labels[17]: 1, metrics_labels[18]: 1, metrics_labels[19]: 1, metrics_labels[20]: 1,
+                     metrics_labels[21]: 1, metrics_labels[22]: 1, metrics_labels[23]: 1, metrics_labels[24]: 1,
 
-                     metrics_labels[metrics_types[6]][0]: 1, metrics_labels[metrics_types[6]][1]: 1,
+                     metrics_labels[25]: 1, metrics_labels[26]: 1,
 
-                     metrics_labels[metrics_types[7]][0]: 1,
+                     metrics_labels[27]: 1,
 
-                     metrics_labels[metrics_types[8]][0]: 2, metrics_labels[metrics_types[8]][1]: 2, metrics_labels[metrics_types[8]][2]: -2, metrics_labels[metrics_types[8]][3]: 1}
+                     metrics_labels[28]: 2, metrics_labels[29]: 2, metrics_labels[30]: -2, metrics_labels[31]: 1}
+        print best_type
 
         return best_type
 
     @classmethod
-    def get_best_values(self, new_table, best_type, relative_index=3):
+    def get_i_rel_best_metrics(cls, metrics_labels, best_type):
+        i_rel_best_metrics = []
+        for i_metric_label in range(len(metrics_labels)):
+            if metrics_labels[i_metric_label] in best_type and \
+                    (best_type[metrics_labels[i_metric_label]] == 2 or best_type[metrics_labels[i_metric_label]] == -2):
+                i_rel_best_metrics.append(i_metric_label)
+        return i_rel_best_metrics
+
+
+    @classmethod
+    def get_best_values(self, metrics_dict, best_type):
         best_values = {}
 
-        transcripts_num = [int(num_str) for num_str in new_table[relative_index][1:]]
+        transcripts_num = [int(num_str) for num_str in metrics_dict['Transcripts']]
 
-        for row in new_table[1:]:
-            metric_label = row[0]
-
-            values = row[1:]
+        for metric_label in metrics_dict.keys():
+            values = metrics_dict[metric_label]
             if metric_label not in best_type:
                 best_values[metric_label] = None
             else:
@@ -119,15 +133,15 @@ class ShortReport():
                         if float_value > max_value:
                             max_value = float_value
                             argmax = values[i_v]
-                    best_values[metric_label] = max_value
+                    best_values[metric_label] = argmax
                 if best_type[metric_label] == -1:
                     min_value = float('Inf')
                     for i_v in range(len(values)):
                         float_value = float(values[i_v])
                         if float_value < min_value:
                             min_value = float_value
-                            argmax = values[i_v]
-                    best_values[metric_label] = min_value
+                            argmin = values[i_v]
+                    best_values[metric_label] = argmin
                 if best_type[metric_label] == 2:
                     max_rel_value = - float('Inf')
                     for i_v in range(len(values)):
@@ -147,23 +161,6 @@ class ShortReport():
 
         return best_values
 
-    @classmethod
-    def get_with_bold_table(self, table_to_draw, best_values):
-        with_bold_table = []
-        with_bold_table.append(table_to_draw[0])
-        table_values = table_to_draw[1:]
-        for i_row in range(len(table_values)):
-            with_bold_row = []
-            for i_column in range(len(table_values[i_row])):
-                if table_values[i_row][i_column] == best_values[i_row]:
-                    with_bold_row.append(r'\textbf{' + table_values[i_row][i_column] + '}')
-                else:
-                    with_bold_row.append(table_values[i_row][i_column])
-            print table_values[i_row], best_values[i_row]
-            with_bold_table.append(with_bold_row)
-        return with_bold_table
-
-
 
     def __init__(self, args, db_genes_metrics, transcripts_metrics, outdir, separated_reports,
                  comparison_report, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS):
@@ -174,8 +171,10 @@ class ShortReport():
 
         self.first_label = 'METRICS/TRANSCRIPTS'
         self.metrics_type = ShortReport.get_metrics_types()
-        self.metrics_labels = ShortReport.get_metrics_labels(self.metrics_type, TRANSCRIPT_LENS, WELL_FULLY_COVERAGE_THRESHOLDS)
-        self.best_type = ShortReport.get_best_type(self.metrics_labels, self.metrics_type)
+        self.metrics_labels = ShortReport.get_metrics_labels(TRANSCRIPT_LENS, WELL_FULLY_COVERAGE_THRESHOLDS)
+        self.metrics_type_labels_dict = ShortReport.get_metrics_type_labels_dict(self.metrics_type, self.metrics_labels)
+
+        self.best_type = ShortReport.get_best_type(self.metrics_labels)
 
         # txt file:
         self.path_txt = os.path.join(outdir, '{}.txt'.format(self.name))
@@ -191,6 +190,9 @@ class ShortReport():
                                                     WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS)
 
         column_n = len(transcripts_metrics) + 1
+
+        self.metrics_dict = self.get_metrics_dict(column_n)
+
         # if there are no transcripts, add one row for annotation metrics:
         # if len(transcripts_metrics) == 0:
         #     column_n = 2
@@ -203,20 +205,28 @@ class ShortReport():
         logger.info('Getting SHORT SUMMARY report...')
 
         self.column_widths = self.get_column_widths(column_n)
-        self.table_to_draw = self.get_pdf_table_to_draw(column_n)
-        self.best_values = self.get_best_values(self.table_to_draw, self.best_type)
+
+        self.best_values = self.get_best_values(self.metrics_dict, self.best_type)
+
+        distribution_report = None
+        if not args.no_plots:
+            # for several files with transcripts select only comparison report pictures:
+            if comparison_report is not None:
+                distribution_report = comparison_report.distribution_report
+            else:
+                distribution_report = separated_reports[0].distribution_report
 
         # TXT:
         self.print_txt()
 
         # TSV:
-        self.print_tsv()
+        #self.print_tsv()
 
         # TEX:
-        self.print_tex(column_n)
+        self.print_tex(column_n, distribution_report)
 
         # PDF:
-        self.print_pdf(args, separated_reports, comparison_report, logger)
+        #self.print_pdf(args, separated_reports, comparison_report, logger)
 
         logger.info('  saved to\n' + '    ' + '{}\n'.format(self.path_txt) + '    ' + '{}\n'.format(self.path_tex) +
                     4 * ' ' + '{}'.format(self.path_pdf))
@@ -230,8 +240,8 @@ class ShortReport():
         return widths
 
 
-    def get_pdf_table_to_draw(self, column_n):
-        new_table = []
+    def get_metrics_dict(self, column_n):
+        metrics_dict = {}
         for line in self.metrics_table:
             arr = line.split('  ')
             new_arr = []
@@ -239,8 +249,8 @@ class ShortReport():
                 if substr.strip() != '':
                     new_arr.append(substr.strip())
             if len(new_arr) == column_n:
-                new_table.append(new_arr)
-        return new_table
+                metrics_dict[new_arr[0]] = new_arr[1:]
+        return metrics_dict
 
 
     def print_txt(self):
@@ -257,60 +267,87 @@ class ShortReport():
             fout_tsv_file.write('\t'.join(line) + '\n')
 
 
-    def print_tex(self, column_n):
+    def print_tex(self, column_n, distribution_report):
         fout_tex_file = open(self.path_tex, 'w')
-        print >> fout_tex_file, '\usepackage{tabularx}'
 
-        print >> fout_tex_file, '\\documentclass[12pt,a4paper]{article}'
-        print >> fout_tex_file, '\\begin{document}'
+        print >> fout_tex_file, '\\documentclass[12pt,a4paper]{article}\n'
+
+        print >> fout_tex_file, '\usepackage{fancyhdr}'
+        print >> fout_tex_file, '\usepackage{graphicx}'
+        print >> fout_tex_file, '\n'
+
+        print >> fout_tex_file, '\\begin{document}\n'
+
+        print >> fout_tex_file, '\pagestyle{fancy}'
+        print >> fout_tex_file, r'\fancyhf{}'
+        print >> fout_tex_file, '\chead{Short summary report}\n'
+
         print >> fout_tex_file, '\\begin{table}[ht]'
         print >> fout_tex_file, '\\begin{center}'
-        #print >> fout_tex_file, '\\caption{All statistics are based on contigs of size $\geq$ %d bp, unless otherwise noted ' % qconfig.min_contig + \
-        #                        '(e.g., "\# contigs ($\geq$ 0 bp)" and "Total length ($\geq$ 0 bp)" include all contigs).}'
+        print >> fout_tex_file, '\small'
+
+        i_rel_best_metrics = ShortReport.get_i_rel_best_metrics(self.metrics_labels, self.best_type)
+        print >> fout_tex_file, \
+            r'\caption {rnaQUAST metrics for assembled transcripts. In each row the best values are indicated with ' \
+            r'\textbf{bold}. For the transcript metrics (rows ' + str(i_rel_best_metrics)[1:-1] + \
+            r') we highlighted the best \textbf{relative} values i.e. divided by the total number of transcripts in ' \
+            r'the corresponding assembly.}'
 
         print >> fout_tex_file, '\\begin{tabular}{|l*{' + reporting.val_to_str(column_n) + '}{|r}|}'
         print >> fout_tex_file, '\\hline'
 
-        metrics_dict = {}
-        for line in self.metrics_table:
-            arr = line.split('  ')
-            new_arr = []
-            for substr in arr:
-                if substr.strip() != '':
-                    new_arr.append(substr.strip())
-            if len(new_arr) == column_n:
-                metrics_dict[new_arr[0]] = new_arr[1:]
-
         tex_str = '{:<50}'.format(r'\textbf{' + self.first_label + '}')
-        for t_label in metrics_dict[self.first_label]:
-            tex_str += '{:<25}'.format('& ' + r'\textbf{' + t_label + '}')
+        for t_label in self.metrics_dict[self.first_label]:
+            tex_str += '{:<25}'.format(' & ' + r'\textbf{' + t_label + '}')
         tex_str += 10 * ' ' + r'\\ \hline\hline' + '\n'
         for metric_type in self.metrics_type:
             type_flag = False
             tmp_tex_str_type = '{:<50}'.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + 10 * ' ' + r'\\ \hline' + '\n'
             tmp_tex_str_label = ''
-            for i_metric_label in range(len(self.metrics_labels[metric_type])):
-                metric_label = self.metrics_labels[metric_type][i_metric_label]
-                if metric_label in metrics_dict:
+            for i_metric_label in range(len(self.metrics_type_labels_dict[metric_type])):
+                metric_label = self.metrics_type_labels_dict[metric_type][i_metric_label]
+                if metric_label in self.metrics_dict:
                     type_flag = True
                     tmp_tex_str_label += '{:<50}'.format(metric_label.replace('>', '$>$').replace('<', '$<$').replace('%', '\%'))
-                    for i_metric_value in range(len(metrics_dict[metric_label])):
-                        metric_value = metrics_dict[metric_label][i_metric_value]
+                    for i_metric_value in range(len(self.metrics_dict[metric_label])):
+                        metric_value = self.metrics_dict[metric_label][i_metric_value]
 
                         if metric_value == self.best_values[metric_label]:
                             metric_value = r'\textbf{' + metric_value + '}'
 
-                        tmp_tex_str_label += '{:<25}'.format('& ' + metric_value)
-                    tmp_tex_str_label += r'\\' + '\n'
+                        tmp_tex_str_label += '{:<25}'.format(' & ' + metric_value)
+                    tmp_tex_str_label += r' \\' + '\n'
             if type_flag:
                 tex_str += tmp_tex_str_type + tmp_tex_str_label.strip() + r' \hline' + '\n'
         fout_tex_file.write(tex_str)
 
-        print >>fout_tex_file, '\\end{tabular}'
-        print >>fout_tex_file, '\\end{center}'
-        print >>fout_tex_file, '\\end{table}'
-        print >>fout_tex_file, '\\end{document}'
+        print >> fout_tex_file, '\\end{tabular}'
+        print >> fout_tex_file, '\\end{center}'
+        print >> fout_tex_file, '\\end{table}\n'
+
+        print >> fout_tex_file, '\lfoot{generated by rnaQUAST}\n'
+
+
+        # FIGURES:
+        if distribution_report is not None:
+            short_report_plots = distribution_report.short_report_plots
+
+            for plot in short_report_plots:
+                self.add_figure_to_tex(fout_tex_file, plot)
+
+        print >> fout_tex_file, '\\end{document}'
+
         fout_tex_file.close()
+
+
+    def add_figure_to_tex(self, fout_tex_file, plot):
+        print >> fout_tex_file, r'\begin{figure}[h]'
+        print >> fout_tex_file, r'\begin{center}'
+        print >> fout_tex_file, '\includegraphics[width = \linewidth]{' + plot.path + '}'
+        print >> fout_tex_file, '\end{center}'
+        print >> fout_tex_file, '\caption{' + plot.caption + '}'
+        print >> fout_tex_file, '\end{figure}'
+        print >> fout_tex_file, '\n'
 
 
     # full report in PDF format: all tables and plots
