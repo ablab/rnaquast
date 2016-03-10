@@ -8,6 +8,10 @@ from quast23.libs import reporting
 font = {'family': 'sans-serif', 'style': 'normal', 'weight': 'medium', 'size': 10}
 
 
+space_label = 50
+space_value = 25
+
+
 class ShortReport():
     """Class which generate short report"""
 
@@ -203,7 +207,7 @@ class ShortReport():
         logger.print_timestamp()
         logger.info('Getting SHORT SUMMARY report...')
 
-        self.column_widths = self.get_column_widths(column_n)
+        self.column_widths = ShortReport.get_column_widths(self.metrics_dict, self.first_label)
 
         self.best_values = self.get_best_values(self.metrics_dict, self.best_type)
 
@@ -230,12 +234,18 @@ class ShortReport():
         logger.info('  saved to\n' + '    ' + '{}\n'.format(self.path_txt) + '    ' + '{}\n'.format(self.path_tex) +
                     4 * ' ' + '{}'.format(self.path_pdf))
 
+    @classmethod
+    def get_column_widths(cls, metrics_dict, first_label):
+        global space_label
+        global space_value
 
-    def get_column_widths(self, column_n):
         widths = []
-        widths.append(50)
-        for i in range(1, column_n):
-            widths.append(25)
+
+        widths.append(space_label)
+        for t_label in metrics_dict[first_label]:
+            curr_width = len(t_label) + 1
+            widths.append(max(curr_width, space_value))
+
         return widths
 
 
@@ -267,6 +277,9 @@ class ShortReport():
 
 
     def print_tex(self, column_n, distribution_report):
+        global space_label
+        global space_value
+
         fout_tex_file = open(self.path_tex, 'w')
 
         print >> fout_tex_file, '\\documentclass[12pt,a4paper]{article}\n'
@@ -295,27 +308,34 @@ class ShortReport():
         print >> fout_tex_file, '\\begin{tabular}{|l*{' + reporting.val_to_str(column_n) + '}{|r}|}'
         print >> fout_tex_file, '\\hline'
 
-        tex_str = '{:<50}'.format(r'\textbf{' + self.first_label + '}')
-        for t_label in self.metrics_dict[self.first_label]:
-            tex_str += '{:<25}'.format(' & ' + r'\textbf{' + t_label.replace('_', '\_') + '}')
+        column_width_str = '{:<' + str(self.column_widths[0]) + '}'
+        tex_str = column_width_str.format(r'\textbf{' + self.first_label + '}')
+        for i_t_label in range(len(self.metrics_dict[self.first_label])):
+            t_label = self.metrics_dict[self.first_label][i_t_label]
+            column_width_str = '{:<' + str(self.column_widths[i_t_label]) + '}'
+            tex_str += column_width_str.format(' & ' + r'\textbf{' + t_label.replace('_', '\_') + '}')
         tex_str += 10 * ' ' + r'\\ \hline\hline' + '\n'
         for metric_type in self.metrics_type:
             type_flag = False
-            tmp_tex_str_type = '{:<50}'.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + \
+            column_width_str = '{:<' + str(self.column_widths[0]) + '}'
+            tmp_tex_str_type = column_width_str.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + \
                                10 * ' ' + r'\\ \hline' + '\n'
             tmp_tex_str_label = ''
             for i_metric_label in range(len(self.metrics_type_labels_dict[metric_type])):
                 metric_label = self.metrics_type_labels_dict[metric_type][i_metric_label]
                 if metric_label in self.metrics_dict:
                     type_flag = True
-                    tmp_tex_str_label += '{:<50}'.format(metric_label.replace('>', '$>$').replace('<', '$<$').replace('%', '\%'))
+
+                    column_width_str = '{:<' + str(self.column_widths[0]) + '}'
+                    tmp_tex_str_label += column_width_str.format(metric_label.replace('>', '$>$').replace('<', '$<$').replace('%', '\%'))
                     for i_metric_value in range(len(self.metrics_dict[metric_label])):
                         metric_value = self.metrics_dict[metric_label][i_metric_value]
 
                         if metric_value == self.best_values[metric_label]:
                             metric_value = r'\textbf{' + metric_value + '}'
 
-                        tmp_tex_str_label += '{:<25}'.format(' & ' + metric_value)
+                        column_width_str = '{:<' + str(self.column_widths[i_metric_value]) + '}'
+                        tmp_tex_str_label += column_width_str.format(' & ' + metric_value)
                     tmp_tex_str_label += r' \\' + '\n'
             if type_flag:
                 tex_str += tmp_tex_str_type + tmp_tex_str_label.strip() + r' \hline' + '\n'
