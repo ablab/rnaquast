@@ -101,7 +101,6 @@ class ShortReport():
                      metrics_labels[27]: 1,
 
                      metrics_labels[28]: 2, metrics_labels[29]: 2, metrics_labels[30]: -2, metrics_labels[31]: 1}
-        print best_type
 
         return best_type
 
@@ -111,7 +110,7 @@ class ShortReport():
         for i_metric_label in range(len(metrics_labels)):
             if metrics_labels[i_metric_label] in best_type and \
                     (best_type[metrics_labels[i_metric_label]] == 2 or best_type[metrics_labels[i_metric_label]] == -2):
-                i_rel_best_metrics.append(i_metric_label)
+                i_rel_best_metrics.append(i_metric_label + 1)
         return i_rel_best_metrics
 
 
@@ -282,7 +281,7 @@ class ShortReport():
         print >> fout_tex_file, r'\fancyhf{}'
         print >> fout_tex_file, '\chead{Short summary report}\n'
 
-        print >> fout_tex_file, '\\begin{table}[ht]'
+        print >> fout_tex_file, '\\begin{table}[!ht]'
         print >> fout_tex_file, '\\begin{center}'
         print >> fout_tex_file, '\small'
 
@@ -341,9 +340,9 @@ class ShortReport():
 
 
     def add_figure_to_tex(self, fout_tex_file, plot):
-        print >> fout_tex_file, r'\begin{figure}[h]'
+        print >> fout_tex_file, r'\begin{figure}[!ht]'
         print >> fout_tex_file, r'\begin{center}'
-        print >> fout_tex_file, '\includegraphics[width = \linewidth]{' + plot.path + '}'
+        print >> fout_tex_file, r'\includegraphics[width = \linewidth]{' + plot.path + '}'
         print >> fout_tex_file, '\end{center}'
         print >> fout_tex_file, '\caption{' + plot.caption + '}'
         print >> fout_tex_file, '\end{figure}'

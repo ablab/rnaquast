@@ -71,7 +71,7 @@ class DistributionReport():
         # Query gap len distribution (tot, avg, min, max)
         # self.get_gap_length_plot(transcripts_metrics, self.output_dir, precision, short_report_visible=True)
 
-        '''# BASIC AND SIMPLE 11
+        # BASIC AND SIMPLE 11
         # Nx:
         if len(transcripts_metrics) != 0:
             if transcripts_metrics[0].basic_metrics is not None:
@@ -80,9 +80,17 @@ class DistributionReport():
                 for i_transcripts in range(len(transcripts_metrics)):
                     list_of_labels.append(transcripts_metrics[i_transcripts].label)
                     lists_of_lengths.append(transcripts_metrics[i_transcripts].basic_metrics.lengths)
-                UtilsPictures.Nx_plot(list_of_labels, lists_of_lengths, self.output_dir,
-                                      self.short_report_plots_figures, title_str='Nx', short_report_visible=False,
-                                      reference_lengths=None)
+
+                title_name = 'Nx'
+                label_x = 'x'
+                label_y = 'Contig length'
+                name_fig = 'Nx'
+                short_report_visible = False
+
+                nx_plot = \
+                    UtilsPictures.Plot(title_name, label_x, label_y, name_fig, short_report_visible, self.output_dir)
+
+                nx_plot.Nx_plot(list_of_labels, lists_of_lengths, self.short_report_plots)
 
         # BASIC AND SIMPLE 12
         # NAx:
@@ -93,9 +101,20 @@ class DistributionReport():
                 for i_transcripts in range(len(transcripts_metrics)):
                     list_of_labels.append(transcripts_metrics[i_transcripts].label)
                     lists_of_lengths.append(transcripts_metrics[i_transcripts].simple_metrics.alignment_lengths)
-                UtilsPictures.Nx_plot(list_of_labels, lists_of_lengths, self.output_dir,
-                                      self.short_report_plots_figures, title_str='NAx', short_report_visible=True,
-                                      reference_lengths=None)'''
+
+                caption = 'Nx plot for transcripts. Nx is a maximal number $N$, such that the total length of all ' \
+                          'transcripts longer than $N$ bp is at least $x\%$ of the total length of all transcripts.'
+                title_name = 'NAx'
+                label_x = 'x'
+                label_y = 'Contig length'
+                name_fig = 'NAx'
+                short_report_visible = True
+
+                nax_plot = \
+                    UtilsPictures.Plot(title_name, label_x, label_y, name_fig, short_report_visible, self.output_dir,
+                                       caption=caption)
+
+                nax_plot.Nx_plot(list_of_labels, lists_of_lengths, self.short_report_plots)
 
 
     # BASIC AND SIMPLE 1
@@ -283,7 +302,7 @@ class DistributionReport():
         transcripts_labels = []
         transcripts_distributions = []
         for i_transcripts in range(len(transcripts_metrics)):
-            if transcripts_metrics[i_transcripts].simple_metrics != None:
+            if transcripts_metrics[i_transcripts].simple_metrics is not None:
                 transcripts_distributions.append(transcripts_metrics[i_transcripts].simple_metrics.mismatch_num_distribution)
 
                 str = transcripts_metrics[i_transcripts].label
@@ -297,9 +316,14 @@ class DistributionReport():
         label_y = 'number of alignments'
         name_fig = 'mismatch_rate'
 
+        caption = \
+            'Plot showing cumulative substitution errors per alignment distribution. Each point represents the ' \
+            'number of alignments with the corresponding number of mismatches or greater; ' \
+            'the plot is given in logarithmic scale.'
         mismatch_rate_plot = \
             UtilsPictures.Plot(title_name, label_x, label_y, name_fig, short_report_visible, out_dir,
-                               transcripts_labels, transcripts_distributions, y_log_scale=True, def_step=1)
+                               transcripts_labels, transcripts_distributions, y_log_scale=True, caption=caption,
+                               def_step=1)
 
         mismatch_rate_plot.plot_compare_distribution(self.short_report_plots)
 
@@ -411,16 +435,19 @@ class DistributionReport():
 
             transcripts_labels.append(DistributionReport.get_label(str, list_label))
 
-        title_name = 'fraction of transcript matched'
-        label_x = 'fraction of transcript matched'
+        caption = 'Plot showing cumulative transcript match histogram. Each bar represents the number of transcripts ' \
+                  'with matched fraction equal to or greater than the value on $x$ axis; transcript matched fraction is ' \
+                  'calculated as the number of its bases covering an isoform divided by the transcript length.'
+        title_name = 'transcript matched fraction'
+        label_x = 'matched fraction'
         label_y = 'number of transcripts'
         name_fig = 'x-matched'
 
         x_matched_plot = \
             UtilsPictures.Plot(title_name, label_x, label_y, name_fig, short_report_visible, out_dir,
-                               transcripts_labels, transcripts_distributions, def_step=0.1)
+                               transcripts_labels, transcripts_distributions, caption=caption, def_step=0.1)
 
-        x_matched_plot.plot_compare_distribution(self.short_report_plots)
+        x_matched_plot.plot_compare_histogram(transcripts_metrics, self.short_report_plots)
 
 
     def get_x_matched_blocks_plot(self, transcripts_metrics, out_dir, precision, short_report_visible=False):
@@ -434,8 +461,8 @@ class DistributionReport():
 
             transcripts_labels.append(DistributionReport.get_label(str, list_label))
 
-        title_name = 'fraction of block matched'
-        label_x = 'fraction of block matched'
+        title_name = 'block matched fraction'
+        label_x = 'matched fraction'
         label_y = 'number of blocks'
         name_fig = 'x-matched_blocks'
 
@@ -468,14 +495,18 @@ class DistributionReport():
 
             transcripts_labels.append(DistributionReport.get_label(str, list_label))
 
-        title_name = 'fraction of isoform captured by a single transcript'
-        label_x = 'fraction of isoform assembled'
+        caption = 'Plot showing cumulative isoform assembly histogram. Each bar represents the number of isoforms ' \
+                  'with assembled fraction equal to or greater than the value on $x$ axis; isoform assembled fraction is ' \
+                  'calculated as the maximum number of captured by single assembled transcript bases divided by the ' \
+                  'total isoform length.'
+        title_name = 'isoform assembled fraction'
+        label_x = 'assembled fraction'
         label_y = 'number of isoforms'
         name_fig = 'x-assembled'
 
         x_assembled_plot = \
             UtilsPictures.Plot(title_name, label_x, label_y, name_fig, short_report_visible, out_dir,
-                               transcripts_labels, transcripts_distribution, def_step=0.1)
+                               transcripts_labels, transcripts_distribution, caption=caption, def_step=0.1)
 
         x_assembled_plot.plot_compare_histogram(transcripts_metrics, self.short_report_plots)
 
@@ -492,8 +523,8 @@ class DistributionReport():
 
             transcripts_labels.append(DistributionReport.get_label(str, list_label))
 
-        title_name = 'fraction of exon captured by a single transcript'
-        label_x = 'fraction of exon assembled'
+        title_name = 'exon assembled fraction'
+        label_x = 'assembled fraction'
         label_y = 'number of exons'
         name_fig = 'x-assembled_exons'
 
@@ -518,19 +549,23 @@ class DistributionReport():
 
             transcripts_labels.append(DistributionReport.get_label(str, list_label))
 
-        title_str = 'fraction of isoform covered by all alignments'
-        label_x = 'fraction of isoform covered'
+        caption = 'Plot showing cumulative isoform coverage histogram. Each bar represents the number of isoforms ' \
+                  'with covered fraction equal to or greater than the value on $x$ axis; isoform covered fraction is ' \
+                  'calculated as the number of covered bases (by all transcripts in the assembly) divided by the ' \
+                  'total isoform length.'
+        title_str = 'isoform covered fraction'
+        label_x = 'covered fraction'
         label_y = 'number of isoforms'
         name_fig = 'x-covered'
 
         x_covered_plot = \
             UtilsPictures.Plot(title_str, label_x, label_y, name_fig, short_report_visible, out_dir,
-                               transcripts_labels, transcripts_distribution, def_step=0.1)
+                               transcripts_labels, transcripts_distribution, caption=caption, def_step=0.1)
 
         x_covered_plot.plot_compare_histogram(transcripts_metrics, self.short_report_plots)
 
 
-    # distributions for exons::
+    # distributions for exons:
     def get_x_covered_exons_plot(self, transcripts_metrics, out_dir, precision, short_report_visible):
         # distribution for transcripts by all mapped transcripts at once
         transcripts_labels = []
@@ -543,8 +578,8 @@ class DistributionReport():
 
             transcripts_labels.append(DistributionReport.get_label(str, list_label))
 
-        title_name = 'fraction of exon covered by all alignments'
-        label_x = 'fraction of exon covered'
+        title_name = 'exon covered fraction'
+        label_x = 'covered fraction'
         label_y = 'number of exons'
         name_fig = 'x-covered_exons'
 

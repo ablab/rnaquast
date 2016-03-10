@@ -34,7 +34,7 @@ except Exception:
 class Plot():
 
     def __init__(self, title_name, label_x, label_y, name_fig, short_report_visible, out_dir,
-                 transcripts_labels, transcripts_distribution, isoforms_label=None, isoforms_distribution=None,
+                 transcripts_labels=None, transcripts_distribution=None, isoforms_label=None, isoforms_distribution=None,
                  x_log_scale=False, y_log_scale=False, caption='', def_step=None, ext_plots='png'):
         self.def_step = def_step
 
@@ -64,12 +64,11 @@ class Plot():
 
 
     # common routine for Nx-plot and NGx-plot (and probably for others Nyx-plots in the future)
-    def Nx_plot(self, list_of_labels, lists_of_lengths, out_dir, short_report_plots, title_str, short_report_visible,
-                reference_lengths=None):
+    def Nx_plot(self, list_of_labels, lists_of_lengths, short_report_plots, reference_lengths=None):
         if matplotlib_error:
             return
 
-        logger.info('    Drawing ' + title_str.replace('\n', ' ') + ' plot...')
+        logger.info('    Drawing ' + self.title_name.replace('\n', ' ') + ' plot...')
 
         self.fig = figure()
 
@@ -98,18 +97,18 @@ class Plot():
 
             plot(vals_Nx, vals_l, '-', label=list_of_labels[id], color=list_colors[id % len(list_colors)])
 
-        title(title_str)
+        title(self.title_name)
 
         legend(fontsize='x-small', loc='center left', bbox_to_anchor=(1.01, 0.5))
 
         xlim(0, 100)
-        xlabel('x')
-        ylabel('Contig length')
+        xlabel(self.label_x)
+        ylabel(self.label_y)
 
-        savefig(os.path.join(out_dir, title_str + '.' + ext_plots), additional_artists='art', bbox_inches='tight')
-        logger.debug('      saved to ' + os.path.join(out_dir, title_str + '.' + ext_plots))
+        savefig(self.path, additional_artists='art', bbox_inches='tight')
+        logger.debug('      saved to ' + self.path)
 
-        if short_report_visible:
+        if self.short_report_visible:
            short_report_plots.append(self)
 
         close()
