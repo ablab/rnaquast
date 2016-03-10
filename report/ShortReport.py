@@ -297,11 +297,12 @@ class ShortReport():
 
         tex_str = '{:<50}'.format(r'\textbf{' + self.first_label + '}')
         for t_label in self.metrics_dict[self.first_label]:
-            tex_str += '{:<25}'.format(' & ' + r'\textbf{' + t_label + '}')
+            tex_str += '{:<25}'.format(' & ' + r'\textbf{' + t_label.replace('_', '\_') + '}')
         tex_str += 10 * ' ' + r'\\ \hline\hline' + '\n'
         for metric_type in self.metrics_type:
             type_flag = False
-            tmp_tex_str_type = '{:<50}'.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + 10 * ' ' + r'\\ \hline' + '\n'
+            tmp_tex_str_type = '{:<50}'.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + \
+                               10 * ' ' + r'\\ \hline' + '\n'
             tmp_tex_str_label = ''
             for i_metric_label in range(len(self.metrics_type_labels_dict[metric_type])):
                 metric_label = self.metrics_type_labels_dict[metric_type][i_metric_label]
