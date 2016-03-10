@@ -69,10 +69,10 @@ class ShortReport():
              metrics_types[1]: metrics_labels[2:5],
              metrics_types[2]: metrics_labels[5:9],
              metrics_types[3]: metrics_labels[9:12],
-             metrics_types[4]: metrics_labels[12],
+             metrics_types[4]: [metrics_labels[12]],
              metrics_types[5]: metrics_labels[13:25],
              metrics_types[6]: metrics_labels[25:27],
-             metrics_types[7]: metrics_labels[27],
+             metrics_types[7]: [metrics_labels[27]],
              metrics_types[8]: metrics_labels[28:]}
         return metrics_type_labels_dict
 
@@ -105,11 +105,11 @@ class ShortReport():
         return best_type
 
     @classmethod
-    def get_i_rel_best_metrics(cls, metrics_labels, best_type):
+    def get_i_rel_best_metrics(cls, metrics_table, best_type):
         i_rel_best_metrics = []
-        for i_metric_label in range(len(metrics_labels)):
-            if metrics_labels[i_metric_label] in best_type and \
-                    (best_type[metrics_labels[i_metric_label]] == 2 or best_type[metrics_labels[i_metric_label]] == -2):
+        for i_metric_label in range(len(metrics_table[1:])):
+            metric_label = metrics_table[1:][i_metric_label].strip().split('  ')[0]
+            if metric_label in best_type and (best_type[metric_label] == 2 or best_type[metric_label] == -2):
                 i_rel_best_metrics.append(i_metric_label + 1)
         return i_rel_best_metrics
 
@@ -285,7 +285,7 @@ class ShortReport():
         print >> fout_tex_file, '\\begin{center}'
         print >> fout_tex_file, '\small'
 
-        i_rel_best_metrics = ShortReport.get_i_rel_best_metrics(self.metrics_labels, self.best_type)
+        i_rel_best_metrics = ShortReport.get_i_rel_best_metrics(self.metrics_table, self.best_type)
         print >> fout_tex_file, \
             r'\caption {rnaQUAST metrics for assembled transcripts. In each row the best values are indicated with ' \
             r'\textbf{bold}. For the transcript metrics (rows ' + str(i_rel_best_metrics)[1:-1] + \
@@ -518,7 +518,7 @@ class ShortReport():
         # avg_len_wout_introns_str += '{:<25}'.format(round(basic_isoforms_metrics.avg_len_wout_introns, precision))
         # avg_exon_len_str += '{:<25}'.format(round(basic_isoforms_metrics.avg_exon_len, precision))
 
-        self.metrics_table.append(' == DATABASE METRICS == \n')
+        # self.metrics_table.append(' == DATABASE METRICS == \n')
         if db_genes_metrics is not None:
             self.metrics_table.append(tot_genes_num_str + '\n')
             self.metrics_table.append(avg_exons_num_str + '\n')
@@ -558,7 +558,7 @@ class ShortReport():
             # n50_str += '{:<25}'.format(basic_transcripts_metrics.n50)
             # max_transcript_len_str += '{:<25}'.format(basic_transcripts_metrics.max_len)
 
-        self.metrics_table.append('\n == BASIC TRANSCRIPTS METRICS == \n')
+        # self.metrics_table.append('\n == BASIC TRANSCRIPTS METRICS == \n')
         self.metrics_table.append(num_transcripts_str + '\n')
         self.metrics_table.append(num_transcripts_500_str + '\n')
         self.metrics_table.append(num_transcripts_1000_str + '\n')
@@ -585,7 +585,7 @@ class ShortReport():
 
             # num_alignments_str += '{:<25}'.format(simple_metrics.num_alignments)
 
-        self.metrics_table.append('\n == ALIGNMENT METRICS == \n')
+        # self.metrics_table.append('\n == ALIGNMENT METRICS == \n')
         self.metrics_table.append(num_aligned_str + '\n')
         self.metrics_table.append(num_uniquely_aligned_str + '\n')
         self.metrics_table.append(num_multiply_aligned_str + '\n')
@@ -614,7 +614,7 @@ class ShortReport():
             # avg_block_len_str += '{:<25}'.format(round(simple_metrics.avg_block_len, precision))
             # avg_mismatches_str += '{:<25}'.format(round(simple_metrics.avg_mismatch_num, precision))
 
-        self.metrics_table.append('\n == ALIGNMENT METRICS FOR NON-MISASSEMBLED TRANSCRIPTS == \n')
+        # self.metrics_table.append('\n == ALIGNMENT METRICS FOR NON-MISASSEMBLED TRANSCRIPTS == \n')
         self.metrics_table.append(avg_aligned_fraction_str + '\n')
         self.metrics_table.append(avg_alignment_len_str + '\n')
         self.metrics_table.append(avg_mismatches_per_transcript_str + '\n')
@@ -644,7 +644,7 @@ class ShortReport():
             # mis_str_by_blat += '{:<25}'.format(transcripts_metrics[i_transcripts].simple_metrics.num_misassembled_by_blat)
             # mis_str_by_blast += '{:<25}'.format(transcripts_metrics[i_transcripts].simple_metrics.num_misassembled_by_blast)
 
-        self.metrics_table.append('\n == ALIGNMENT METRICS FOR MISASSEMBLED (CHIMERIC) TRANSCRIPTS == \n')
+        # self.metrics_table.append('\n == ALIGNMENT METRICS FOR MISASSEMBLED (CHIMERIC) TRANSCRIPTS == \n')
         self.metrics_table.append(mis_str_together + '\n')
 
         # self.metrics_table.append(mis_str_by_blat + '\n')
@@ -722,7 +722,7 @@ class ShortReport():
             else:
                 geneMarkS_T_genes_str += '{:<25}'.format('0')
 
-        self.metrics_table.append('\n == ASSEMBLY COMPLETENESS (SENSITIVITY) == \n')
+        # self.metrics_table.append('\n == ASSEMBLY COMPLETENESS (SENSITIVITY) == \n')
 
         isoforms_coverage = transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage
         if isoforms_coverage is not None:
@@ -751,12 +751,12 @@ class ShortReport():
         #     self.metrics_table.append(cegma_partial_str + '\n')
 
         if busco_complete_str.strip().split()[1:].count('0') != len(transcripts_metrics):
-            self.metrics_table.append('\n == BUSCO METRICS == \n')
+            # self.metrics_table.append('\n == BUSCO METRICS == \n')
             self.metrics_table.append(busco_complete_str + '\n')
             self.metrics_table.append(busco_partial_str + '\n')
 
         if geneMarkS_T_genes_str.strip().split()[1:].count('0') != len(transcripts_metrics):
-            self.metrics_table.append('\n == GeneMarkS-T METRICS == \n')
+            # self.metrics_table.append('\n == GeneMarkS-T METRICS == \n')
             self.metrics_table.append(geneMarkS_T_genes_str + '\n')
 
 
@@ -775,7 +775,7 @@ class ShortReport():
                 mean_transcript_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, PRECISION))
 
         if transcripts_metrics[0].assembly_correctness_metrics.transcripts_coverage is not None:
-            self.metrics_table.append('\n == ASSEMBLY SPECIFICITY == \n')
+            # self.metrics_table.append('\n == ASSEMBLY SPECIFICITY == \n')
 
             self.metrics_table.append(matched_well_str + '\n')
             self.metrics_table.append(matched_fully_str + '\n')
