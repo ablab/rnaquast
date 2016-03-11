@@ -7,7 +7,7 @@ from quast23.libs import reporting
 # Font of plot captions, axes labels and ticks
 font = {'family': 'sans-serif', 'style': 'normal', 'weight': 'medium', 'size': 10}
 
-
+space_type = 80
 space_label = 50
 space_value = 25
 
@@ -223,7 +223,7 @@ class ShortReport():
         self.print_txt()
 
         # TSV:
-        #self.print_tsv()
+        self.print_tsv()
 
         # TEX:
         self.print_tex(column_n, distribution_report)
@@ -272,14 +272,28 @@ class ShortReport():
 
     def print_tsv(self):
         fout_tsv_file = open(self.path_tsv, 'w')
-        for line in self.table_to_draw:
-            fout_tsv_file.write('\t'.join(line) + '\n')
+
+        tsv_str = self.first_label
+        for i_t_label in range(len(self.metrics_dict[self.first_label])):
+            tsv_str += '\t' + self.metrics_dict[self.first_label][i_t_label]
+        tsv_str += '\n'
+
+        for metric_type in self.metrics_type:
+
+            for i_metric_label in range(len(self.metrics_type_labels_dict[metric_type])):
+                metric_label = self.metrics_type_labels_dict[metric_type][i_metric_label]
+                if metric_label in self.metrics_dict:
+                    tsv_str += metric_label
+                    for i_metric_value in range(len(self.metrics_dict[metric_label])):
+                        metric_value = self.metrics_dict[metric_label][i_metric_value]
+
+                        tsv_str += '\t' + metric_value
+                    tsv_str += '\n'
+
+        fout_tsv_file.write(tsv_str)
 
 
     def print_tex(self, column_n, distribution_report):
-        global space_label
-        global space_value
-
         fout_tex_file = open(self.path_tex, 'w')
 
         print >> fout_tex_file, '\\documentclass[12pt,a4paper]{article}\n'
@@ -314,8 +328,11 @@ class ShortReport():
 
 
     def add_table_to_tex(self, fout_tex_file, column_n):
+        global space_type
+
         print >> fout_tex_file, '\\begin{table}[t]'
         print >> fout_tex_file, '\centering'
+        print >> fout_tex_file, '\clearpage'
 
         i_rel_best_metrics = ShortReport.get_i_rel_best_metrics(self.metrics_table, self.best_type)
         print >> fout_tex_file, \
@@ -340,7 +357,8 @@ class ShortReport():
         tex_str += 10 * ' ' + r'\\ \hline\hline' + '\n'
         for metric_type in self.metrics_type:
             type_flag = False
-            tmp_tex_str_type = '{:<80}'.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + \
+            column_width_str = '{:<' + str(space_type) + '}'
+            tmp_tex_str_type = column_width_str.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + \
                                10 * ' ' + r'\\ \hline' + '\n'
             tmp_tex_str_label = ''
             for i_metric_label in range(len(self.metrics_type_labels_dict[metric_type])):
@@ -372,9 +390,9 @@ class ShortReport():
 
     def add_figure_to_tex(self, fout_tex_file, plot):
         print >> fout_tex_file, r'\begin{figure}[t]'
-        print >> fout_tex_file, r'\begin{center}'
+        print >> fout_tex_file, r'\centering'
+        print >> fout_tex_file, '\clearpage'
         print >> fout_tex_file, r'\includegraphics[width = \linewidth]{' + plot.path + '}'
-        print >> fout_tex_file, '\end{center}'
         print >> fout_tex_file, '\caption{' + plot.caption + '}'
         print >> fout_tex_file, '\end{figure}'
         print >> fout_tex_file, '\FloatBarrier'
