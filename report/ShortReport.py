@@ -335,13 +335,12 @@ class ShortReport():
         tex_str = column_width_str.format(r'\textbf{' + self.first_label + '}')
         for i_t_label in range(len(self.metrics_dict[self.first_label])):
             t_label = self.metrics_dict[self.first_label][i_t_label]
-            column_width_str = '{:<' + str(self.column_widths[i_t_label]) + '}'
+            column_width_str = '{:<' + str(self.column_widths[i_t_label + 1]) + '}'
             tex_str += column_width_str.format(' & ' + r'\textbf{' + t_label.replace('_', '\_') + '}')
         tex_str += 10 * ' ' + r'\\ \hline\hline' + '\n'
         for metric_type in self.metrics_type:
             type_flag = False
-            column_width_str = '{:<' + str(self.column_widths[0]) + '}'
-            tmp_tex_str_type = column_width_str.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + \
+            tmp_tex_str_type = '{:<80}'.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + \
                                10 * ' ' + r'\\ \hline' + '\n'
             tmp_tex_str_label = ''
             for i_metric_label in range(len(self.metrics_type_labels_dict[metric_type])):
@@ -357,7 +356,7 @@ class ShortReport():
                         if metric_value == self.best_values[metric_label]:
                             metric_value = r'\textbf{' + metric_value + '}'
 
-                        column_width_str = '{:<' + str(self.column_widths[i_metric_value]) + '}'
+                        column_width_str = '{:<' + str(self.column_widths[i_metric_value + 1]) + '}'
                         tmp_tex_str_label += column_width_str.format(' & ' + metric_value)
                     tmp_tex_str_label += r' \\' + '\n'
             if type_flag:
