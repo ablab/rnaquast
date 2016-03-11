@@ -109,12 +109,16 @@ class ShortReport():
         return best_type
 
     @classmethod
-    def get_i_rel_best_metrics(cls, metrics_table, best_type):
+    def get_i_rel_best_metrics(cls, metrics_labels, metrics_dict, best_type):
         i_rel_best_metrics = []
-        for i_metric_label in range(len(metrics_table[1:])):
-            metric_label = metrics_table[1:][i_metric_label].strip().split('  ')[0]
-            if metric_label in best_type and (best_type[metric_label] == 2 or best_type[metric_label] == -2):
-                i_rel_best_metrics.append(i_metric_label + 1)
+        num_absent = 0
+        for i_metric_label in range(len(metrics_labels)):
+            metric_label = metrics_labels[i_metric_label]
+            if metric_label not in metrics_dict:
+                num_absent += 1
+            else:
+                if metric_label in best_type and (best_type[metric_label] == 2 or best_type[metric_label] == -2):
+                    i_rel_best_metrics.append(i_metric_label + 1 - num_absent)
         return i_rel_best_metrics
 
 
@@ -189,12 +193,9 @@ class ShortReport():
         self.path_pdf = os.path.join(outdir, '{}.pdf'.format(self.name))
 
         # get table with all short report metrics:
-        self.metrics_table = self.set_metrics_table(args, db_genes_metrics, transcripts_metrics,
-                                                    WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS)
+        self.metrics_dict = self.set_metrics_dict(db_genes_metrics, transcripts_metrics, PRECISION, TRANSCRIPT_LENS)
 
         column_n = len(transcripts_metrics) + 1
-
-        self.metrics_dict = self.get_metrics_dict(column_n)
 
         # if there are no transcripts, add one row for annotation metrics:
         # if len(transcripts_metrics) == 0:
@@ -229,7 +230,7 @@ class ShortReport():
         self.print_tex(column_n, distribution_report)
 
         # PDF:
-        #self.print_pdf(args, separated_reports, comparison_report, logger)
+        # self.print_pdf(args, separated_reports, comparison_report, logger)
 
         logger.info('  saved to\n' + '    ' + '{}\n'.format(self.path_txt) + '    ' + '{}\n'.format(self.path_tex) +
                     4 * ' ' + '{}'.format(self.path_pdf))
@@ -264,9 +265,37 @@ class ShortReport():
 
     def print_txt(self):
         fout_txt_file = open(self.path_txt, 'w')
-        fout_txt_file.write('SHORT REPORT \n')
-        for line in self.metrics_table:
-            fout_txt_file.write(line)
+
+        fout_txt_file.write('SHORT SUMMARY REPORT \n\n')
+
+        column_width_str = '{:<' + str(self.column_widths[0]) + '}'
+        txt_str = column_width_str.format(self.first_label)
+        for i_t_label in range(len(self.metrics_dict[self.first_label])):
+            t_label = self.metrics_dict[self.first_label][i_t_label]
+            column_width_str = '{:<' + str(self.column_widths[i_t_label + 1]) + '}'
+            txt_str += column_width_str.format(t_label)
+        txt_str += '\n'
+        for metric_type in self.metrics_type:
+            type_flag = False
+            tmp_txt_str_type = '\n ==' + metric_type + ' == \n'
+            tmp_txt_str_label = ''
+            for i_metric_label in range(len(self.metrics_type_labels_dict[metric_type])):
+                metric_label = self.metrics_type_labels_dict[metric_type][i_metric_label]
+                if metric_label in self.metrics_dict:
+                    type_flag = True
+
+                    column_width_str = '{:<' + str(self.column_widths[0]) + '}'
+                    tmp_txt_str_label += column_width_str.format(metric_label)
+                    for i_metric_value in range(len(self.metrics_dict[metric_label])):
+                        metric_value_str = str(self.metrics_dict[metric_label][i_metric_value])
+
+                        column_width_str = '{:<' + str(self.column_widths[i_metric_value + 1]) + '}'
+                        tmp_txt_str_label += column_width_str.format(metric_value_str)
+                    tmp_txt_str_label += '\n'
+            if type_flag:
+                txt_str += tmp_txt_str_type + tmp_txt_str_label.strip() + '\n'
+        fout_txt_file.write(txt_str)
+
         fout_txt_file.close()
 
 
@@ -287,7 +316,7 @@ class ShortReport():
                     for i_metric_value in range(len(self.metrics_dict[metric_label])):
                         metric_value = self.metrics_dict[metric_label][i_metric_value]
 
-                        tsv_str += '\t' + metric_value
+                        tsv_str += '\t' + str(metric_value)
                     tsv_str += '\n'
 
         fout_tsv_file.write(tsv_str)
@@ -332,9 +361,8 @@ class ShortReport():
 
         print >> fout_tex_file, '\\begin{table}[t]'
         print >> fout_tex_file, '\centering'
-        print >> fout_tex_file, '\clearpage'
 
-        i_rel_best_metrics = ShortReport.get_i_rel_best_metrics(self.metrics_table, self.best_type)
+        i_rel_best_metrics = ShortReport.get_i_rel_best_metrics(self.metrics_labels, self.metrics_dict, self.best_type)
         print >> fout_tex_file, \
             r'\caption {rnaQUAST metrics for assembled transcripts. In each row the best values are indicated with ' \
             r'\textbf{bold}. For the transcript metrics (rows ' + str(i_rel_best_metrics)[1:-1] + \
@@ -369,13 +397,13 @@ class ShortReport():
                     column_width_str = '{:<' + str(self.column_widths[0]) + '}'
                     tmp_tex_str_label += column_width_str.format(metric_label.replace('>', '$>$').replace('<', '$<$').replace('%', '\%'))
                     for i_metric_value in range(len(self.metrics_dict[metric_label])):
-                        metric_value = self.metrics_dict[metric_label][i_metric_value]
+                        metric_value_str = str(self.metrics_dict[metric_label][i_metric_value])
 
-                        if metric_value == self.best_values[metric_label]:
-                            metric_value = r'\textbf{' + metric_value + '}'
+                        if metric_value_str == str(self.best_values[metric_label]):
+                            metric_value_str = r'\textbf{' + metric_value_str + '}'
 
                         column_width_str = '{:<' + str(self.column_widths[i_metric_value + 1]) + '}'
-                        tmp_tex_str_label += column_width_str.format(' & ' + metric_value)
+                        tmp_tex_str_label += column_width_str.format(' & ' + metric_value_str)
                     tmp_tex_str_label += r' \\' + '\n'
             if type_flag:
                 tex_str += tmp_tex_str_type + tmp_tex_str_label.strip() + r' \hline' + '\n'
@@ -386,16 +414,17 @@ class ShortReport():
         print >> fout_tex_file, '\end{table}\n'
 
         print >> fout_tex_file, '\FloatBarrier'
+        print >> fout_tex_file, '\clearpage'
 
 
     def add_figure_to_tex(self, fout_tex_file, plot):
         print >> fout_tex_file, r'\begin{figure}[t]'
         print >> fout_tex_file, r'\centering'
-        print >> fout_tex_file, '\clearpage'
         print >> fout_tex_file, r'\includegraphics[width = \linewidth]{' + plot.path + '}'
         print >> fout_tex_file, '\caption{' + plot.caption + '}'
         print >> fout_tex_file, '\end{figure}'
         print >> fout_tex_file, '\FloatBarrier'
+        print >> fout_tex_file, '\clearpage'
         print >> fout_tex_file, '\n'
 
 
@@ -422,7 +451,7 @@ class ShortReport():
 
 
     # draw_report_table from quast23.libs.plotter:
-    def get_pdf_table_figure(self, report_name, extra_info, table_to_draw, column_widths, logger):
+    def get_pdf_table_figure(self, report_name, extra_info, column_widths, logger):
         # checking if matplotlib and pylab is installed:
         matplotlib_error = False
         try:
@@ -505,13 +534,12 @@ class ShortReport():
 
 
     # generate table with all metrics for short report:
-    def set_metrics_table(self, args, db_genes_metrics, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS):
-        self.metrics_table = []
+    def set_metrics_dict(self, db_genes_metrics, transcripts_metrics, PRECISION, TRANSCRIPT_LENS):
+        self.metrics_dict = {}
 
-        name_str = '{:<50}'.format('METRICS/TRANSCRIPTS')
+        self.metrics_dict[self.first_label] = []
         for i_transcripts in range(len(transcripts_metrics)):
-            name_str += '{:<25}'.format(transcripts_metrics[i_transcripts].label)
-        self.metrics_table.append(name_str + '\n')
+            self.metrics_dict[self.first_label].append(transcripts_metrics[i_transcripts].label)
 
         if db_genes_metrics is not None:
             # ======= DATABASE METRICS ===========
@@ -519,315 +547,194 @@ class ShortReport():
 
         if len(transcripts_metrics) >= 1:
             # ======= BASIC TRANSCRIPTS METRICS ===========
-            if transcripts_metrics[0].basic_metrics is not None:
-                self.add_basic_metrics_to_table(transcripts_metrics, PRECISION, TRANSCRIPT_LENS)
+            self.add_basic_metrics_to_table(transcripts_metrics)
 
             # ======= ALIGNMENT METRICS ===========
-            if transcripts_metrics[0].simple_metrics is not None:
-                self.add_alignment_metrics_to_table(transcripts_metrics, PRECISION)
+            self.add_alignment_metrics_to_table(transcripts_metrics, PRECISION)
 
-                self.add_fusion_misassemble_metrics_to_table(transcripts_metrics)
+            self.add_fusion_misassemble_metrics_to_table(transcripts_metrics)
 
             # ======= ASSEMBLY COMPLETENESS METRICS ===========
-            if transcripts_metrics[0].assembly_completeness_metrics is not None:
-                self.add_assemble_completeness_metrics_to_table(transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
+            self.add_assemble_completeness_metrics_to_table(transcripts_metrics, PRECISION)
 
             # ======= ASSEMBLY CORRECTNESS METRICS ===========
-            if transcripts_metrics[0].assembly_correctness_metrics is not None:
-                    self.add_assemble_correctness_metrics_to_table(transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
+            self.add_assemble_correctness_metrics_to_table(transcripts_metrics, PRECISION)
 
-        return self.metrics_table
+        return self.metrics_dict
 
 
     def add_database_metrics_to_table(self, db_genes_metrics, transcripts_metrics, PRECISION):
         # Database short report metrics:
-        tot_genes_num_str = '{:<50}'.format('Genes')
-        avg_exons_num_str = '{:<50}'.format('Avg. number of exons per isoform')
-
-        # tot_protein_coding_genes_num_str = '{:<50}'.format('Protein coding genes')
-
-        # tot_isoforms_num_str = '{:<50}'.format('Isoforms')
-        # tot_protein_coding_isoforms_num_str = '{:<50}'.format('Protein coding isoforms')
-        # avg_len_wout_introns_str = '{:<50}'.format('Avg. length of all isoforms')
-        # avg_exon_len_str = '{:<50}'.format('Avg. exon length')
-
         num_row = len(transcripts_metrics)
         if len(transcripts_metrics) == 0:
             num_row = 1
 
+        for i_label in range(0, 2):
+            self.metrics_dict[self.metrics_labels[i_label]] = []
+
         for i_transcript in range(num_row):
-            if db_genes_metrics is not None:
-                tot_genes_num_str += '{:<25}'.format(db_genes_metrics.genes_num)
+                self.metrics_dict[self.metrics_labels[0]].append(db_genes_metrics.genes_num)
 
-                avg_exons_num_str += '{:<25}'.format(round(db_genes_metrics.avg_exons_num, PRECISION))
-
-        # tot_protein_coding_genes_num_str += '{:<25}'.format(basic_genes_metrics.num_protein_coding)
-
-        # tot_isoforms_num_str += '{:<25}'.format(basic_isoforms_metrics.number)
-        # tot_protein_coding_isoforms_num_str += '{:<25}'.format(basic_isoforms_metrics.num_protein_coding)
-        # avg_len_wout_introns_str += '{:<25}'.format(round(basic_isoforms_metrics.avg_len_wout_introns, precision))
-        # avg_exon_len_str += '{:<25}'.format(round(basic_isoforms_metrics.avg_exon_len, precision))
+                self.metrics_dict[self.metrics_labels[1]].append(round(db_genes_metrics.avg_exons_num, PRECISION))
 
         # self.metrics_table.append(' == DATABASE METRICS == \n')
-        if db_genes_metrics is not None:
-            self.metrics_table.append(tot_genes_num_str + '\n')
-            self.metrics_table.append(avg_exons_num_str + '\n')
-
-        # gff source field unfortunately contain database name instead of transcripts type protein_coding:
-        # if basic_genes_metrics.num_protein_coding != 0:
-        #     self.metrics_table.append(tot_protein_coding_genes_num_str + '\n')
-
-        # self.metrics_table.append(tot_isoforms_num_str + '\n')
-
-        # gff source field unfortunately contain database name instead of transcripts type protein_coding:
-        # if basic_isoforms_metrics.num_protein_coding != 0:
-        #     self.metrics_table.append(tot_protein_coding_isoforms_num_str + '\n')
-
-        # self.metrics_table.append(avg_len_wout_introns_str + '\n')
-        # self.metrics_table.append(avg_exon_len_str + '\n')
 
 
-    def add_basic_metrics_to_table(self, transcripts_metrics, PRECISION, TRANSCRIPT_LENS):
+    def add_basic_metrics_to_table(self, transcripts_metrics):
         # Basic short report metrics:
-        num_transcripts_str = '{:<50}'.format('Transcripts')
-        num_transcripts_500_str = '{:<50}'.format('Transcripts > {} bp'.format(str(TRANSCRIPT_LENS[0])))
-        num_transcripts_1000_str = '{:<50}'.format('Transcripts > {} bp'.format(str(TRANSCRIPT_LENS[1])))
-
-        # avg_transcript_len_str = '{:<50}'.format('Avg. length')
-        # n50_str = '{:<50}'.format('N50')
-        # max_transcript_len_str = '{:<50}'.format('Longest transcript')
+        for i_label in range(2, 5):
+            self.metrics_dict[self.metrics_labels[i_label]] = []
 
         for i_transcripts in range(len(transcripts_metrics)):
             basic_metrics = transcripts_metrics[i_transcripts].basic_metrics
 
-            num_transcripts_str += '{:<25}'.format(basic_metrics.number)
-            num_transcripts_500_str += '{:<25}'.format(basic_metrics.num_transcripts_500)
-            num_transcripts_1000_str += '{:<25}'.format(basic_metrics.num_transcripts_1000)
+            if basic_metrics is not None:
+                self.metrics_dict[self.metrics_labels[2]].append(basic_metrics.number)
+                self.metrics_dict[self.metrics_labels[3]].append(basic_metrics.num_transcripts_500)
+                self.metrics_dict[self.metrics_labels[4]].append(basic_metrics.num_transcripts_1000)
+            else:
+                for i_label in range(2, 5):
+                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
 
-            # avg_transcript_len_str += '{:<25}'.format(round(basic_transcripts_metrics.avg_len, precision))
-            # n50_str += '{:<25}'.format(basic_transcripts_metrics.n50)
-            # max_transcript_len_str += '{:<25}'.format(basic_transcripts_metrics.max_len)
+        for i_label in range(2, 5):
+            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+                    len(self.metrics_dict[self.metrics_labels[i_label]]):
+                del self.metrics_dict[self.metrics_labels[i_label]]
 
         # self.metrics_table.append('\n == BASIC TRANSCRIPTS METRICS == \n')
-        self.metrics_table.append(num_transcripts_str + '\n')
-        self.metrics_table.append(num_transcripts_500_str + '\n')
-        self.metrics_table.append(num_transcripts_1000_str + '\n')
-
-        # self.metrics_table.append(avg_transcript_len_str + '\n')
-        # self.metrics_table.append(n50_str + '\n')
-        # self.metrics_table.append(max_transcript_len_str + '\n')
 
 
     def add_alignment_metrics_to_table(self, transcripts_metrics, PRECISION):
         # Alignment short report metrics:
-        num_aligned_str = '{:<50}'.format('Aligned')
-        num_uniquely_aligned_str = '{:<50}'.format('Uniquely aligned')
-        num_multiply_aligned_str = '{:<50}'.format('Multiply aligned')
-        num_unaligned_str = '{:<50}'.format('Unaligned')
+        for i_label in range(5, 9):
+            self.metrics_dict[self.metrics_labels[i_label]] = []
 
         for i_transcripts in range(len(transcripts_metrics)):
             simple_metrics = transcripts_metrics[i_transcripts].simple_metrics
 
-            num_aligned_str += '{:<25}'.format(simple_metrics.num_aligned)
-            num_uniquely_aligned_str += '{:<25}'.format(simple_metrics.num_unique_aligned)
-            num_multiply_aligned_str += '{:<25}'.format(simple_metrics.num_mul_aligned)
-            num_unaligned_str += '{:<25}'.format(simple_metrics.num_unaligned)
+            if simple_metrics is not None:
+                self.metrics_dict[self.metrics_labels[5]].append(simple_metrics.num_aligned)
+                self.metrics_dict[self.metrics_labels[6]].append(simple_metrics.num_unique_aligned)
+                self.metrics_dict[self.metrics_labels[7]].append(simple_metrics.num_mul_aligned)
+                self.metrics_dict[self.metrics_labels[8]].append(simple_metrics.num_unaligned)
+            else:
+                for i_label in range(5, 9):
+                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
 
-            # num_alignments_str += '{:<25}'.format(simple_metrics.num_alignments)
+        for i_label in range(5, 9):
+            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+                    len(self.metrics_dict[self.metrics_labels[i_label]]):
+                del self.metrics_dict[self.metrics_labels[i_label]]
 
         # self.metrics_table.append('\n == ALIGNMENT METRICS == \n')
-        self.metrics_table.append(num_aligned_str + '\n')
-        self.metrics_table.append(num_uniquely_aligned_str + '\n')
-        self.metrics_table.append(num_multiply_aligned_str + '\n')
-        self.metrics_table.append(num_unaligned_str + '\n')
-        # self.metrics_table.append(num_alignments_str + '\n')
+
 
         # OTHER SECTION:
-        avg_aligned_fraction_str = '{:<50}'.format('Avg. aligned fraction')
-        avg_alignment_len_str = '{:<50}'.format('Avg. alignment length')
-        avg_mismatches_per_transcript_str = '{:<50}'.format('Avg. mismatches per transcript')
-
-        # na50_str = '{:<50}'.format('NA50')
-        # avg_blocks_num_str = '{:<50}'.format('Avg. blocks per alignment')
-        # avg_block_len_str = '{:<50}'.format('Avg. block length')
-        # avg_mismatches_str = '{:<50}'.format('Avg. mismatches per transcript')
+        for i_label in range(9, 12):
+            self.metrics_dict[self.metrics_labels[i_label]] = []
 
         for i_transcripts in range(len(transcripts_metrics)):
             simple_metrics = transcripts_metrics[i_transcripts].simple_metrics
 
-            avg_aligned_fraction_str += '{:<25}'.format(round(simple_metrics.avg_fraction, PRECISION))
-            avg_alignment_len_str += '{:<25}'.format(round(simple_metrics.avg_alignment_len, PRECISION))
-            avg_mismatches_per_transcript_str += '{:<25}'.format(round(simple_metrics.avg_mismatch_num, PRECISION))
+            if simple_metrics is not None:
+                self.metrics_dict[self.metrics_labels[9]].append(round(simple_metrics.avg_fraction, PRECISION))
+                self.metrics_dict[self.metrics_labels[10]].append(round(simple_metrics.avg_alignment_len, PRECISION))
+                self.metrics_dict[self.metrics_labels[11]].append(round(simple_metrics.avg_mismatch_num, PRECISION))
+            else:
+                for i_label in range(9, 12):
+                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
 
-            # na50_str += '{:<25}'.format(simple_metrics.na50)
-            # avg_blocks_num_str += '{:<25}'.format(round(simple_metrics.avg_blocks_num, precision))
-            # avg_block_len_str += '{:<25}'.format(round(simple_metrics.avg_block_len, precision))
-            # avg_mismatches_str += '{:<25}'.format(round(simple_metrics.avg_mismatch_num, precision))
+        for i_label in range(9, 12):
+            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+                    len(self.metrics_dict[self.metrics_labels[i_label]]):
+                del self.metrics_dict[self.metrics_labels[i_label]]
 
         # self.metrics_table.append('\n == ALIGNMENT METRICS FOR NON-MISASSEMBLED TRANSCRIPTS == \n')
-        self.metrics_table.append(avg_aligned_fraction_str + '\n')
-        self.metrics_table.append(avg_alignment_len_str + '\n')
-        self.metrics_table.append(avg_mismatches_per_transcript_str + '\n')
-
-        # self.metrics_table.append(na50_str + '\n')
-        # self.metrics_table.append(avg_blocks_num_str + '\n')
-        # self.metrics_table.append(avg_block_len_str + '\n')
-        # self.metrics_table.append(avg_mismatches_str + '\n')
 
 
     def add_fusion_misassemble_metrics_to_table(self, transcripts_metrics):
-        mis_str_together = '{:<50}'.format('Misassemblies')
-
-        # mis_str_by_blat = '{:<50}'.format('Misassembly candidates by blat')
-        # mis_str_by_blast = '{:<50}'.format('Misassembly candidates by blast')
-        #if args.fusion_misassemble_analyze:
-        #    fusString = '{:<50}'.format('Fusion candidates')
+        self.metrics_dict[self.metrics_labels[12]] = []
 
         for i_transcripts in range(len(transcripts_metrics)):
-            #if args.fusion_misassemble_analyze:
-            #    misString += '{:<25}'.format(transcripts_metrics[i_transcripts].fusion_misassemble_metrics.misassemble_num)
-            #    fusString += '{:<25}'.format(transcripts_metrics[i_transcripts].fusion_misassemble_metrics.fusion_num)
-            #else:
+            self.metrics_dict[self.metrics_labels[12]].append(transcripts_metrics[i_transcripts].simple_metrics.num_misassembled_together)
 
-            mis_str_together += '{:<25}'.format(transcripts_metrics[i_transcripts].simple_metrics.num_misassembled_together)
-
-            # mis_str_by_blat += '{:<25}'.format(transcripts_metrics[i_transcripts].simple_metrics.num_misassembled_by_blat)
-            # mis_str_by_blast += '{:<25}'.format(transcripts_metrics[i_transcripts].simple_metrics.num_misassembled_by_blast)
+        if self.metrics_dict[self.metrics_labels[12]].count('-') == len(self.metrics_dict[self.metrics_labels[12]]):
+            del self.metrics_dict[self.metrics_labels[12]]
 
         # self.metrics_table.append('\n == ALIGNMENT METRICS FOR MISASSEMBLED (CHIMERIC) TRANSCRIPTS == \n')
-        self.metrics_table.append(mis_str_together + '\n')
-
-        # self.metrics_table.append(mis_str_by_blat + '\n')
-        # self.metrics_table.append(mis_str_by_blast + '\n')
-        #if args.fusion_misassemble_analyze:
-        #    self.metrics_table.append(fusString + '\n')
 
 
-    def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
-        database_coverage_str = '{:<50}'.format('Database coverage')
-
-        relative_database_coverage_str = '{:<50}'.format('Relative database coverage')
-
-        assembled_well_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes')
-        assembled_fully_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes')
-        covered_well_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered genes')
-        covered_fully_genes_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered genes')
-
-        assembled_well_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled isoforms')
-        assembled_fully_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled isoforms')
-        covered_well_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-covered isoforms')
-        covered_fully_isoforms_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered isoforms')
-
-
-        mean_isoform_cov_str = '{:<50}'.format('Mean isoform coverage')
-        mean_isoform_assembly_str = '{:<50}'.format('Mean isoform assembly')
-
-        # cegma_complete_str = '{:<50}'.format('Complete')
-        # cegma_partial_str = '{:<50}'.format('Partial')
-
-        busco_complete_str = '{:<50}'.format('Complete')
-        busco_partial_str = '{:<50}'.format('Partial')
-
-        geneMarkS_T_genes_str = '{:<50}'.format('Predicted genes')
+    def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, PRECISION):
+        for i_label in range(13, 28):
+            self.metrics_dict[self.metrics_labels[i_label]] = []
 
         for i_transcripts in range(len(transcripts_metrics)):
             isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
             if isoforms_coverage is not None:
-                database_coverage_str += '{:<25}'.format(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
+                self.metrics_dict[self.metrics_labels[13]].append(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
 
                 relative_database_coverage = isoforms_coverage.relative_database_coverage
                 if relative_database_coverage is not None:
-                    relative_database_coverage_str += '{:<25}'.format(round(relative_database_coverage.database_coverage, PRECISION))
+                    self.metrics_dict[self.metrics_labels[14]].append(round(relative_database_coverage.database_coverage, PRECISION))
+                else:
+                    self.metrics_dict[self.metrics_labels[14]].append('-')
 
-                assembled_well_genes_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_genes)
-                assembled_fully_genes_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_genes)
-                covered_well_genes_str += '{:<25}'.format(isoforms_coverage.num_well_covered_genes)
-                covered_fully_genes_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_genes)
+                self.metrics_dict[self.metrics_labels[15]].append(isoforms_coverage.num_well_assembled_genes)
+                self.metrics_dict[self.metrics_labels[16]].append(isoforms_coverage.num_fully_assembled_genes)
+                self.metrics_dict[self.metrics_labels[17]].append(isoforms_coverage.num_well_covered_genes)
+                self.metrics_dict[self.metrics_labels[18]].append(isoforms_coverage.num_fully_covered_genes)
 
-                assembled_well_isoforms_str += '{:<25}'.format(isoforms_coverage.num_well_assembled_isoforms)
-                assembled_fully_isoforms_str += '{:<25}'.format(isoforms_coverage.num_fully_assembled_isoforms)
-                covered_well_isoforms_str += '{:<25}'.format(isoforms_coverage.num_well_covered_isoforms)
-                covered_fully_isoforms_str += '{:<25}'.format(isoforms_coverage.num_fully_covered_isoforms)
+                self.metrics_dict[self.metrics_labels[19]].append(isoforms_coverage.num_well_assembled_isoforms)
+                self.metrics_dict[self.metrics_labels[20]].append(isoforms_coverage.num_fully_assembled_isoforms)
+                self.metrics_dict[self.metrics_labels[21]].append(isoforms_coverage.num_well_covered_isoforms)
+                self.metrics_dict[self.metrics_labels[22]].append(isoforms_coverage.num_fully_covered_isoforms)
 
-                mean_isoform_cov_str += '{:<25}'.format(round(isoforms_coverage.avg_covered_fraction, PRECISION))
-                mean_isoform_assembly_str += '{:<25}'.format(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
-
-            # if transcripts_metrics[i_transcripts].assembly_completeness_metrics.cegma_metrics is not None:
-            #     cegma_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.cegma_metrics
-            #     if cegma_metrics != None:
-            #         cegma_complete_str += '{:<25}'.format(cegma_metrics.complete_completeness)
-            #         cegma_partial_str += '{:<25}'.format(cegma_metrics.partial_completeness)
+                self.metrics_dict[self.metrics_labels[23]].append(round(isoforms_coverage.avg_covered_fraction, PRECISION))
+                self.metrics_dict[self.metrics_labels[24]].append(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
+            else:
+                self.metrics_dict[self.metrics_labels[13]].append('-')
+                for i_label in range(15, 25):
+                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
 
             busco_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.busco_metrics
             if busco_metrics is not None:
-                busco_complete_str += '{:<25}'.format(round(busco_metrics.complete_completeness, PRECISION))
-                busco_partial_str += '{:<25}'.format(round(busco_metrics.partial_completeness, PRECISION))
+                self.metrics_dict[self.metrics_labels[25]].append(round(busco_metrics.complete_completeness, PRECISION))
+                self.metrics_dict[self.metrics_labels[26]].append(round(busco_metrics.partial_completeness, PRECISION))
             else:
-                busco_complete_str += '{:<25}'.format('0')
-                busco_partial_str += '{:<25}'.format('0')
+                self.metrics_dict[self.metrics_labels[25]].append('-')
+                self.metrics_dict[self.metrics_labels[26]].append('-')
 
             geneMarkS_T_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.geneMarkS_T_metrics
             if geneMarkS_T_metrics is not None:
-                geneMarkS_T_genes_str += '{:<25}'.format(geneMarkS_T_metrics.genes)
+                self.metrics_dict[self.metrics_labels[27]].append(geneMarkS_T_metrics.genes)
             else:
-                geneMarkS_T_genes_str += '{:<25}'.format('0')
+                self.metrics_dict[self.metrics_labels[27]].append('-')
+
+        for i_label in range(13, 28):
+            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+                    len(self.metrics_dict[self.metrics_labels[i_label]]):
+                del self.metrics_dict[self.metrics_labels[i_label]]
 
         # self.metrics_table.append('\n == ASSEMBLY COMPLETENESS (SENSITIVITY) == \n')
 
-        isoforms_coverage = transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage
-        if isoforms_coverage is not None:
-            self.metrics_table.append(database_coverage_str + '\n')
 
-            relative_database_coverage = isoforms_coverage.relative_database_coverage
-            if relative_database_coverage is not None:
-                self.metrics_table.append(relative_database_coverage_str + '\n')
-
-            self.metrics_table.append(assembled_well_genes_str + '\n')
-            self.metrics_table.append(assembled_fully_genes_str + '\n')
-            self.metrics_table.append(covered_well_genes_str + '\n')
-            self.metrics_table.append(covered_fully_genes_str + '\n')
-
-            self.metrics_table.append(assembled_well_isoforms_str + '\n')
-            self.metrics_table.append(assembled_fully_isoforms_str + '\n')
-            self.metrics_table.append(covered_well_isoforms_str + '\n')
-            self.metrics_table.append(covered_fully_isoforms_str + '\n')
-
-            self.metrics_table.append(mean_isoform_cov_str + '\n')
-            self.metrics_table.append(mean_isoform_assembly_str + '\n')
-
-        # if transcripts_metrics[0].cegma_metrics != None:
-        #     self.metrics_table.append('\n == CEGMA METRICS ==\n')
-        #     self.metrics_table.append(cegma_complete_str + '\n')
-        #     self.metrics_table.append(cegma_partial_str + '\n')
-
-        if busco_complete_str.strip().split()[1:].count('0') != len(transcripts_metrics):
-            # self.metrics_table.append('\n == BUSCO METRICS == \n')
-            self.metrics_table.append(busco_complete_str + '\n')
-            self.metrics_table.append(busco_partial_str + '\n')
-
-        if geneMarkS_T_genes_str.strip().split()[1:].count('0') != len(transcripts_metrics):
-            # self.metrics_table.append('\n == GeneMarkS-T METRICS == \n')
-            self.metrics_table.append(geneMarkS_T_genes_str + '\n')
-
-
-    def add_assemble_correctness_metrics_to_table(self, transcripts_metrics, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION):
-        matched_well_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_transcript_threshold * 100)) + '%-matched')
-        matched_fully_str = '{:<50}'.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_transcript_threshold * 100)) + '%-matched')
-        unannotated_str = '{:<50}'.format('Unannotated')
-        mean_transcript_match_str = '{:<50}'.format('Mean fraction of transcript matched')
+    def add_assemble_correctness_metrics_to_table(self, transcripts_metrics, PRECISION):
+        for i_label in range(28, 32):
+            self.metrics_dict[self.metrics_labels[i_label]] = []
 
         for i_transcripts in range(len(transcripts_metrics)):
             transcripts_coverage = transcripts_metrics[i_transcripts].assembly_correctness_metrics.transcripts_coverage
+
             if transcripts_coverage is not None:
-                matched_well_str += '{:<25}'.format(transcripts_coverage.num_well_covered_transcripts)
-                matched_fully_str += '{:<25}'.format(transcripts_coverage.num_fully_covered_transcripts)
-                unannotated_str += '{:<25}'.format(transcripts_coverage.num_unannotated_transcripts)
-                mean_transcript_match_str += '{:<25}'.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, PRECISION))
+                self.metrics_dict[self.metrics_labels[28]].append(transcripts_coverage.num_well_covered_transcripts)
+                self.metrics_dict[self.metrics_labels[29]].append(transcripts_coverage.num_fully_covered_transcripts)
+                self.metrics_dict[self.metrics_labels[30]].append(transcripts_coverage.num_unannotated_transcripts)
+                self.metrics_dict[self.metrics_labels[31]].append(round(transcripts_coverage.avg_covered_fraction_whole_transcript, PRECISION))
+            else:
+                for i_label in range(28, 32):
+                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
 
-        if transcripts_metrics[0].assembly_correctness_metrics.transcripts_coverage is not None:
-            # self.metrics_table.append('\n == ASSEMBLY SPECIFICITY == \n')
-
-            self.metrics_table.append(matched_well_str + '\n')
-            self.metrics_table.append(matched_fully_str + '\n')
-            self.metrics_table.append(unannotated_str + '\n')
-            self.metrics_table.append(mean_transcript_match_str + '\n')
+        for i_label in range(28, 32):
+            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+                    len(self.metrics_dict[self.metrics_labels[i_label]]):
+                del self.metrics_dict[self.metrics_labels[i_label]]
