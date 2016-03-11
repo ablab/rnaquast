@@ -171,12 +171,12 @@ class ShortReport():
 
     def get_table_to_draw(self):
         table_to_draw = []
-        table_to_draw.append(self.first_label + self.metrics_dict[self.first_label])
+        table_to_draw.append([self.first_label] + self.metrics_dict[self.first_label])
 
         for metric_type in self.metrics_type:
             for metric_label in self.metrics_type_labels_dict[metric_type]:
                 if metric_label in self.metrics_dict:
-                    table_to_draw.append(metric_label + self.metrics_dict[metric_label])
+                    table_to_draw.append([metric_label] + self.metrics_dict[metric_label])
 
         return table_to_draw
 
@@ -456,11 +456,11 @@ class ShortReport():
         if all_pdf_file:
             # for several files with transcripts select only comparison report pictures:
             if comparison_report is not None:
-                pdf_plots_figures = comparison_report.distribution_report.pdf_plots_figures
+                short_report_plots = comparison_report.distribution_report.short_report_plots
             else:
-                pdf_plots_figures = separated_reports[0].distribution_report.pdf_plots_figures
+                short_report_plots = separated_reports[0].distribution_report.short_report_plots
 
-            self.fill_all_pdf_file(all_pdf_file, pdf_tables_figures, pdf_plots_figures, logger)
+            self.fill_all_pdf_file(all_pdf_file, pdf_tables_figures, short_report_plots, logger)
 
 
     # draw_report_table from quast23.libs.plotter:
@@ -511,7 +511,7 @@ class ShortReport():
         return figure
 
 
-    def fill_all_pdf_file(self, all_pdf, pdf_tables_figures, pdf_plots_figures, logger):
+    def fill_all_pdf_file(self, all_pdf, pdf_tables_figures, short_report_plots, logger):
         # checking if matplotlib and pylab is installed:
         matplotlib_error = False
         try:
@@ -529,8 +529,8 @@ class ShortReport():
 
         for figure in pdf_tables_figures:
             all_pdf.savefig(figure, bbox_inches='tight')
-        for figure in pdf_plots_figures:
-            all_pdf.savefig(figure, additional_artists='art', bbox_inches='tight')
+        for plot in short_report_plots:
+            all_pdf.savefig(plot.fig, additional_artists='art', bbox_inches='tight')
 
         try:  # for matplotlib < v.1.0
             d = all_pdf.infodict()
