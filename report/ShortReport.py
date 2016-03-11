@@ -287,6 +287,7 @@ class ShortReport():
         print >> fout_tex_file, '\usepackage{fancyhdr}'
         print >> fout_tex_file, '\usepackage{graphicx}'
         print >> fout_tex_file, '\usepackage{placeins}'
+        print >> fout_tex_file, '\usepackage{adjustbox}'
         print >> fout_tex_file, '\n'
 
         print >> fout_tex_file, '\\begin{document}\n'
@@ -314,8 +315,7 @@ class ShortReport():
 
     def add_table_to_tex(self, fout_tex_file, column_n):
         print >> fout_tex_file, '\\begin{table}[t]'
-        print >> fout_tex_file, '\\begin{center}'
-        print >> fout_tex_file, '\small'
+        print >> fout_tex_file, '\centering'
 
         i_rel_best_metrics = ShortReport.get_i_rel_best_metrics(self.metrics_table, self.best_type)
         print >> fout_tex_file, \
@@ -323,6 +323,10 @@ class ShortReport():
             r'\textbf{bold}. For the transcript metrics (rows ' + str(i_rel_best_metrics)[1:-1] + \
             r') we highlighted the best \textbf{relative} values i.e. divided by the total number of transcripts in ' \
             r'the corresponding assembly.}'
+
+        print >> fout_tex_file, r'\begin{adjustbox}{width=1\textwidth}'
+        print >> fout_tex_file, '\small'
+
 
         print >> fout_tex_file, '\\begin{tabular}{|l*{' + reporting.val_to_str(column_n) + '}{|r}|}'
         print >> fout_tex_file, '\\hline'
@@ -360,9 +364,9 @@ class ShortReport():
                 tex_str += tmp_tex_str_type + tmp_tex_str_label.strip() + r' \hline' + '\n'
         fout_tex_file.write(tex_str)
 
-        print >> fout_tex_file, '\\end{tabular}'
-        print >> fout_tex_file, '\\end{center}'
-        print >> fout_tex_file, '\\end{table}\n'
+        print >> fout_tex_file, '\end{tabular}'
+        print >> fout_tex_file, '\end{adjustbox}'
+        print >> fout_tex_file, '\end{table}\n'
 
         print >> fout_tex_file, '\FloatBarrier'
 
