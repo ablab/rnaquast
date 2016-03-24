@@ -250,7 +250,8 @@ class GeneMarkS_TMetrics():
 
             logger.info('    saved to {}'.format(GeneMarkS_T_report_path))
 
-        shutil.move(tmp_log_path, log_out_path)
+        if os.path.exists(tmp_log_path):
+            shutil.move(tmp_log_path, log_out_path)
 
         logger.info('    logs can be found in {} and {}.'.format(log_out_path, log_err_path))
 
