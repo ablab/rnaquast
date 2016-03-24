@@ -361,8 +361,10 @@ def get_abspath_input_data(args):
             if not os.path.isabs(args.transcripts[i_transcripts]):
                 args.transcripts[i_transcripts] = os.path.abspath(args.transcripts[i_transcripts])
 
-    if args.alignment is not None and not os.path.isabs(args.alignment):
-        args.alignment = os.path.abspath(args.alignment)
+    if args.alignment is not None:
+        for i_alignments in range(len(args.alignment)):
+            if not os.path.isabs(args.alignment[i_alignments]):
+                args.alignment[i_alignments] = os.path.abspath(args.alignment[i_alignments])
 
     if args.reads_alignment is not None and not os.path.isabs(args.reads_alignment):
         args.reads_alignment = os.path.abspath(args.reads_alignment)
