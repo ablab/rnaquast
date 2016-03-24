@@ -667,7 +667,11 @@ class ShortReport():
         self.metrics_dict[self.metrics_labels[12]] = []
 
         for i_transcripts in range(len(transcripts_metrics)):
-            self.metrics_dict[self.metrics_labels[12]].append(transcripts_metrics[i_transcripts].simple_metrics.num_misassembled_together)
+            simple_metrics = transcripts_metrics[i_transcripts].simple_metrics
+            if simple_metrics is not None:
+                self.metrics_dict[self.metrics_labels[12]].append(simple_metrics.num_misassembled_together)
+            else:
+                self.metrics_dict[self.metrics_labels[12]].append('-')
 
         if self.metrics_dict[self.metrics_labels[12]].count('-') == len(self.metrics_dict[self.metrics_labels[12]]):
             del self.metrics_dict[self.metrics_labels[12]]
