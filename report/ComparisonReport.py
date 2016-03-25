@@ -21,14 +21,14 @@ class ComparisonReport():
         self.distribution_report = None
 
 
-    def get_comparison_report(self, args, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
+    def get_comparison_report(self, args, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
                               WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS):
 
         logger.print_timestamp()
         logger.info('Getting COMPARISON report...')
 
         self.txt_comparison_report = \
-            TXTMetricsReport.TXTMetricsReport(self.output_dir, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
+            TXTMetricsReport.TXTMetricsReport(self.output_dir, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
                                               WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS)
 
         if not args.no_plots:

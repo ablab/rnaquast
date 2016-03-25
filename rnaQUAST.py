@@ -313,7 +313,7 @@ def main_utils():
     comparison_report = None
     if len(separated_reports) > 1:
         comparison_report = ComparisonReport.ComparisonReport(args.output_dir)
-        comparison_report.get_comparison_report(args, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
+        comparison_report.get_comparison_report(args, args.labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
                                                 WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, rqconfig.TRANSCRIPT_LENS)
 
     # GET SHORT REPORT:

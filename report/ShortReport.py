@@ -7,9 +7,7 @@ from quast23.libs import reporting
 # Font of plot captions, axes labels and ticks
 font = {'family': 'sans-serif', 'style': 'normal', 'weight': 'medium', 'size': 10}
 
-space_type = 80
-space_label = 50
-space_value = 25
+from general import rqconfig
 
 
 class ShortReport():
@@ -33,17 +31,22 @@ class ShortReport():
     def get_metrics_labels(cls, TRANSCRIPT_LENS, WELL_FULLY_COVERAGE_THRESHOLDS):
         metrics_labels = ['Genes',
                           'Avg. number of exons per isoform',
+
                           'Transcripts',
                           'Transcripts > {} bp'.format(str(TRANSCRIPT_LENS[0])),
                           'Transcripts > {} bp'.format(str(TRANSCRIPT_LENS[1])),
+
                           'Aligned',
                           'Uniquely aligned',
                           'Multiply aligned',
                           'Unaligned',
+
                           'Avg. aligned fraction',
                           'Avg. alignment length',
                           'Avg. mismatches per transcript',
+
                           'Misassemblies',
+
                           'Database coverage',
                           'Relative database coverage',
                           str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes',
@@ -56,9 +59,12 @@ class ShortReport():
                           str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-covered isoforms',
                           'Mean isoform coverage',
                           'Mean isoform assembly',
+
                           'Complete',
                           'Partial',
+
                           'Predicted genes',
+
                           str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_transcript_threshold * 100)) + '%-matched',
                           str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_transcript_threshold * 100)) + '%-matched',
                           'Unannotated',
@@ -250,30 +256,27 @@ class ShortReport():
 
     @classmethod
     def get_column_widths(cls, metrics_dict, first_label):
-        global space_label
-        global space_value
-
         widths = []
 
-        widths.append(space_label)
+        widths.append(rqconfig.space_label)
         for t_label in metrics_dict[first_label]:
             curr_width = len(t_label) + 1
-            widths.append(max(curr_width, space_value))
+            widths.append(max(curr_width, rqconfig.space_value))
 
         return widths
 
 
-    def get_metrics_dict(self, column_n):
-        metrics_dict = {}
-        for line in self.metrics_table:
-            arr = line.split('  ')
-            new_arr = []
-            for substr in arr:
-                if substr.strip() != '':
-                    new_arr.append(substr.strip())
-            if len(new_arr) == column_n:
-                metrics_dict[new_arr[0]] = new_arr[1:]
-        return metrics_dict
+    # def get_metrics_dict(self, column_n):
+    #     metrics_dict = {}
+    #     for line in self.metrics_table:
+    #         arr = line.split('  ')
+    #         new_arr = []
+    #         for substr in arr:
+    #             if substr.strip() != '':
+    #                 new_arr.append(substr.strip())
+    #         if len(new_arr) == column_n:
+    #             metrics_dict[new_arr[0]] = new_arr[1:]
+    #     return metrics_dict
 
 
     def print_txt(self):
@@ -370,8 +373,6 @@ class ShortReport():
 
 
     def add_table_to_tex(self, fout_tex_file, column_n):
-        global space_type
-
         print >> fout_tex_file, '\\begin{table}[t]'
         print >> fout_tex_file, '\centering'
 
@@ -398,7 +399,7 @@ class ShortReport():
         tex_str += 10 * ' ' + r'\\ \hline\hline' + '\n'
         for metric_type in self.metrics_type:
             type_flag = False
-            column_width_str = '{:<' + str(space_type) + '}'
+            column_width_str = '{:<' + str(rqconfig.space_type) + '}'
             tmp_tex_str_type = column_width_str.format(r'\multicolumn{' + str(column_n) + r'}{l}{\bf ' + metric_type + '}') + \
                                10 * ' ' + r'\\ \hline' + '\n'
             tmp_tex_str_label = ''

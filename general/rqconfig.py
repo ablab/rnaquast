@@ -55,6 +55,12 @@ TRANSCRIPT_LENS = [500, 1000]
 GENEMARK_ST_GENE_LENS = [500, 1000]
 
 
+# REPORT CONSTANTS:
+space_type = 80
+space_label = 50
+space_value = 25
+
+
 # ALIGNMENTS UTILS CONSTANTS:
 # ERR_CROSS_UNION must be less than MIN_SPLIT_ALIGNMENT_THRESHOLD:
 class alignment_thresholds():
@@ -68,7 +74,7 @@ class alignment_thresholds():
         self.ERR_SPACE_QUERY_FAKE_BLAT = 300
 
         self.ERR_CROSS_TARGET_FAKE_BLAT = 20
-        self.ERR_SPACE_TARGET_FAKE_BLAT = 1500000 # 750000 blat max intron size
+        self.ERR_SPACE_TARGET_FAKE_BLAT = 1500000    # 750000 blat max intron size
 
         self.QUERY_GAP_THRESHOLD = 10
 
