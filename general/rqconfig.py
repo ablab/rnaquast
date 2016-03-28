@@ -57,7 +57,7 @@ GENEMARK_ST_GENE_LENS = [500, 1000]
 
 # REPORT CONSTANTS:
 space_type = 80
-space_label = 50
+space_label = 55
 space_value = 25
 
 

@@ -357,7 +357,7 @@ class TXTMetricsReport():
         num_aligned_str = label_width_str.format('Aligned')
         num_uniquely_aligned_str = label_width_str.format('Uniquely aligned')
         num_multiply_aligned_str = label_width_str.format('Multiply aligned')
-        num_misassembled_by_blat_str = label_width_str.format('Misassembly candidates reported by BLAT')
+        num_misassembled_by_blat_str = label_width_str.format('Misassembly candidates reported by GMAP (or BLAT)')
         num_unaligned_str = label_width_str.format('Unaligned')
 
         # Alignment metrics for uniquely aligned transcripts
@@ -562,7 +562,7 @@ class TXTMetricsReport():
 
         num_transcripts_str = label_width_str.format('Transcripts')
 
-        num_misassembled_by_blat_str = label_width_str.format('Misassembly candidates reported by BLAT')
+        num_misassembled_by_blat_str = label_width_str.format('Misassembly candidates reported by GMAP (or BLAT)')
         num_misassembled_by_blast_str = label_width_str.format('Misassembly candidates reported by BLASTN')
         num_misassembled_together_str = label_width_str.format('Misassemblies')
 
