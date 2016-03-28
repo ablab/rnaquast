@@ -207,27 +207,27 @@ class TXTMetricsReport():
                     well_covered_exons_str += value_width_str.format(round(relative_metrics.percentage_well_covered_exons, PRECISION))
                     fully_covered_exons_str += value_width_str.format(round(relative_metrics.percentage_fully_covered_exons, PRECISION))
                 else:
-                    database_coverage_str += value_width_str.format('-')
+                    database_coverage_str += value_width_str.format('*')
 
-                    well_assembled_genes_str += value_width_str.format('-')
-                    fully_assembled_genes_str += value_width_str.format('-')
+                    well_assembled_genes_str += value_width_str.format('*')
+                    fully_assembled_genes_str += value_width_str.format('*')
 
-                    well_covered_genes_str += value_width_str.format('-')
-                    fully_covered_genes_str += value_width_str.format('-')
-
-
-                    well_assembled_isoforms_str += value_width_str.format('-')
-                    fully_assembled_isoforms_str += value_width_str.format('-')
-
-                    well_covered_isoforms_str += value_width_str.format('-')
-                    fully_covered_isoforms_str += value_width_str.format('-')
+                    well_covered_genes_str += value_width_str.format('*')
+                    fully_covered_genes_str += value_width_str.format('*')
 
 
-                    well_assembled_exons_str += value_width_str.format('-')
-                    fully_assembled_exons_str += value_width_str.format('-')
+                    well_assembled_isoforms_str += value_width_str.format('*')
+                    fully_assembled_isoforms_str += value_width_str.format('*')
 
-                    well_covered_exons_str += value_width_str.format('-')
-                    fully_covered_exons_str += value_width_str.format('-')
+                    well_covered_isoforms_str += value_width_str.format('*')
+                    fully_covered_isoforms_str += value_width_str.format('*')
+
+
+                    well_assembled_exons_str += value_width_str.format('*')
+                    fully_assembled_exons_str += value_width_str.format('*')
+
+                    well_covered_exons_str += value_width_str.format('*')
+                    fully_covered_exons_str += value_width_str.format('*')
 
         with open(self.path_txt_relative_database_coverage, 'w') as out_handle:
             out_handle.write(name_str + '\n')
@@ -257,7 +257,7 @@ class TXTMetricsReport():
         for val in metric_str.strip().split('  '):
             if val != '':
                 num_values += 1
-        if metric_str.count('-') != num_transcripts and num_values == num_transcripts + 1:
+        if metric_str.count('*') != num_transcripts and num_values == num_transcripts + 1:
             if first_type is not None:
                 out_handle.write(' == ' + first_type + ' == \n')
             out_handle.write(metric_str)
@@ -416,23 +416,23 @@ class TXTMetricsReport():
 
                 na50_str += value_width_str.format(simple_metrics.na50)
             else:
-                num_aligned_str += value_width_str.format('-')
+                num_aligned_str += value_width_str.format('*')
 
-                num_uniquely_aligned_str += value_width_str.format('-')
-                num_multiply_aligned_str += value_width_str.format('-')
-                num_misassembled_by_blat_str += value_width_str.format('-')
+                num_uniquely_aligned_str += value_width_str.format('*')
+                num_multiply_aligned_str += value_width_str.format('*')
+                num_misassembled_by_blat_str += value_width_str.format('*')
 
-                num_unaligned_str += value_width_str.format('-')
+                num_unaligned_str += value_width_str.format('*')
 
-                avg_aligned_fraction_str += value_width_str.format('-')
-                avg_alignment_len_str += value_width_str.format('-')
+                avg_aligned_fraction_str += value_width_str.format('*')
+                avg_alignment_len_str += value_width_str.format('*')
 
-                avg_blocks_per_alignment += value_width_str.format('-')
-                avg_block_len_str += value_width_str.format('-')
+                avg_blocks_per_alignment += value_width_str.format('*')
+                avg_block_len_str += value_width_str.format('*')
 
-                avg_mismatches_per_transcript_str += value_width_str.format('-')
+                avg_mismatches_per_transcript_str += value_width_str.format('*')
 
-                na50_str += value_width_str.format('-')
+                na50_str += value_width_str.format('*')
 
             # avg_gaps_per_alignment_str +=  '{:<25}'.format(round(simple_metrics.avg_qgap_num, precision))
             # avg_gap_length_str += '{:<25}'.format(round(simple_metrics.avg_qgap_len, precision))
@@ -583,9 +583,9 @@ class TXTMetricsReport():
                 num_misassembled_by_blast_str += value_width_str.format(simple_metrics.num_misassembled_by_blast)
                 num_misassembled_together_str += value_width_str.format(simple_metrics.num_misassembled_together)
             else:
-                num_misassembled_by_blat_str += value_width_str.format('-')
-                num_misassembled_by_blast_str += value_width_str.format('-')
-                num_misassembled_together_str += value_width_str.format('-')
+                num_misassembled_by_blat_str += value_width_str.format('*')
+                num_misassembled_by_blast_str += value_width_str.format('*')
+                num_misassembled_together_str += value_width_str.format('*')
 
         out_handle = open(self.path_txt_misassemblies, 'w')
 
@@ -666,18 +666,18 @@ class TXTMetricsReport():
                 if isoforms_coverage is not None:
                     database_coverage_str += value_width_str.format(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
 
-                    duplication_str += value_width_str.format(round(isoforms_coverage.avg_duplication_ratio, PRECISION), value_width_str)
-                    avg_num_transcripts_in_isoform_str += value_width_str.format(round(isoforms_coverage.avg_num_transcripts_mapped_to_isoform, PRECISION), value_width_str)
+                    duplication_str += value_width_str.format(round(isoforms_coverage.avg_duplication_ratio, PRECISION))
+                    avg_num_transcripts_in_isoform_str += value_width_str.format(round(isoforms_coverage.avg_num_transcripts_mapped_to_isoform, PRECISION))
 
-                    assembled_well_genes_str += value_width_str.format(isoforms_coverage.num_well_assembled_genes, value_width_str)
-                    assembled_fully_genes_str += value_width_str.format(isoforms_coverage.num_fully_assembled_genes, value_width_str)
-                    covered_well_genes_str += value_width_str.format(isoforms_coverage.num_well_covered_genes, value_width_str)
-                    covered_fully_genes_str += value_width_str.format(isoforms_coverage.num_fully_covered_genes, value_width_str)
+                    assembled_well_genes_str += value_width_str.format(isoforms_coverage.num_well_assembled_genes)
+                    assembled_fully_genes_str += value_width_str.format(isoforms_coverage.num_fully_assembled_genes)
+                    covered_well_genes_str += value_width_str.format(isoforms_coverage.num_well_covered_genes)
+                    covered_fully_genes_str += value_width_str.format(isoforms_coverage.num_fully_covered_genes)
 
-                    assembled_well_isoforms_str += value_width_str.format(isoforms_coverage.num_well_assembled_isoforms, value_width_str)
-                    assembled_fully_isoforms_str += value_width_str.format(isoforms_coverage.num_fully_assembled_isoforms, value_width_str)
-                    covered_well_isoforms_str += value_width_str.format(isoforms_coverage.num_well_covered_isoforms, value_width_str)
-                    covered_fully_isoforms_str += value_width_str.format(isoforms_coverage.num_fully_covered_isoforms, value_width_str)
+                    assembled_well_isoforms_str += value_width_str.format(isoforms_coverage.num_well_assembled_isoforms)
+                    assembled_fully_isoforms_str += value_width_str.format(isoforms_coverage.num_fully_assembled_isoforms)
+                    covered_well_isoforms_str += value_width_str.format(isoforms_coverage.num_well_covered_isoforms)
+                    covered_fully_isoforms_str += value_width_str.format(isoforms_coverage.num_fully_covered_isoforms)
 
                     assembled_exons_well_str += value_width_str.format(isoforms_coverage.num_well_assembled_exons)
                     assembled_exons_fully_str += value_width_str.format(isoforms_coverage.num_fully_assembled_exons)
@@ -687,28 +687,28 @@ class TXTMetricsReport():
                     isoform_well_cov_exons_str += value_width_str.format(round(isoforms_coverage.avg_percentage_isoform_well_covered_exons, PRECISION))
                     isoform_fully_cov_exons_str += value_width_str.format(round(isoforms_coverage.avg_percentage_isoform_fully_covered_exons, PRECISION))
                 else:
-                    database_coverage_str += value_width_str.format('-')
+                    database_coverage_str += value_width_str.format('*')
 
-                    duplication_str += value_width_str.format('-')
-                    avg_num_transcripts_in_isoform_str += value_width_str.format('-')
+                    duplication_str += value_width_str.format('*')
+                    avg_num_transcripts_in_isoform_str += value_width_str.format('*')
 
-                    assembled_well_genes_str += value_width_str.format('-')
-                    assembled_fully_genes_str += value_width_str.format('-')
-                    covered_well_genes_str += value_width_str.format('-')
-                    covered_fully_genes_str += value_width_str.format('-')
+                    assembled_well_genes_str += value_width_str.format('*')
+                    assembled_fully_genes_str += value_width_str.format('*')
+                    covered_well_genes_str += value_width_str.format('*')
+                    covered_fully_genes_str += value_width_str.format('*')
 
-                    assembled_well_isoforms_str += value_width_str.format('-')
-                    assembled_fully_isoforms_str += value_width_str.format('-')
-                    covered_well_isoforms_str += value_width_str.format('-')
-                    covered_fully_isoforms_str += value_width_str.format('-')
+                    assembled_well_isoforms_str += value_width_str.format('*')
+                    assembled_fully_isoforms_str += value_width_str.format('*')
+                    covered_well_isoforms_str += value_width_str.format('*')
+                    covered_fully_isoforms_str += value_width_str.format('*')
 
-                    assembled_exons_well_str += value_width_str.format('-')
-                    assembled_exons_fully_str += value_width_str.format('-')
-                    mean_isoform_cov_str += value_width_str.format('-')
-                    mean_isoform_assembly_str += value_width_str.format('-')
-                    mean_exon_cov_str += value_width_str.format('-')
-                    isoform_well_cov_exons_str += value_width_str.format('-')
-                    isoform_fully_cov_exons_str += value_width_str.format('-')
+                    assembled_exons_well_str += value_width_str.format('*')
+                    assembled_exons_fully_str += value_width_str.format('*')
+                    mean_isoform_cov_str += value_width_str.format('*')
+                    mean_isoform_assembly_str += value_width_str.format('*')
+                    mean_exon_cov_str += value_width_str.format('*')
+                    isoform_well_cov_exons_str += value_width_str.format('*')
+                    isoform_fully_cov_exons_str += value_width_str.format('*')
 
                 busco_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.busco_metrics
 
@@ -716,15 +716,15 @@ class TXTMetricsReport():
                     busco_complete_str += value_width_str.format(round(busco_metrics.complete_completeness, PRECISION))
                     busco_partial_str += value_width_str.format(round(busco_metrics.partial_completeness, PRECISION))
                 else:
-                    busco_complete_str += value_width_str.format('-')
-                    busco_partial_str += value_width_str.format('-')
+                    busco_complete_str += value_width_str.format('*')
+                    busco_partial_str += value_width_str.format('*')
 
                 geneMarkS_T_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.geneMarkS_T_metrics
 
                 if geneMarkS_T_metrics is not None:
                     geneMarkS_T_genes_str += value_width_str.format(geneMarkS_T_metrics.genes)
                 else:
-                    geneMarkS_T_genes_str += value_width_str.format('-')
+                    geneMarkS_T_genes_str += value_width_str.format('*')
 
         out_handle = open(self.path_txt_sensitivity, 'w')
 
@@ -862,20 +862,20 @@ class TXTMetricsReport():
                     matched_len_str += value_width_str.format(transcripts_coverage.matched_len)
                     unmatched_len_str += value_width_str.format(transcripts_coverage.unmatched_len)
                 else:
-                    unannotated_str += value_width_str.format('-')
+                    unannotated_str += value_width_str.format('*')
 
-                    matched_well_str += value_width_str.format('-')
-                    matched_fully_str += value_width_str.format('-')
+                    matched_well_str += value_width_str.format('*')
+                    matched_fully_str += value_width_str.format('*')
 
-                    mean_transcript_match_str += value_width_str.format('-')
+                    mean_transcript_match_str += value_width_str.format('*')
 
-                    mean_block_match_str += value_width_str.format('-')
+                    mean_block_match_str += value_width_str.format('*')
 
-                    matched_blocks_well_str += value_width_str.format('-')
-                    matched_blocks_fully_str += value_width_str.format('-')
+                    matched_blocks_well_str += value_width_str.format('*')
+                    matched_blocks_fully_str += value_width_str.format('*')
 
-                    matched_len_str += value_width_str.format('-')
-                    unmatched_len_str += value_width_str.format('-')
+                    matched_len_str += value_width_str.format('*')
+                    unmatched_len_str += value_width_str.format('*')
 
         out_handle = open(self.path_txt_specificity, 'w')
 

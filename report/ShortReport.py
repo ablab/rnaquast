@@ -293,7 +293,7 @@ class ShortReport():
         txt_str += '\n'
         for metric_type in self.metrics_type:
             type_flag = False
-            tmp_txt_str_type = '\n ==' + metric_type + ' == \n'
+            tmp_txt_str_type = '\n == ' + metric_type + ' == \n'
             tmp_txt_str_label = ''
             for i_metric_label in range(len(self.metrics_type_labels_dict[metric_type])):
                 metric_label = self.metrics_type_labels_dict[metric_type][i_metric_label]
@@ -396,7 +396,7 @@ class ShortReport():
             t_label = self.metrics_dict[self.first_label][i_t_label]
             column_width_str = '{:<' + str(self.column_widths[i_t_label + 1]) + '}'
             tex_str += column_width_str.format(' & ' + r'\textbf{' + t_label.replace('_', '\_') + '}')
-        tex_str += 10 * ' ' + r'\\ \hline\hline' + '\n'
+        tex_str += r' \\ \hline\hline' + '\n'
         for metric_type in self.metrics_type:
             type_flag = False
             column_width_str = '{:<' + str(rqconfig.space_type) + '}'
@@ -606,10 +606,10 @@ class ShortReport():
                 self.metrics_dict[self.metrics_labels[4]].append(basic_metrics.num_transcripts_1000)
             else:
                 for i_label in range(2, 5):
-                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
+                    self.metrics_dict[self.metrics_labels[i_label]].append('*')
 
         for i_label in range(2, 5):
-            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+            if self.metrics_dict[self.metrics_labels[i_label]].count('*') == \
                     len(self.metrics_dict[self.metrics_labels[i_label]]):
                 del self.metrics_dict[self.metrics_labels[i_label]]
 
@@ -631,10 +631,10 @@ class ShortReport():
                 self.metrics_dict[self.metrics_labels[8]].append(simple_metrics.num_unaligned)
             else:
                 for i_label in range(5, 9):
-                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
+                    self.metrics_dict[self.metrics_labels[i_label]].append('*')
 
         for i_label in range(5, 9):
-            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+            if self.metrics_dict[self.metrics_labels[i_label]].count('*') == \
                     len(self.metrics_dict[self.metrics_labels[i_label]]):
                 del self.metrics_dict[self.metrics_labels[i_label]]
 
@@ -654,10 +654,10 @@ class ShortReport():
                 self.metrics_dict[self.metrics_labels[11]].append(round(simple_metrics.avg_mismatch_num, PRECISION))
             else:
                 for i_label in range(9, 12):
-                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
+                    self.metrics_dict[self.metrics_labels[i_label]].append('*')
 
         for i_label in range(9, 12):
-            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+            if self.metrics_dict[self.metrics_labels[i_label]].count('*') == \
                     len(self.metrics_dict[self.metrics_labels[i_label]]):
                 del self.metrics_dict[self.metrics_labels[i_label]]
 
@@ -672,9 +672,9 @@ class ShortReport():
             if simple_metrics is not None:
                 self.metrics_dict[self.metrics_labels[12]].append(simple_metrics.num_misassembled_together)
             else:
-                self.metrics_dict[self.metrics_labels[12]].append('-')
+                self.metrics_dict[self.metrics_labels[12]].append('*')
 
-        if self.metrics_dict[self.metrics_labels[12]].count('-') == len(self.metrics_dict[self.metrics_labels[12]]):
+        if self.metrics_dict[self.metrics_labels[12]].count('*') == len(self.metrics_dict[self.metrics_labels[12]]):
             del self.metrics_dict[self.metrics_labels[12]]
 
         # self.metrics_table.append('\n == ALIGNMENT METRICS FOR MISASSEMBLED (CHIMERIC) TRANSCRIPTS == \n')
@@ -693,7 +693,7 @@ class ShortReport():
                 if relative_database_coverage is not None:
                     self.metrics_dict[self.metrics_labels[14]].append(round(relative_database_coverage.database_coverage, PRECISION))
                 else:
-                    self.metrics_dict[self.metrics_labels[14]].append('-')
+                    self.metrics_dict[self.metrics_labels[14]].append('*')
 
                 self.metrics_dict[self.metrics_labels[15]].append(isoforms_coverage.num_well_assembled_genes)
                 self.metrics_dict[self.metrics_labels[16]].append(isoforms_coverage.num_fully_assembled_genes)
@@ -708,26 +708,26 @@ class ShortReport():
                 self.metrics_dict[self.metrics_labels[23]].append(round(isoforms_coverage.avg_covered_fraction, PRECISION))
                 self.metrics_dict[self.metrics_labels[24]].append(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
             else:
-                self.metrics_dict[self.metrics_labels[13]].append('-')
+                self.metrics_dict[self.metrics_labels[13]].append('*')
                 for i_label in range(15, 25):
-                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
+                    self.metrics_dict[self.metrics_labels[i_label]].append('*')
 
             busco_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.busco_metrics
             if busco_metrics is not None:
                 self.metrics_dict[self.metrics_labels[25]].append(round(busco_metrics.complete_completeness, PRECISION))
                 self.metrics_dict[self.metrics_labels[26]].append(round(busco_metrics.partial_completeness, PRECISION))
             else:
-                self.metrics_dict[self.metrics_labels[25]].append('-')
-                self.metrics_dict[self.metrics_labels[26]].append('-')
+                self.metrics_dict[self.metrics_labels[25]].append('*')
+                self.metrics_dict[self.metrics_labels[26]].append('*')
 
             geneMarkS_T_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.geneMarkS_T_metrics
             if geneMarkS_T_metrics is not None:
                 self.metrics_dict[self.metrics_labels[27]].append(geneMarkS_T_metrics.genes)
             else:
-                self.metrics_dict[self.metrics_labels[27]].append('-')
+                self.metrics_dict[self.metrics_labels[27]].append('*')
 
         for i_label in range(13, 28):
-            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+            if self.metrics_dict[self.metrics_labels[i_label]].count('*') == \
                     len(self.metrics_dict[self.metrics_labels[i_label]]):
                 del self.metrics_dict[self.metrics_labels[i_label]]
 
@@ -748,9 +748,9 @@ class ShortReport():
                 self.metrics_dict[self.metrics_labels[31]].append(round(transcripts_coverage.avg_covered_fraction_whole_transcript, PRECISION))
             else:
                 for i_label in range(28, 32):
-                    self.metrics_dict[self.metrics_labels[i_label]].append('-')
+                    self.metrics_dict[self.metrics_labels[i_label]].append('*')
 
         for i_label in range(28, 32):
-            if self.metrics_dict[self.metrics_labels[i_label]].count('-') == \
+            if self.metrics_dict[self.metrics_labels[i_label]].count('*') == \
                     len(self.metrics_dict[self.metrics_labels[i_label]]):
                 del self.metrics_dict[self.metrics_labels[i_label]]
