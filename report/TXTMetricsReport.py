@@ -27,24 +27,20 @@ class TXTMetricsReport():
             self.path_txt_relative_database_coverage = os.path.join(self.txt_reports_dir, 'relative_database_coverage.txt')
             self.get_relative_database_coverage_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
-        if transcripts_metrics[0].basic_metrics is not None:
-            self.path_txt_basic = os.path.join(self.txt_reports_dir, 'basic_metrics.txt')
-            self.get_basic_metrics_report(transcripts_metrics, logger, TRANSCRIPT_LENS, PRECISION)
+        self.path_txt_basic = os.path.join(self.txt_reports_dir, 'basic_metrics.txt')
+        self.get_basic_metrics_report(transcripts_metrics, logger, TRANSCRIPT_LENS, PRECISION)
 
-        if transcripts_metrics[0].simple_metrics is not None:
-            self.path_txt_alignment = os.path.join(self.txt_reports_dir, 'alignment_metrics.txt')
-            self.get_alignment_metrics_report(transcripts_metrics, logger, PRECISION)
+        self.path_txt_alignment = os.path.join(self.txt_reports_dir, 'alignment_metrics.txt')
+        self.get_alignment_metrics_report(transcripts_metrics, logger, PRECISION)
 
-            self.path_txt_misassemblies = os.path.join(self.txt_reports_dir, 'misassemblies.txt')
-            self.get_misassemblies_report(transcripts_metrics, logger)
+        self.path_txt_misassemblies = os.path.join(self.txt_reports_dir, 'misassemblies.txt')
+        self.get_misassemblies_report(transcripts_metrics, logger)
 
-        if transcripts_metrics[0].assembly_completeness_metrics is not None:
-                self.path_txt_sensitivity = os.path.join(self.txt_reports_dir, 'sensitivity.txt')
-                self.get_sensitivity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
+        self.path_txt_sensitivity = os.path.join(self.txt_reports_dir, 'sensitivity.txt')
+        self.get_sensitivity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
-        if transcripts_metrics[0].assembly_correctness_metrics is not None:
-            self.path_txt_specificity = os.path.join(self.txt_reports_dir, 'specificity.txt')
-            self.get_specificity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
+        self.path_txt_specificity = os.path.join(self.txt_reports_dir, 'specificity.txt')
+        self.get_specificity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
         logger.info('  Done.')
 
@@ -55,7 +51,7 @@ class TXTMetricsReport():
 
         widths.append(rqconfig.space_label)
         for t_label in labels:
-            curr_width = len(t_label) + 1
+            curr_width = len(t_label) + 2
             widths.append(max(curr_width, rqconfig.space_value))
 
         return widths
@@ -184,54 +180,87 @@ class TXTMetricsReport():
         for i_transcripts in range(len(transcripts_metrics)):
             value_width_str = '{:<' + str(self.widths[i_transcripts + 1]) + '}'
 
-            relative_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.relative_database_coverage
+            if transcripts_metrics[i_transcripts].assembly_completeness_metrics is not None and \
+                            transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage is not None:
+                relative_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage.relative_database_coverage
 
-            name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
+                if relative_metrics is not None:
+                    database_coverage_str += value_width_str.format(round(relative_metrics.database_coverage, PRECISION))
 
-            database_coverage_str += value_width_str.format(round(relative_metrics.database_coverage, PRECISION))
+                    well_assembled_genes_str += value_width_str.format(round(relative_metrics.percentage_well_assembled_genes, PRECISION))
+                    fully_assembled_genes_str += value_width_str.format(round(relative_metrics.percentage_fully_assembled_genes, PRECISION))
 
-            well_assembled_genes_str += value_width_str.format(round(relative_metrics.percentage_well_assembled_genes, PRECISION))
-            fully_assembled_genes_str += value_width_str.format(round(relative_metrics.percentage_fully_assembled_genes, PRECISION))
-
-            well_covered_genes_str += value_width_str.format(round(relative_metrics.percentage_well_covered_genes, PRECISION))
-            fully_covered_genes_str += value_width_str.format(round(relative_metrics.percentage_fully_covered_genes, PRECISION))
-
-
-            well_assembled_isoforms_str += value_width_str.format(round(relative_metrics.percentage_well_assembled_isoforms, PRECISION))
-            fully_assembled_isoforms_str += value_width_str.format(round(relative_metrics.percentage_fully_assembled_isoforms, PRECISION))
-
-            well_covered_isoforms_str += value_width_str.format(round(relative_metrics.percentage_well_covered_isoforms, PRECISION))
-            fully_covered_isoforms_str += value_width_str.format(round(relative_metrics.percentage_fully_covered_isoforms, PRECISION))
+                    well_covered_genes_str += value_width_str.format(round(relative_metrics.percentage_well_covered_genes, PRECISION))
+                    fully_covered_genes_str += value_width_str.format(round(relative_metrics.percentage_fully_covered_genes, PRECISION))
 
 
-            well_assembled_exons_str += value_width_str.format(round(relative_metrics.percentage_well_assembled_exons, PRECISION))
-            fully_assembled_exons_str += value_width_str.format(round(relative_metrics.percentage_fully_assembled_exons, PRECISION))
+                    well_assembled_isoforms_str += value_width_str.format(round(relative_metrics.percentage_well_assembled_isoforms, PRECISION))
+                    fully_assembled_isoforms_str += value_width_str.format(round(relative_metrics.percentage_fully_assembled_isoforms, PRECISION))
 
-            well_covered_exons_str += value_width_str.format(round(relative_metrics.percentage_well_covered_exons, PRECISION))
-            fully_covered_exons_str += value_width_str.format(round(relative_metrics.percentage_fully_covered_exons, PRECISION))
+                    well_covered_isoforms_str += value_width_str.format(round(relative_metrics.percentage_well_covered_isoforms, PRECISION))
+                    fully_covered_isoforms_str += value_width_str.format(round(relative_metrics.percentage_fully_covered_isoforms, PRECISION))
+
+
+                    well_assembled_exons_str += value_width_str.format(round(relative_metrics.percentage_well_assembled_exons, PRECISION))
+                    fully_assembled_exons_str += value_width_str.format(round(relative_metrics.percentage_fully_assembled_exons, PRECISION))
+
+                    well_covered_exons_str += value_width_str.format(round(relative_metrics.percentage_well_covered_exons, PRECISION))
+                    fully_covered_exons_str += value_width_str.format(round(relative_metrics.percentage_fully_covered_exons, PRECISION))
+                else:
+                    database_coverage_str += value_width_str.format('-')
+
+                    well_assembled_genes_str += value_width_str.format('-')
+                    fully_assembled_genes_str += value_width_str.format('-')
+
+                    well_covered_genes_str += value_width_str.format('-')
+                    fully_covered_genes_str += value_width_str.format('-')
+
+
+                    well_assembled_isoforms_str += value_width_str.format('-')
+                    fully_assembled_isoforms_str += value_width_str.format('-')
+
+                    well_covered_isoforms_str += value_width_str.format('-')
+                    fully_covered_isoforms_str += value_width_str.format('-')
+
+
+                    well_assembled_exons_str += value_width_str.format('-')
+                    fully_assembled_exons_str += value_width_str.format('-')
+
+                    well_covered_exons_str += value_width_str.format('-')
+                    fully_covered_exons_str += value_width_str.format('-')
 
         with open(self.path_txt_relative_database_coverage, 'w') as out_handle:
-            out_handle.write(' == RELATIVE DATABASE COVERAGE ==\n')
             out_handle.write(name_str + '\n')
 
-            out_handle.write(database_coverage_str + '\n\n')
+            self.write_metric_str(database_coverage_str + '\n\n', out_handle, len(transcripts_metrics), first_type='RELATIVE DATABASE COVERAGE')
 
-            out_handle.write(well_assembled_genes_str + '\n')
-            out_handle.write(fully_assembled_genes_str + '\n')
-            out_handle.write(well_covered_genes_str + '\n')
-            out_handle.write(fully_covered_genes_str + '\n\n')
+            self.write_metric_str(well_assembled_genes_str + '\n', out_handle, len(transcripts_metrics))
+            self.write_metric_str(fully_assembled_genes_str + '\n', out_handle, len(transcripts_metrics))
+            self.write_metric_str(well_covered_genes_str + '\n', out_handle, len(transcripts_metrics))
+            self.write_metric_str(fully_covered_genes_str + '\n\n', out_handle, len(transcripts_metrics))
 
-            out_handle.write(well_assembled_isoforms_str + '\n')
-            out_handle.write(fully_assembled_isoforms_str + '\n')
-            out_handle.write(well_covered_isoforms_str + '\n')
-            out_handle.write(fully_covered_isoforms_str + '\n\n')
+            self.write_metric_str(well_assembled_isoforms_str + '\n', out_handle, len(transcripts_metrics))
+            self.write_metric_str(fully_assembled_isoforms_str + '\n', out_handle, len(transcripts_metrics))
+            self.write_metric_str(well_covered_isoforms_str + '\n', out_handle, len(transcripts_metrics))
+            self.write_metric_str(fully_covered_isoforms_str + '\n\n', out_handle, len(transcripts_metrics))
 
-            out_handle.write(well_assembled_exons_str + '\n')
-            out_handle.write(fully_assembled_exons_str + '\n')
-            out_handle.write(well_covered_exons_str + '\n')
-            out_handle.write(fully_covered_exons_str + '\n\n')
+            self.write_metric_str(well_assembled_exons_str + '\n', out_handle, len(transcripts_metrics))
+            self.write_metric_str(fully_assembled_exons_str + '\n', out_handle, len(transcripts_metrics))
+            self.write_metric_str(well_covered_exons_str + '\n', out_handle, len(transcripts_metrics))
+            self.write_metric_str(fully_covered_exons_str + '\n\n', out_handle, len(transcripts_metrics))
 
         logger.info('      saved to {}'.format(self.path_txt_relative_database_coverage))
+
+
+    def write_metric_str(self, metric_str, out_handle, num_transcripts, first_type=None):
+        num_values = 0
+        for val in metric_str.strip().split('  '):
+            if val != '':
+                num_values += 1
+        if metric_str.count('-') != num_transcripts and num_values == num_transcripts + 1:
+            if first_type is not None:
+                out_handle.write(' == ' + first_type + ' == \n')
+            out_handle.write(metric_str)
 
 
     # Basic transcript metrics (calculated without reference genome and gene database)
@@ -262,15 +291,18 @@ class TXTMetricsReport():
 
             basic_metrics = transcripts_metrics[i_transcripts].basic_metrics
 
-            name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
+            if basic_metrics is not None:
+                name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
+                num_transcripts_str += value_width_str.format(basic_metrics.number)
 
-            num_transcripts_str += value_width_str.format(basic_metrics.number)
-            num_transcripts_500_str += value_width_str.format(basic_metrics.num_transcripts_500)
-            num_transcripts_1000_str += value_width_str.format(basic_metrics.num_transcripts_1000)
-            avg_len_transcripts_str += value_width_str.format(round(basic_metrics.avg_len, PRECISION))
-            longest_transcript_str += value_width_str.format(basic_metrics.max_len)
-            tot_len_str += value_width_str.format(basic_metrics.tot_len)
-            n50_str += value_width_str.format(basic_metrics.n50)
+                num_transcripts_500_str += value_width_str.format(basic_metrics.num_transcripts_500)
+                num_transcripts_1000_str += value_width_str.format(basic_metrics.num_transcripts_1000)
+
+                avg_len_transcripts_str += value_width_str.format(round(basic_metrics.avg_len, PRECISION))
+                longest_transcript_str += value_width_str.format(basic_metrics.max_len)
+                tot_len_str += value_width_str.format(basic_metrics.tot_len)
+
+                n50_str += value_width_str.format(basic_metrics.n50)
 
             # out_handle.write('{:<100}'.format('Min. length') + str(self.min_len) + '\n')
             # if args.annotation is not None:
@@ -280,15 +312,17 @@ class TXTMetricsReport():
 
         out_handle = open(self.path_txt_basic, 'w')
 
-        out_handle.write(' == BASIC TRANSCRIPTS METRICS (calculated without reference genome and gene database) ==\n')
         out_handle.write(name_str + '\n')
-        out_handle.write(num_transcripts_str + '\n\n')
-        out_handle.write(num_transcripts_500_str + '\n')
-        out_handle.write(num_transcripts_1000_str + '\n\n')
-        out_handle.write(avg_len_transcripts_str + '\n')
-        out_handle.write(longest_transcript_str + '\n')
-        out_handle.write(tot_len_str + '\n\n')
-        out_handle.write(n50_str + '\n')
+        self.write_metric_str(num_transcripts_str + '\n\n', out_handle, len(transcripts_metrics), first_type='BASIC TRANSCRIPTS METRICS (calculated without reference genome and gene database)')
+
+        self.write_metric_str(num_transcripts_500_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(num_transcripts_1000_str + '\n\n', out_handle, len(transcripts_metrics))
+
+        self.write_metric_str(avg_len_transcripts_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(longest_transcript_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(tot_len_str + '\n\n', out_handle, len(transcripts_metrics))
+
+        self.write_metric_str(n50_str + '\n', out_handle, len(transcripts_metrics))
 
         out_handle.close()
 
@@ -347,32 +381,59 @@ class TXTMetricsReport():
 
             name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
 
-            num_transcripts_str += value_width_str.format(basic_metrics.number)
-            num_aligned_str += value_width_str.format(simple_metrics.num_aligned)
-            num_uniquely_aligned_str += value_width_str.format(simple_metrics.num_unique_aligned)
-            num_multiply_aligned_str += value_width_str.format(simple_metrics.num_mul_aligned)
-            num_misassembled_by_blat_str += value_width_str.format(simple_metrics.num_misassembled_by_blat)
-            num_unaligned_str += value_width_str.format(simple_metrics.num_unaligned)
+            if basic_metrics is not None:
+                num_transcripts_str += value_width_str.format(basic_metrics.number)
 
-            # number of alignments in PSL-file:
-            # out_handle.write('{:<100}'.format('Alignments') + str(self.num_alignments) + '\n\n')
+            if simple_metrics is not None:
+                num_aligned_str += value_width_str.format(simple_metrics.num_aligned)
 
-            # number of not misassembled aligned transcripts (best union is single union):
-            # out_handle.write('{:<100}'.format('Not misassembled aligned') + str(self.num_non_misassembled) + '\n\n')
+                num_uniquely_aligned_str += value_width_str.format(simple_metrics.num_unique_aligned)
+                num_multiply_aligned_str += value_width_str.format(simple_metrics.num_mul_aligned)
+                num_misassembled_by_blat_str += value_width_str.format(simple_metrics.num_misassembled_by_blat)
 
-            # TEMPORARY FOR TEST BLAT ALIGNER:
-            # out_handle.write('{:<100}'.format('Multiple equal query aligned') + str(simple_metrics.num_mul_equal_query_aligned) + '\n')
-            # out_handle.write('{:<100}'.format('Multiple equal query aligned over misassemblies') + str(simple_metrics.num_mul_equal_query_aligned_mis) + '\n\n')
+                num_unaligned_str += value_width_str.format(simple_metrics.num_unaligned)
 
-            # genome_fraction_str += '{:<25}'.format(round(simple_metrics.fraction_genome_mapped, precision))
-            # duplication_ratio_wo_database_str += '{:<25}'.format(round(simple_metrics.avg_duplication_ratio, precision))
+                # number of alignments in PSL-file:
+                # out_handle.write('{:<100}'.format('Alignments') + str(self.num_alignments) + '\n\n')
 
-            avg_aligned_fraction_str += value_width_str.format(round(simple_metrics.avg_fraction, PRECISION))
-            avg_alignment_len_str += value_width_str.format(round(simple_metrics.avg_alignment_len, PRECISION))
-            avg_blocks_per_alignment += value_width_str.format(round(simple_metrics.avg_blocks_num, PRECISION))
-            avg_block_len_str += value_width_str.format(round(simple_metrics.avg_block_len, PRECISION))
-            avg_mismatches_per_transcript_str += value_width_str.format(round(simple_metrics.avg_mismatch_num, PRECISION))
-            na50_str += value_width_str.format(simple_metrics.na50)
+                # number of not misassembled aligned transcripts (best union is single union):
+                # out_handle.write('{:<100}'.format('Not misassembled aligned') + str(self.num_non_misassembled) + '\n\n')
+
+                # TEMPORARY FOR TEST BLAT ALIGNER:
+                # out_handle.write('{:<100}'.format('Multiple equal query aligned') + str(simple_metrics.num_mul_equal_query_aligned) + '\n')
+                # out_handle.write('{:<100}'.format('Multiple equal query aligned over misassemblies') + str(simple_metrics.num_mul_equal_query_aligned_mis) + '\n\n')
+
+                # genome_fraction_str += '{:<25}'.format(round(simple_metrics.fraction_genome_mapped, precision))
+                # duplication_ratio_wo_database_str += '{:<25}'.format(round(simple_metrics.avg_duplication_ratio, precision))
+
+                avg_aligned_fraction_str += value_width_str.format(round(simple_metrics.avg_fraction, PRECISION))
+                avg_alignment_len_str += value_width_str.format(round(simple_metrics.avg_alignment_len, PRECISION))
+
+                avg_blocks_per_alignment += value_width_str.format(round(simple_metrics.avg_blocks_num, PRECISION))
+                avg_block_len_str += value_width_str.format(round(simple_metrics.avg_block_len, PRECISION))
+
+                avg_mismatches_per_transcript_str += value_width_str.format(round(simple_metrics.avg_mismatch_num, PRECISION))
+
+                na50_str += value_width_str.format(simple_metrics.na50)
+            else:
+                num_aligned_str += value_width_str.format('-')
+
+                num_uniquely_aligned_str += value_width_str.format('-')
+                num_multiply_aligned_str += value_width_str.format('-')
+                num_misassembled_by_blat_str += value_width_str.format('-')
+
+                num_unaligned_str += value_width_str.format('-')
+
+                avg_aligned_fraction_str += value_width_str.format('-')
+                avg_alignment_len_str += value_width_str.format('-')
+
+                avg_blocks_per_alignment += value_width_str.format('-')
+                avg_block_len_str += value_width_str.format('-')
+
+                avg_mismatches_per_transcript_str += value_width_str.format('-')
+
+                na50_str += value_width_str.format('-')
+
             # avg_gaps_per_alignment_str +=  '{:<25}'.format(round(simple_metrics.avg_qgap_num, precision))
             # avg_gap_length_str += '{:<25}'.format(round(simple_metrics.avg_qgap_len, precision))
 
@@ -457,24 +518,29 @@ class TXTMetricsReport():
 
         out_handle = open(self.path_txt_alignment, 'w')
 
-        out_handle.write(' == ALIGNMENT METRICS (calculated with reference genome but without gene database) ==\n')
         out_handle.write(name_str + '\n')
-        out_handle.write(num_transcripts_str + '\n\n')
-        out_handle.write(num_aligned_str + '\n\n')
-        out_handle.write(num_uniquely_aligned_str + '\n')
-        out_handle.write(num_multiply_aligned_str + '\n')
-        out_handle.write(num_misassembled_by_blat_str + '\n\n')
-        out_handle.write(num_unaligned_str + '\n\n')
+        self.write_metric_str(num_transcripts_str + '\n\n', out_handle, len(transcripts_metrics), first_type='ALIGNMENT METRICS (calculated with reference genome but without gene database)')
 
-        out_handle.write(' == ALIGNMENT METRICS FOR NON-MISASSEMBLED TRANSCRIPTS ==\n')
+        self.write_metric_str(num_aligned_str + '\n\n', out_handle, len(transcripts_metrics))
+
+        self.write_metric_str(num_uniquely_aligned_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(num_multiply_aligned_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(num_misassembled_by_blat_str + '\n\n', out_handle, len(transcripts_metrics))
+
+        self.write_metric_str(num_unaligned_str + '\n\n', out_handle, len(transcripts_metrics))
+
         # out_handle.write(genome_fraction_str + '\n')
         # out_handle.write(duplication_ratio_wo_database_str + '\n\n')
-        out_handle.write(avg_aligned_fraction_str + '\n')
-        out_handle.write(avg_alignment_len_str + '\n\n')
-        out_handle.write(avg_blocks_per_alignment + '\n')
-        out_handle.write(avg_block_len_str + '\n\n')
-        out_handle.write(avg_mismatches_per_transcript_str + '\n\n')
-        out_handle.write(na50_str + '\n\n')
+        self.write_metric_str(avg_aligned_fraction_str + '\n', out_handle, len(transcripts_metrics), first_type='ALIGNMENT METRICS FOR NON-MISASSEMBLED TRANSCRIPTS')
+        self.write_metric_str(avg_alignment_len_str + '\n\n', out_handle, len(transcripts_metrics))
+
+        self.write_metric_str(avg_blocks_per_alignment + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(avg_block_len_str + '\n\n', out_handle, len(transcripts_metrics))
+
+        self.write_metric_str(avg_mismatches_per_transcript_str + '\n\n', out_handle, len(transcripts_metrics))
+
+        self.write_metric_str(na50_str + '\n\n', out_handle, len(transcripts_metrics))
+
         # out_handle.write(avg_gaps_per_alignment_str + '\n')
         # out_handle.write(avg_gap_length_str + '\n')
 
@@ -508,21 +574,27 @@ class TXTMetricsReport():
             simple_metrics = transcripts_metrics[i_transcripts].simple_metrics
 
             name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
-            num_transcripts_str += value_width_str.format(basic_metrics.number)
 
-            num_misassembled_by_blat_str += value_width_str.format(simple_metrics.num_misassembled_by_blat)
-            num_misassembled_by_blast_str += value_width_str.format(simple_metrics.num_misassembled_by_blast)
-            num_misassembled_together_str += value_width_str.format(simple_metrics.num_misassembled_together)
+            if basic_metrics is not None:
+                num_transcripts_str += value_width_str.format(basic_metrics.number)
+
+            if simple_metrics is not None:
+                num_misassembled_by_blat_str += value_width_str.format(simple_metrics.num_misassembled_by_blat)
+                num_misassembled_by_blast_str += value_width_str.format(simple_metrics.num_misassembled_by_blast)
+                num_misassembled_together_str += value_width_str.format(simple_metrics.num_misassembled_together)
+            else:
+                num_misassembled_by_blat_str += value_width_str.format('-')
+                num_misassembled_by_blast_str += value_width_str.format('-')
+                num_misassembled_together_str += value_width_str.format('-')
 
         out_handle = open(self.path_txt_misassemblies, 'w')
 
-        out_handle.write(' == ALIGNMENT METRICS FOR MISASSEMBLED (CHIMERIC) TRANSCRIPTS (calculated with reference genome but without gene database) ==\n')
         out_handle.write(name_str + '\n')
-        out_handle.write(num_transcripts_str + '\n\n')
+        self.write_metric_str(num_transcripts_str + '\n\n', out_handle, len(transcripts_metrics), first_type='ALIGNMENT METRICS FOR MISASSEMBLED (CHIMERIC) TRANSCRIPTS (calculated with reference genome or with gene database)')
 
-        out_handle.write(num_misassembled_by_blat_str + '\n')
-        out_handle.write(num_misassembled_by_blast_str + '\n')
-        out_handle.write(num_misassembled_together_str + '\n\n')
+        self.write_metric_str(num_misassembled_by_blat_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(num_misassembled_by_blast_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(num_misassembled_together_str + '\n\n', out_handle, len(transcripts_metrics))
 
         out_handle.close()
 
@@ -578,9 +650,6 @@ class TXTMetricsReport():
         isoform_well_cov_exons_str = label_width_str.format('Avg. percentage of isoform ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_exon_threshold * 100)) + '%-covered exons')
         isoform_fully_cov_exons_str = label_width_str.format('Avg. percentage of isoform ' + str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_exon_threshold * 100)) + '%-covered exons')
 
-        # cegma_complete_str = '{:<50}'.format('Complete')
-        # cegma_partial_str = '{:<50}'.format('Partial')
-
         busco_complete_str = label_width_str.format('Complete')
         busco_partial_str = label_width_str.format('Partial')
 
@@ -593,21 +662,22 @@ class TXTMetricsReport():
                 name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
 
                 isoforms_coverage = transcripts_metrics[i_transcripts].assembly_completeness_metrics.isoforms_coverage
+
                 if isoforms_coverage is not None:
                     database_coverage_str += value_width_str.format(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
 
-                    duplication_str += value_width_str.format(round(isoforms_coverage.avg_duplication_ratio, PRECISION))
-                    avg_num_transcripts_in_isoform_str += value_width_str.format(round(isoforms_coverage.avg_num_transcripts_mapped_to_isoform, PRECISION))
+                    duplication_str += value_width_str.format(round(isoforms_coverage.avg_duplication_ratio, PRECISION), value_width_str)
+                    avg_num_transcripts_in_isoform_str += value_width_str.format(round(isoforms_coverage.avg_num_transcripts_mapped_to_isoform, PRECISION), value_width_str)
 
-                    assembled_well_genes_str += value_width_str.format(isoforms_coverage.num_well_assembled_genes)
-                    assembled_fully_genes_str += value_width_str.format(isoforms_coverage.num_fully_assembled_genes)
-                    covered_well_genes_str += value_width_str.format(isoforms_coverage.num_well_covered_genes)
-                    covered_fully_genes_str += value_width_str.format(isoforms_coverage.num_fully_covered_genes)
+                    assembled_well_genes_str += value_width_str.format(isoforms_coverage.num_well_assembled_genes, value_width_str)
+                    assembled_fully_genes_str += value_width_str.format(isoforms_coverage.num_fully_assembled_genes, value_width_str)
+                    covered_well_genes_str += value_width_str.format(isoforms_coverage.num_well_covered_genes, value_width_str)
+                    covered_fully_genes_str += value_width_str.format(isoforms_coverage.num_fully_covered_genes, value_width_str)
 
-                    assembled_well_isoforms_str += value_width_str.format(isoforms_coverage.num_well_assembled_isoforms)
-                    assembled_fully_isoforms_str += value_width_str.format(isoforms_coverage.num_fully_assembled_isoforms)
-                    covered_well_isoforms_str += value_width_str.format(isoforms_coverage.num_well_covered_isoforms)
-                    covered_fully_isoforms_str += value_width_str.format(isoforms_coverage.num_fully_covered_isoforms)
+                    assembled_well_isoforms_str += value_width_str.format(isoforms_coverage.num_well_assembled_isoforms, value_width_str)
+                    assembled_fully_isoforms_str += value_width_str.format(isoforms_coverage.num_fully_assembled_isoforms, value_width_str)
+                    covered_well_isoforms_str += value_width_str.format(isoforms_coverage.num_well_covered_isoforms, value_width_str)
+                    covered_fully_isoforms_str += value_width_str.format(isoforms_coverage.num_fully_covered_isoforms, value_width_str)
 
                     assembled_exons_well_str += value_width_str.format(isoforms_coverage.num_well_assembled_exons)
                     assembled_exons_fully_str += value_width_str.format(isoforms_coverage.num_fully_assembled_exons)
@@ -616,119 +686,127 @@ class TXTMetricsReport():
                     mean_exon_cov_str += value_width_str.format(round(isoforms_coverage.avg_covered_fraction_exons, PRECISION))
                     isoform_well_cov_exons_str += value_width_str.format(round(isoforms_coverage.avg_percentage_isoform_well_covered_exons, PRECISION))
                     isoform_fully_cov_exons_str += value_width_str.format(round(isoforms_coverage.avg_percentage_isoform_fully_covered_exons, PRECISION))
+                else:
+                    database_coverage_str += value_width_str.format('-')
 
-            # cegma_metrics = transcripts_metrics[i_transcripts].cegma_metrics
-            # if cegma_metrics is not None:
-            #     cegma_complete_str += '{:<25}'.format(cegma_metrics.complete_completeness)
-            #     cegma_partial_str += '{:<25}'.format(cegma_metrics.partial_completeness)
+                    duplication_str += value_width_str.format('-')
+                    avg_num_transcripts_in_isoform_str += value_width_str.format('-')
 
-            busco_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.busco_metrics
-            if busco_metrics is not None:
-                busco_complete_str += value_width_str.format(round(busco_metrics.complete_completeness, PRECISION))
-                busco_partial_str += value_width_str.format(round(busco_metrics.partial_completeness, PRECISION))
-            else:
-                busco_complete_str += value_width_str.format('0')
-                busco_partial_str += value_width_str.format('0')
+                    assembled_well_genes_str += value_width_str.format('-')
+                    assembled_fully_genes_str += value_width_str.format('-')
+                    covered_well_genes_str += value_width_str.format('-')
+                    covered_fully_genes_str += value_width_str.format('-')
 
-            geneMarkS_T_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.geneMarkS_T_metrics
-            if geneMarkS_T_metrics is not None:
-                geneMarkS_T_genes_str += value_width_str.format(geneMarkS_T_metrics.genes)
-            else:
-                geneMarkS_T_genes_str += value_width_str.format('0')
+                    assembled_well_isoforms_str += value_width_str.format('-')
+                    assembled_fully_isoforms_str += value_width_str.format('-')
+                    covered_well_isoforms_str += value_width_str.format('-')
+                    covered_fully_isoforms_str += value_width_str.format('-')
 
-        fout = open(self.path_txt_sensitivity, 'w')
+                    assembled_exons_well_str += value_width_str.format('-')
+                    assembled_exons_fully_str += value_width_str.format('-')
+                    mean_isoform_cov_str += value_width_str.format('-')
+                    mean_isoform_assembly_str += value_width_str.format('-')
+                    mean_exon_cov_str += value_width_str.format('-')
+                    isoform_well_cov_exons_str += value_width_str.format('-')
+                    isoform_fully_cov_exons_str += value_width_str.format('-')
 
-        fout.write(' == ASSEMBLY COMPLETENESS (SENSITIVITY) ==\n')
+                busco_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.busco_metrics
 
-        fout.write(name_str + '\n')
+                if busco_metrics is not None:
+                    busco_complete_str += value_width_str.format(round(busco_metrics.complete_completeness, PRECISION))
+                    busco_partial_str += value_width_str.format(round(busco_metrics.partial_completeness, PRECISION))
+                else:
+                    busco_complete_str += value_width_str.format('-')
+                    busco_partial_str += value_width_str.format('-')
 
-        if transcripts_metrics[0].assembly_completeness_metrics.isoforms_coverage is not None:
-            fout.write(database_coverage_str + '\n')
+                geneMarkS_T_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.geneMarkS_T_metrics
 
-            fout.write(duplication_str + '\n')
-            fout.write(avg_num_transcripts_in_isoform_str + '\n\n')
+                if geneMarkS_T_metrics is not None:
+                    geneMarkS_T_genes_str += value_width_str.format(geneMarkS_T_metrics.genes)
+                else:
+                    geneMarkS_T_genes_str += value_width_str.format('-')
 
-            fout.write(assembled_well_genes_str + '\n')
-            fout.write(assembled_fully_genes_str + '\n')
-            fout.write(covered_well_genes_str + '\n')
-            fout.write(covered_fully_genes_str + '\n\n')
+        out_handle = open(self.path_txt_sensitivity, 'w')
 
-            fout.write(assembled_well_isoforms_str + '\n')
-            fout.write(assembled_fully_isoforms_str + '\n')
-            fout.write(covered_well_isoforms_str + '\n')
-            fout.write(covered_fully_isoforms_str + '\n\n')
+        out_handle.write(name_str + '\n')
 
-            fout.write(assembled_exons_well_str + '\n')
-            fout.write(assembled_exons_fully_str + '\n\n')
+        self.write_metric_str(database_coverage_str + '\n', out_handle, len(transcripts_metrics), first_type='ASSEMBLY COMPLETENESS (SENSITIVITY)')
 
-            fout.write(mean_isoform_assembly_str + '\n\n')
-            fout.write(mean_isoform_cov_str + '\n')
+        self.write_metric_str(duplication_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(avg_num_transcripts_in_isoform_str + '\n\n', out_handle, len(transcripts_metrics))
 
-            fout.write(mean_exon_cov_str + '\n\n')
+        self.write_metric_str(assembled_well_genes_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(assembled_fully_genes_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(covered_well_genes_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(covered_fully_genes_str + '\n\n', out_handle, len(transcripts_metrics))
 
-            fout.write(isoform_well_cov_exons_str + '\n')
-            fout.write(isoform_fully_cov_exons_str + '\n\n')
+        self.write_metric_str(assembled_well_isoforms_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(assembled_fully_isoforms_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(covered_well_isoforms_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(covered_fully_isoforms_str + '\n\n', out_handle, len(transcripts_metrics))
 
-        # if transcripts_metrics[0].assembly_completeness_metrics.cegma_metrics is not None:
-        #     fout.write(' == CEGMA METRICS ==\n')
-        #     fout.write(cegma_complete_str + '\n')
-        #     fout.write(cegma_partial_str + '\n\n')
+        self.write_metric_str(assembled_exons_well_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(assembled_exons_fully_str + '\n\n', out_handle, len(transcripts_metrics))
 
-        if busco_complete_str.strip().split()[1:].count('0') != len(transcripts_metrics):
-            fout.write(' == BUSCO METRICS ==\n')
-            fout.write(busco_complete_str + '\n')
-            fout.write(busco_partial_str + '\n\n')
+        self.write_metric_str(mean_isoform_assembly_str + '\n\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(mean_isoform_cov_str + '\n', out_handle, len(transcripts_metrics))
 
-        if geneMarkS_T_genes_str.strip().split()[1:].count('0') != len(transcripts_metrics):
-            fout.write(' == GeneMarkS-T METRICS ==\n')
-            fout.write(geneMarkS_T_genes_str + '\n\n')
+        self.write_metric_str(mean_exon_cov_str + '\n\n', out_handle, len(transcripts_metrics))
 
-        fout.close()
+        self.write_metric_str(isoform_well_cov_exons_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(isoform_fully_cov_exons_str + '\n\n', out_handle, len(transcripts_metrics))
+
+        self.write_metric_str(busco_complete_str + '\n', out_handle, len(transcripts_metrics), first_type='BUSCO METRICS')
+        self.write_metric_str(busco_partial_str + '\n\n', out_handle, len(transcripts_metrics))
+
+        self.write_metric_str(geneMarkS_T_genes_str + '\n\n', out_handle, len(transcripts_metrics), first_type='GeneMarkS-T METRICS')
+
+        out_handle.close()
 
         logger.info('      saved to {}'.format(self.path_txt_sensitivity))
 
 
-        # fout.write('{:<100}'.format('Assembled isoforms') + str(isoforms_coverage.num_assembled) + '\n\n')
+        # out_handle.write('{:<100}'.format('Assembled isoforms') + str(isoforms_coverage.num_assembled) + '\n\n')
 
-        # fout.write('{:<100}'.format('Assembled exons') + str(exons_coverage.num_assembled) + '\n\n')
+        # out_handle.write('{:<100}'.format('Assembled exons') + str(exons_coverage.num_assembled) + '\n\n')
 
-        # fout.write('COVERAGE BY EACH MAPPED TRANSCRIPT SEPARATELY:\n')
-        # fout.write('DISTRIBUTIONS FOR ALIGNED TRANSCRIPTS:\n')
+        # out_handle.write('COVERAGE BY EACH MAPPED TRANSCRIPT SEPARATELY:\n')
+        # out_handle.write('DISTRIBUTIONS FOR ALIGNED TRANSCRIPTS:\n')
 
-        # fout.write('{:<100}'.format('Avg. fraction of exon assembled in isoform') + str(round(isoforms_coverage.avg_assembled_fraction_exon, precision)) + '\n\n')
+        # out_handle.write('{:<100}'.format('Avg. fraction of exon assembled in isoform') + str(round(isoforms_coverage.avg_assembled_fraction_exon, precision)) + '\n\n')
 
-        # fout.write('{:<100}'.format('Avg. percentage of isoform well-assembled exons') + str(round(isoforms_coverage.avg_percentage_well_assembled_exons, precision)) + '\n')
-        # fout.write('{:<100}'.format('Avg. percentage of isoform fully-assembled exons') + str(round(isoforms_coverage.avg_percentage_fully_assembled_exons, precision)) + '\n\n')
+        # out_handle.write('{:<100}'.format('Avg. percentage of isoform well-assembled exons') + str(round(isoforms_coverage.avg_percentage_well_assembled_exons, precision)) + '\n')
+        # out_handle.write('{:<100}'.format('Avg. percentage of isoform fully-assembled exons') + str(round(isoforms_coverage.avg_percentage_fully_assembled_exons, precision)) + '\n\n')
 
-        # fout.write('DISTRIBUTIONS FOR MAPPED ISOFORMS:\n')
-        # fout.write('{:<100}'.format('Avg. fraction of isoform assembled') + str(round(isoforms_coverage.avg_over_isoforms_assembled_fraction, precision)) + '\n\n')
+        # out_handle.write('DISTRIBUTIONS FOR MAPPED ISOFORMS:\n')
+        # out_handle.write('{:<100}'.format('Avg. fraction of isoform assembled') + str(round(isoforms_coverage.avg_over_isoforms_assembled_fraction, precision)) + '\n\n')
 
-        # fout.write('{:<100}'.format('Avg. fraction of exon assembled in isoform') + str(round(isoforms_coverage.avg_over_isoforms_avg_assembled_fraction_exon, precision)) + '\n\n')
+        # out_handle.write('{:<100}'.format('Avg. fraction of exon assembled in isoform') + str(round(isoforms_coverage.avg_over_isoforms_avg_assembled_fraction_exon, precision)) + '\n\n')
 
-        # fout.write('{:<100}'.format('Avg. percentage of isoform well-assembled exons') + str(round(isoforms_coverage.avg_over_isoforms_percentage_well_assembled_exons, precision)) + '\n')
-        # fout.write('{:<100}'.format('Avg. percentage of isoform fully-assembled exons') + str(round(isoforms_coverage.avg_over_isoforms_percentage_fully_assembled_exons, precision)) + '\n\n\n')
+        # out_handle.write('{:<100}'.format('Avg. percentage of isoform well-assembled exons') + str(round(isoforms_coverage.avg_over_isoforms_percentage_well_assembled_exons, precision)) + '\n')
+        # out_handle.write('{:<100}'.format('Avg. percentage of isoform fully-assembled exons') + str(round(isoforms_coverage.avg_over_isoforms_percentage_fully_assembled_exons, precision)) + '\n\n\n')
 
 
-        # fout.write('DISTRIBUTIONS FOR MAPPED EXONS:\n')
-        # fout.write('{:<100}'.format('Avg. fraction of exon assembled') + str(round(exons_coverage.avg_over_exons_assembled_fraction, precision)) + '\n\n\n')
+        # out_handle.write('DISTRIBUTIONS FOR MAPPED EXONS:\n')
+        # out_handle.write('{:<100}'.format('Avg. fraction of exon assembled') + str(round(exons_coverage.avg_over_exons_assembled_fraction, precision)) + '\n\n\n')
 
-        # fout.write('FOR ALL ALIGNED TRANSCRIPTS:\n')
-        # fout.write('{:<100}'.format('Well-assembled in average isoforms') + str(isoforms_coverage.num_well_assembled_in_average) + '\n')
-        # fout.write('{:<100}'.format('Fully-assembled in average isoforms') + str(isoforms_coverage.num_fully_assembled_in_average) + '\n\n')
+        # out_handle.write('FOR ALL ALIGNED TRANSCRIPTS:\n')
+        # out_handle.write('{:<100}'.format('Well-assembled in average isoforms') + str(isoforms_coverage.num_well_assembled_in_average) + '\n')
+        # out_handle.write('{:<100}'.format('Fully-assembled in average isoforms') + str(isoforms_coverage.num_fully_assembled_in_average) + '\n\n')
 
-        # fout.write('{:<100}'.format('Well-assembled in average exons') + str(exons_coverage.num_well_assembled_in_average) + '\n')
-        # fout.write('{:<100}'.format('Fully-assembled in average exons') + str(exons_coverage.num_fully_assembled_in_average) + '\n\n')
+        # out_handle.write('{:<100}'.format('Well-assembled in average exons') + str(exons_coverage.num_well_assembled_in_average) + '\n')
+        # out_handle.write('{:<100}'.format('Fully-assembled in average exons') + str(exons_coverage.num_fully_assembled_in_average) + '\n\n')
 
-        # fout.write('{:<100}'.format('Avg. fraction of exon assembled') + str(round(exons_coverage.avg_assembled_fraction, precision)) + '\n\n\n')
+        # out_handle.write('{:<100}'.format('Avg. fraction of exon assembled') + str(round(exons_coverage.avg_assembled_fraction, precision)) + '\n\n\n')
 
-        # fout.write('COVERAGE BY ALL MAPPED TRANSCRIPTS AT ONCE:\n')
-        # fout.write('DISTRIBUTIONS FOR ALIGNED TRANSCRIPTS:\n')
+        # out_handle.write('COVERAGE BY ALL MAPPED TRANSCRIPTS AT ONCE:\n')
+        # out_handle.write('DISTRIBUTIONS FOR ALIGNED TRANSCRIPTS:\n')
 
-        # fout.write('{:<100}'.format('Avg. fraction of exon covered in isoform') + str(round(isoforms_coverage.avg_covered_fraction_exon, precision)) + '\n\n')
+        # out_handle.write('{:<100}'.format('Avg. fraction of exon covered in isoform') + str(round(isoforms_coverage.avg_covered_fraction_exon, precision)) + '\n\n')
 
-        # fout.write('FOR ALL ALIGNED TRANSCRIPTS:\n')
-        # fout.write('{:<100}'.format('Well-covered exons') + str(exons_coverage.num_well_covered) + '\n')
-        # fout.write('{:<100}'.format('Fully-covered exons') + str(exons_coverage.num_fully_covered) + '\n\n')
+        # out_handle.write('FOR ALL ALIGNED TRANSCRIPTS:\n')
+        # out_handle.write('{:<100}'.format('Well-covered exons') + str(exons_coverage.num_well_covered) + '\n')
+        # out_handle.write('{:<100}'.format('Fully-covered exons') + str(exons_coverage.num_fully_covered) + '\n\n')
 
 
     # Assembly specificity. To compute the following metrics we use only transcripts that have at least one significant alignment and are not misassembled.
@@ -747,55 +825,76 @@ class TXTMetricsReport():
         name_str = label_width_str.format('METRICS/TRANSCRIPTS')
 
         unannotated_str = label_width_str.format('Unannotated')
+
         matched_well_str = label_width_str.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_transcript_threshold * 100)) + '%-matched')
         matched_fully_str = label_width_str.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_transcript_threshold * 100)) + '%-matched')
+
         mean_transcript_match_str = label_width_str.format('Mean fraction of transcript matched')
+
         mean_block_match_str = label_width_str.format('Mean fraction of block matched')
+
         matched_blocks_well_str = label_width_str.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_block_threshold * 100)) + '%-matched blocks')
         matched_blocks_fully_str = label_width_str.format(str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_block_threshold * 100)) + '%-matched blocks')
+
         matched_len_str = label_width_str.format('Matched length')
         unmatched_len_str = label_width_str.format('Unmatched length')
 
         for i_transcripts in range(len(transcripts_metrics)):
-            value_width_str = '{:<' + str(self.widths[i_transcripts + 1]) + '}'
+            if transcripts_metrics[i_transcripts].assembly_correctness_metrics is not None:
+                value_width_str = '{:<' + str(self.widths[i_transcripts + 1]) + '}'
 
-            transcripts_coverage = transcripts_metrics[i_transcripts].assembly_correctness_metrics.transcripts_coverage
+                transcripts_coverage = transcripts_metrics[i_transcripts].assembly_correctness_metrics.transcripts_coverage
 
-            name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
+                if transcripts_coverage is not None:
+                    name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
+                    unannotated_str += value_width_str.format(transcripts_coverage.num_unannotated_transcripts)
 
-            if transcripts_coverage is not None:
-                unannotated_str += value_width_str.format(transcripts_coverage.num_unannotated_transcripts)
-                matched_well_str += value_width_str.format(transcripts_coverage.num_well_covered_transcripts)
-                matched_fully_str += value_width_str.format(transcripts_coverage.num_fully_covered_transcripts)
-                mean_transcript_match_str += value_width_str.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, precision))
-                mean_block_match_str += value_width_str.format(round(transcripts_coverage.avg_covered_fraction_block, precision))
-                matched_blocks_well_str += value_width_str.format(round(transcripts_coverage.percentage_well_covered_blocks, precision))
-                matched_blocks_fully_str += value_width_str.format(round(transcripts_coverage.percentage_fully_covered_blocks, precision))
-                matched_len_str += value_width_str.format(transcripts_coverage.matched_len)
-                unmatched_len_str += value_width_str.format(transcripts_coverage.unmatched_len)
+                    matched_well_str += value_width_str.format(transcripts_coverage.num_well_covered_transcripts)
+                    matched_fully_str += value_width_str.format(transcripts_coverage.num_fully_covered_transcripts)
+
+                    mean_transcript_match_str += value_width_str.format(round(transcripts_coverage.avg_covered_fraction_whole_transcript, precision))
+
+                    mean_block_match_str += value_width_str.format(round(transcripts_coverage.avg_covered_fraction_block, precision))
+
+                    matched_blocks_well_str += value_width_str.format(round(transcripts_coverage.percentage_well_covered_blocks, precision))
+                    matched_blocks_fully_str += value_width_str.format(round(transcripts_coverage.percentage_fully_covered_blocks, precision))
+
+                    matched_len_str += value_width_str.format(transcripts_coverage.matched_len)
+                    unmatched_len_str += value_width_str.format(transcripts_coverage.unmatched_len)
+                else:
+                    unannotated_str += value_width_str.format('-')
+
+                    matched_well_str += value_width_str.format('-')
+                    matched_fully_str += value_width_str.format('-')
+
+                    mean_transcript_match_str += value_width_str.format('-')
+
+                    mean_block_match_str += value_width_str.format('-')
+
+                    matched_blocks_well_str += value_width_str.format('-')
+                    matched_blocks_fully_str += value_width_str.format('-')
+
+                    matched_len_str += value_width_str.format('-')
+                    unmatched_len_str += value_width_str.format('-')
 
         out_handle = open(self.path_txt_specificity, 'w')
 
+        out_handle.write(name_str + '\n')
 
-        if transcripts_metrics[0].assembly_correctness_metrics.transcripts_coverage:
-            out_handle.write(' == ASSEMBLY SPECIFICITY ==\n')
+        self.write_metric_str(unannotated_str + '\n\n', out_handle, len(transcripts_metrics), first_type='ASSEMBLY SPECIFICITY')
 
-            out_handle.write(name_str + '\n')
+        self.write_metric_str(matched_well_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(matched_fully_str + '\n\n', out_handle, len(transcripts_metrics))
 
-            out_handle.write(unannotated_str + '\n\n')
+        self.write_metric_str(mean_transcript_match_str + '\n\n', out_handle, len(transcripts_metrics))
 
-            out_handle.write(matched_well_str + '\n')
-            out_handle.write(matched_fully_str + '\n\n')
+        self.write_metric_str(mean_block_match_str + '\n\n', out_handle, len(transcripts_metrics))
 
-            out_handle.write(mean_transcript_match_str + '\n\n')
+        self.write_metric_str(matched_blocks_well_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(matched_blocks_fully_str + '\n\n', out_handle, len(transcripts_metrics))
 
-            out_handle.write(mean_block_match_str + '\n\n')
-
-            out_handle.write(matched_blocks_well_str + '\n')
-            out_handle.write(matched_blocks_fully_str + '\n\n')
-
-            out_handle.write(matched_len_str + '\n')
-            out_handle.write(unmatched_len_str + '\n\n')
+        self.write_metric_str(matched_len_str + '\n', out_handle, len(transcripts_metrics))
+        self.write_metric_str(unmatched_len_str + '\n\n', out_handle, len(transcripts_metrics))
 
         out_handle.close()
 

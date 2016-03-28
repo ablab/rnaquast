@@ -260,7 +260,7 @@ class ShortReport():
 
         widths.append(rqconfig.space_label)
         for t_label in metrics_dict[first_label]:
-            curr_width = len(t_label) + 1
+            curr_width = len(t_label) + 2
             widths.append(max(curr_width, rqconfig.space_value))
 
         return widths
