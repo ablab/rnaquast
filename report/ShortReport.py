@@ -142,6 +142,8 @@ class ShortReport():
                 if best_type[metric_label] == 1:
                     max_value = - float('Inf')
                     for i_v in range(len(values)):
+                        if values[i_v] == '*':
+                            continue
                         float_value = float(values[i_v])
                         if float_value > max_value:
                             max_value = float_value
@@ -150,6 +152,8 @@ class ShortReport():
                 if best_type[metric_label] == -1:
                     min_value = float('Inf')
                     for i_v in range(len(values)):
+                        if values[i_v] == '*':
+                            continue
                         float_value = float(values[i_v])
                         if float_value < min_value:
                             min_value = float_value
@@ -158,6 +162,8 @@ class ShortReport():
                 if best_type[metric_label] == 2:
                     max_rel_value = - float('Inf')
                     for i_v in range(len(values)):
+                        if values[i_v] == '*':
+                            continue
                         rel_value = float(values[i_v]) / transcripts_num[i_v]
                         if rel_value > max_rel_value:
                             max_rel_value = rel_value
@@ -166,6 +172,8 @@ class ShortReport():
                 if best_type[metric_label] == -2:
                     min_rel_value = float('Inf')
                     for i_v in range(len(values)):
+                        if values[i_v] == '*':
+                            continue
                         rel_value = float(values[i_v]) / transcripts_num[i_v]
                         if rel_value < min_rel_value:
                             min_rel_value = rel_value
