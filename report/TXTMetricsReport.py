@@ -8,7 +8,7 @@ from general import rqconfig
 class TXTMetricsReport():
     """Class which generate txt reports"""
 
-    def __init__(self, txt_report_dir, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS):
+    def __init__(self, args_blast, txt_report_dir, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS):
         logger.print_timestamp('  ')
         logger.info('  Getting TXT report...')
 
@@ -34,7 +34,7 @@ class TXTMetricsReport():
         self.get_alignment_metrics_report(transcripts_metrics, logger, PRECISION)
 
         self.path_txt_misassemblies = os.path.join(self.txt_reports_dir, 'misassemblies.txt')
-        self.get_misassemblies_report(transcripts_metrics, logger)
+        self.get_misassemblies_report(args_blast, transcripts_metrics, logger)
 
         self.path_txt_sensitivity = os.path.join(self.txt_reports_dir, 'sensitivity.txt')
         self.get_sensitivity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
@@ -553,7 +553,7 @@ class TXTMetricsReport():
     # Misassembly candidates reported by BLAT: transcripts are aligned to the reference genome with BLAT and discordant partial alignments are selected as misassembly candidates.
     # Misassembly candidates reported by BLASTN: transcripts are aligned to the isoform sequences (extracted from the genome using gene database) with BLASTN and discordant partial alignments are selected as misassembly candidate.
     # Misassemblies: misassembly candidates confirmed by both methods described above. Using both methods simultaneously allows to avoid considering misalignments that can be caused, for  example, by paralogous genes.
-    def get_misassemblies_report(self, transcripts_metrics, logger):
+    def get_misassemblies_report(self, args_blast, transcripts_metrics, logger):
         logger.info('    Getting ALIGNMENT METRICS FOR MISASSEMBLED (CHIMERIC) TRANSCRIPTS report...')
 
         label_width_str = '{:<' + str(self.widths[0]) + '}'
@@ -580,12 +580,15 @@ class TXTMetricsReport():
 
             if simple_metrics is not None:
                 num_misassembled_by_blat_str += value_width_str.format(simple_metrics.num_misassembled_by_blat)
-                num_misassembled_by_blast_str += value_width_str.format(simple_metrics.num_misassembled_by_blast)
                 num_misassembled_together_str += value_width_str.format(simple_metrics.num_misassembled_together)
             else:
                 num_misassembled_by_blat_str += value_width_str.format('*')
-                num_misassembled_by_blast_str += value_width_str.format('*')
                 num_misassembled_together_str += value_width_str.format('*')
+
+            if simple_metrics is not None and args_blast:
+                num_misassembled_by_blast_str += value_width_str.format(simple_metrics.num_misassembled_by_blast)
+            else:
+                num_misassembled_by_blast_str += value_width_str.format('*')
 
         out_handle = open(self.path_txt_misassemblies, 'w')
 

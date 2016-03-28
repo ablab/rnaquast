@@ -28,7 +28,7 @@ class ComparisonReport():
         logger.info('Getting COMPARISON report...')
 
         self.txt_comparison_report = \
-            TXTMetricsReport.TXTMetricsReport(self.output_dir, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
+            TXTMetricsReport.TXTMetricsReport(args.blast, self.output_dir, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
                                               WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS)
 
         if not args.no_plots:

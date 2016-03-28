@@ -268,7 +268,7 @@ def main_utils():
             logger.info()
             logger.info('Processing transcripts from {}:'.format(args.transcripts[i_transcripts]))
 
-            if args.blast == True:
+            if args.blast:
                 blast_alignments.append\
                     (UtilsTools.align_transcripts_to_isoforms_by_blastn
                      (args.transcripts[i_transcripts], isoforms_blast_db, tmp_dir, args.labels[i_transcripts], logger, log_dir))
@@ -293,7 +293,7 @@ def main_utils():
                 transcripts_metrics[i_transcripts].processing_misassembled_psl_file\
                     (alignments_reports[i_transcripts].blat_report.misassembled_psl_union_file, logger, True)
                 # by blast:
-                if args.blast == True:
+                if args.blast:
                     transcripts_metrics[i_transcripts].processing_misassembled_psl_file\
                         (alignments_reports[i_transcripts].blast6_report.misassembled_blast6_union_file, logger, False)
 

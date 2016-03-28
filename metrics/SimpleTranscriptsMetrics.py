@@ -363,7 +363,7 @@ class SimpleTranscriptsMetrics():
         self.num_misassembled_by_blat = len(self.ids_misassembled_by_blat)
         self.num_misassembled_by_blast = len(self.ids_misassembled_by_blast)
 
-        if args_blast == True:
+        if args_blast:
             self.ids_misassembled_together = self.ids_misassembled_by_blat.intersection(self.ids_misassembled_by_blast)
         else:
             self.ids_misassembled_together = self.ids_misassembled_by_blat
