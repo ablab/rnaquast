@@ -129,7 +129,8 @@ def main_utils():
         annotation_name = os.path.split(args.gene_database)[1]
         annotation_label = annotation_name[:annotation_name.rfind('.g')]
 
-        args.gene_database = UtilsAnnotations.clear_gtf_by_reference_chr(args.gene_database, ids_chrs, tmp_dir, annotation_label, logger)
+        if ids_chrs is not None:
+            args.gene_database = UtilsAnnotations.clear_gtf_by_reference_chr(args.gene_database, ids_chrs, tmp_dir, annotation_label, logger)
 
         sqlite3_db_genes = UtilsAnnotations.create_sqlite3_db(args.gene_database, annotation_label, args.disable_infer_genes,
                                               args.disable_infer_transcripts, args.store_db, args.output_dir, tmp_dir,
@@ -151,8 +152,9 @@ def main_utils():
         logger.info('\nSets maximum intron size equal {}. Default is 1500000 bp.\n'.format(ALIGNMENT_THRESHOLDS.ERR_SPACE_TARGET_FAKE_BLAT))
 
         # set exons starts / ends and ids for binning strategy:
-        sorted_exons_attr = \
-            SortedExonsAttributes.SortedExonsAttributes(sqlite3_db_genes, type_exons, strands, ids_chrs, reference_dict, logger)
+        if ids_chrs is not None:
+            sorted_exons_attr = \
+                SortedExonsAttributes.SortedExonsAttributes(sqlite3_db_genes, type_exons, strands, ids_chrs, reference_dict, logger)
 
     reads_coverage = None
     if args.reads_alignment is not None or \

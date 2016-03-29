@@ -381,7 +381,7 @@ class TXTMetricsReport():
 
             name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
 
-            if basic_metrics is not None:
+            if basic_metrics is not None and simple_metrics is not None:
                 num_transcripts_str += value_width_str.format(basic_metrics.number)
 
             if simple_metrics is not None:
@@ -575,7 +575,7 @@ class TXTMetricsReport():
 
             name_str += value_width_str.format(transcripts_metrics[i_transcripts].label)
 
-            if basic_metrics is not None:
+            if basic_metrics is not None and simple_metrics is not None:
                 num_transcripts_str += value_width_str.format(basic_metrics.number)
 
             if simple_metrics is not None:
