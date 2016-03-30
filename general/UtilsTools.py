@@ -380,7 +380,7 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
         logger.info('    logs can be found in {} and {}.'.format(star_logger_out_path, star_logger_err_path))
 
         if exit_code != 0:
-            logger.error('{program_name_mode} failed!'. format(program_name_mode=program_name + mode,
+            logger.error('{program_name_mode} failed!'. format(program_name_mode=program_name + ' ' + mode,
                                                                program_name=program_name))
         else:
             command = 'mv {} {}'.format(tmp_genome_dir, star_outdir)
