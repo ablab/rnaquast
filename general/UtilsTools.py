@@ -237,7 +237,7 @@ def align_transcripts_to_isoforms_by_blastn(transcripts_path, isoforms_blast_db,
     alignment_isoforms_path = '{}.blast6'.format(os.path.join(tmp_dir, label))
 
     command = '{} -query {} -out {} -db {} -num_alignments 10 -evalue 0.01 -outfmt "6 qseqid sseqid pident length ' \
-              'mismatch gapopen qstart qend sstart send evalue bitscore sstrand 1>> {}"'.\
+              'mismatch gapopen qstart qend sstart send evalue bitscore sstrand" 1>> {}'.\
         format(program_name, transcripts_path, alignment_isoforms_path, isoforms_blast_db, log_out)
     exit_code = subprocess.call(command, shell=True)
     if exit_code != 0:
