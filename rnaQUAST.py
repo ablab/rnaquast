@@ -192,7 +192,7 @@ def main_utils():
                                                  args.threads, tmp_dir, logger, log_dir)
         else:
             args.alignment = UtilsTools.run_gmap(args.reference, genome_len, args.transcripts, args.labels,
-                                                 args.threads, tmp_dir, logger, log_dir)
+                                                 args.threads, args.gmap_index, tmp_dir, logger, log_dir)
 
         #if args.fusion_misassemble_analyze:
         #    if not (args.left_reads is not None and args.right_reads is not None):

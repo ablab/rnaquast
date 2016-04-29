@@ -69,6 +69,8 @@ def get_arguments():
     # group_input_data.add_argument('-12', '--paired_reads', help='File with interplaced forward and reverse paired-end reads [FASTQ]')
     group_input_data.add_argument('-s', '--single_reads', help='File with unpaired reads [FASTQ]', type=str)
 
+    group_input_data.add_argument('--gmap_index', help='Name for gmap database for reference genome')
+
     #group_input_data.add_argument('--par', help='File with simulation parameters, for details go to http://sammeth.net/confluence/'
     #                                    'display/SIM/.PAR+Simulation+Parameters [PAR]', type=str)
 

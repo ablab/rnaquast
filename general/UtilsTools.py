@@ -251,7 +251,7 @@ def align_transcripts_to_isoforms_by_blastn(transcripts_path, isoforms_blast_db,
     return alignment_isoforms_path
 
 
-def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_threads, tmp_dir, logger, log_dir):
+def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_threads, args_gmap_index, tmp_dir, logger, log_dir):
     args_alignment = []
 
     if genome_len < 2 ** 32:
@@ -273,27 +273,31 @@ def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_thr
     # else:
     # RUN GMAP:
     # create index (gmap_build):
-    logger.print_timestamp()
-    logger.info('Creating genome index by {}...'.format(gmap_build))
+    if args_gmap_index is None:
+        logger.print_timestamp()
+        logger.info('Creating genome index by {}...'.format(gmap_build))
 
-    start_time = datetime.datetime.now()
+        start_time = datetime.datetime.now()
 
-    command = '{gmap_build} -D {tmp_dir} -d {ref_index_name} {reference} 1>> {log_out_1} 2>> {log_out_2}'.\
-        format(gmap_build=gmap_build, tmp_dir=tmp_dir, ref_index_name=ref_label, reference=args_reference,
-               log_out_1=gmap_build_logger_out_path, log_out_2=gmap_build_logger_err_path)
-    exit_code = subprocess.call(command, shell=True)
+        command = '{gmap_build} -D {tmp_dir} -d {ref_index_name} {reference} 1>> {log_out_1} 2>> {log_out_2}'.\
+            format(gmap_build=gmap_build, tmp_dir=tmp_dir, ref_index_name=ref_label, reference=args_reference,
+                   log_out_1=gmap_build_logger_out_path, log_out_2=gmap_build_logger_err_path)
+        exit_code = subprocess.call(command, shell=True)
 
-    logger.info('  logs can be found in {} and {}.'.format(gmap_build_logger_out_path, gmap_build_logger_err_path))
+        logger.info('  logs can be found in {} and {}.'.format(gmap_build_logger_out_path, gmap_build_logger_err_path))
 
-    if exit_code != 0:
-        logger.error(message='{} failed!'.format(gmap_build), exit_with_code=exit_code, to_stderr=True)
+        if exit_code != 0:
+            logger.error(message='{} failed!'.format(gmap_build), exit_with_code=exit_code, to_stderr=True)
 
-    end_time = datetime.datetime.now()
-    spent_time = end_time - start_time
+        end_time = datetime.datetime.now()
+        spent_time = end_time - start_time
 
-    logger.info('  saved to {}'.format(os.path.join(tmp_dir, ref_label)))
+        logger.info('  saved to {}'.format(os.path.join(tmp_dir, ref_label)))
 
-    logger.info('\nGMAP_BUILD TIME: {}\n\n'.format(spent_time))
+        logger.info('\nGMAP_BUILD TIME: {}\n\n'.format(spent_time))
+    else:
+        command = 'ln -s {} {}'.format(args_gmap_index, os.path.join(tmp_dir, ref_label))
+        subprocess.call(command, shell=True)
 
     # align (gmap):
     for i_transcripts in range(len(args_transcripts)):
