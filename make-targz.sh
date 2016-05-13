@@ -2,7 +2,6 @@ VERSION="$(cat ./VERSION)"
 rm -rf rnaQUAST-$VERSION
 mkdir -p rnaQUAST-$VERSION
 
-cp -r ./other_libs rnaQUAST-$VERSION/other_libs
 cp -r ./metrics rnaQUAST-$VERSION/metrics
 cp -r ./objects rnaQUAST-$VERSION/objects
 cp -r ./general rnaQUAST-$VERSION/general
