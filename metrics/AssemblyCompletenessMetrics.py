@@ -300,7 +300,7 @@ class AssemblyCompletenessMetrics():
 
     def __init__(self, args):
         self.isoforms_coverage = None
-        if args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None:
+        if (args.gene_db is not None or args.gtf is not None) and args.alignment is not None and args.reference is not None and args.transcripts is not None:
             # INITIALIZE ASSEMBLY COMPLETENESS METRICS WITH ALIGNMENT AND ANNOTATION:
             self.isoforms_coverage = IsoformsCoverage.IsoformsCoverage()
 
@@ -346,7 +346,7 @@ class AssemblyCompletenessMetrics():
             self.busco_metrics = \
                 BuscoMetrics.get_busco_metrics(args.clade, threads, transcripts_path, tmp_dir, label, logger, log_dir)
 
-        if args.gene_mark or not (args.gene_database is not None and args.alignment is not None and
+        if args.gene_mark or not ((args.gtf is not None or args.gene_db is not None) and args.alignment is not None and
                                           args.reference is not None and args.transcripts is not None):
             self.geneMarkS_T_metrics = \
                 GeneMarkS_TMetrics.get_GeneMarkS_T_metrics(type_organism, threads, args.strand_specific,

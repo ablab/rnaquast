@@ -125,16 +125,15 @@ def main_utils():
     sorted_exons_attr = None
     db_genes_metrics = None
     type_genes, type_isoforms, type_exons = UtilsAnnotations.default_type_genes, UtilsAnnotations.default_type_isoforms, UtilsAnnotations.default_type_exons
-    if args.gene_database is not None:
-        annotation_name = os.path.split(args.gene_database)[1]
-        annotation_label = annotation_name[:annotation_name.rfind('.g')]
+    if args.gtf is not None:
+        annotation_name = os.path.split(args.gtf)[1]
+        gtf_label = annotation_name[:annotation_name.rfind('.g')]
 
         if ids_chrs is not None:
-            args.gene_database = UtilsAnnotations.clear_gtf_by_reference_chr(args.gene_database, ids_chrs, tmp_dir, annotation_label, logger)
+            args.gtf = UtilsAnnotations.clear_gtf_by_reference_chr(args.gtf, ids_chrs, tmp_dir, gtf_label, logger)
 
-        sqlite3_db_genes = UtilsAnnotations.create_sqlite3_db(args.gene_database, annotation_label, args.disable_infer_genes,
-                                              args.disable_infer_transcripts, args.store_db, args.output_dir, tmp_dir,
-                                              logger)
+        sqlite3_db_genes = UtilsAnnotations.create_sqlite3_db(args.gene_db, args.gtf, gtf_label, args.disable_infer_genes,
+                                              args.disable_infer_transcripts, args.output_dir, tmp_dir, logger)
 
         type_genes, type_isoforms, type_exons = \
             UtilsAnnotations.get_type_features(sqlite3_db_genes, UtilsAnnotations.default_type_genes,
@@ -159,7 +158,7 @@ def main_utils():
     reads_coverage = None
     if args.reads_alignment is not None or \
             ((args.single_reads is not None or (args.left_reads is not None and args.right_reads is not None))
-             and args.reference is not None and args.gene_database is not None):
+             and args.reference is not None and sqlite3_db_genes is not None):
         reads_coverage = \
             ReadsCoverage.ReadsCoverage(args.reads_alignment, args.tophat, args.reference, args.single_reads,
                                         args.left_reads, args.right_reads, reference_dict, sqlite3_db_genes, type_isoforms,
@@ -204,7 +203,7 @@ def main_utils():
     # FOR MISASSEMBLIES SEARCH:
     # GET DATABASE FOR FA ISOFORMS:
     args.blast = False
-    if args.reference is not None and args.gene_database is not None and args.alignment is not None:
+    if args.reference is not None and sqlite3_db_genes is not None and args.alignment is not None:
         blastn_run = os.path.join(rqconfig.rnaOUAST_LOCATION, '.', 'blastn')
         if not os.path.isfile(blastn_run):
             blastn_run = "blastn"
@@ -214,11 +213,11 @@ def main_utils():
         else:
             args.blast = True
 
-            isoforms_fa_path = os.path.join(tmp_dir, '{}.isoforms.fa'.format(annotation_label))
+            isoforms_fa_path = os.path.join(tmp_dir, '{}.isoforms.fa'.format(gtf_label))
             isoforms_list = UtilsGeneral.dict_to_list(UtilsAnnotations.get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict, logger))
             fastaparser.write_fasta(isoforms_fa_path, isoforms_list)
 
-            isoforms_blast_db = UtilsTools.get_blast_db(isoforms_fa_path, annotation_label, tmp_dir, logger, log_dir)
+            isoforms_blast_db = UtilsTools.get_blast_db(isoforms_fa_path, gtf_label, tmp_dir, logger, log_dir)
 
 
     # LOGGING INPUT DATA:

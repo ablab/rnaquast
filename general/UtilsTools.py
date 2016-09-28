@@ -205,7 +205,7 @@ def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, outp
     return OUTPSL
 
 
-def get_blast_db(isoforms_fa_path, gene_database_label, tmp_dir, logger, log_dir):
+def get_blast_db(isoforms_fa_path, gtf_label, tmp_dir, logger, log_dir):
     program_name = 'makeblastdb'
 
     log_out = os.path.join(log_dir, program_name + '.log')
@@ -213,7 +213,7 @@ def get_blast_db(isoforms_fa_path, gene_database_label, tmp_dir, logger, log_dir
     logger.print_timestamp()
     logger.info('Getting blast database for {}'.format(isoforms_fa_path))
 
-    isoforms_blast_db = os.path.join(tmp_dir, '{}.isoforms'.format(gene_database_label))
+    isoforms_blast_db = os.path.join(tmp_dir, '{}.isoforms'.format(gtf_label))
 
     command = '{} -in {} -dbtype nucl -out {} >> {}'.format(program_name, isoforms_fa_path, isoforms_blast_db, log_out)
     exit_code = subprocess.call(command, shell=True)

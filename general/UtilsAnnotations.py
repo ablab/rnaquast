@@ -83,43 +83,66 @@ def child_func(parent, child):
     child.attributes['Parent'].append(parent.id)
 
 
+def create_sqlite2_db_in_file(in_gff_path, disable_infer_genes, disable_infer_transcripts,
+                              sqlite3_db_path, tmp_sqlite3_db_path, logger):
+
+    logger.print_timestamp()
+    logger.info('Creating sqlite3 db by gffutils...')
+
+    id_spec = get_id_spec()
+
+    gffutils.create_db(in_gff_path, dbfn=tmp_sqlite3_db_path, force=True, verbose=True,
+                                  merge_strategy="merge", transform=transform, force_merge_fields=['source'],
+                                  id_spec=id_spec, disable_infer_genes=disable_infer_genes,
+                                  disable_infer_transcripts=disable_infer_transcripts)
+
+    command = 'mv {} {}'.format(tmp_sqlite3_db_path, sqlite3_db_path)
+    subprocess.call(command, shell=True)
+
+    logger.info('  saved to {}.'.format(sqlite3_db_path))
+
+    return sqlite3_db_path
+
+
+def load_sqlite3_db(sqlite3_db_path, logger):
+    logger.print_timestamp()
+    logger.info('Loading sqlite3 db by gffutils from {} to memory...'.format(sqlite3_db_path))
+
+    sqlite3_db = gffutils.FeatureDB(sqlite3_db_path)
+
+    logger.info('Done.')
+
+    return sqlite3_db
+
+
 # create database for gff/gtf file:
-def create_sqlite3_db(in_gff_path, annotation_label, disable_infer_genes, disable_infer_transcripts, store_sqlite3_db,
-              output_dir, tmp_dir, logger):
+def create_sqlite3_db(in_gene_db, in_gff_path, annotation_label, disable_infer_genes, disable_infer_transcripts,
+                      output_dir, tmp_dir, logger):
     tmp_sqlite3_db_path = os.path.join(tmp_dir, annotation_label + '.db')
     sqlite3_db_path = os.path.join(output_dir, annotation_label + '.db')
 
-    if os.path.exists(sqlite3_db_path):
-        sqlite3_db_genes = gffutils.FeatureDB(sqlite3_db_path)
-    elif store_sqlite3_db:
-        logger.print_timestamp()
-        logger.info('Creating sqlite3 db by gffutils...')
-
-        id_spec = get_id_spec()
-
-        sqlite3_db_genes = gffutils.create_db(in_gff_path, dbfn=tmp_sqlite3_db_path, force=True, verbose=True,
-                                      merge_strategy="merge", transform=transform, force_merge_fields=['source'],
-                                      id_spec=id_spec, disable_infer_genes=disable_infer_genes,
-                                      disable_infer_transcripts=disable_infer_transcripts)
-
-        command = 'mv {} {}'.format(tmp_sqlite3_db_path, sqlite3_db_path)
-        subprocess.call(command, shell=True)
-
-        logger.info('  saved to {}.'.format(sqlite3_db_path))
-
-        sqlite3_db_genes = gffutils.FeatureDB(sqlite3_db_path)
+    if in_gene_db is not None:
+        sqlite3_db_genes = load_sqlite3_db(in_gene_db, logger)
+    elif os.path.exists(sqlite3_db_path):
+        sqlite3_db_genes = load_sqlite3_db(sqlite3_db_path, logger)
+    # elif store_sqlite3_db:
     else:
-        logger.print_timestamp()
-        logger.info('Creating sqlite3 db by gffutils...')
+        sqlite3_db_path = create_sqlite2_db_in_file(in_gff_path, disable_infer_genes, disable_infer_transcripts,
+                                                    sqlite3_db_path, tmp_sqlite3_db_path, logger)
 
-        id_spec = get_id_spec()
-
-        sqlite3_db_genes = gffutils.create_db(in_gff_path, dbfn=':memory:', force=True, verbose=True, merge_strategy="merge",
-                                      transform=transform, force_merge_fields=['source'], id_spec=id_spec,
-                                      disable_infer_genes=disable_infer_genes,
-                                      disable_infer_transcripts=disable_infer_transcripts)
-
-        logger.info('Done.')
+        sqlite3_db_genes = load_sqlite3_db(sqlite3_db_path, logger)
+    # else:
+    #     logger.print_timestamp()
+    #     logger.info('Creating sqlite3 db by gffutils...')
+    #
+    #     id_spec = get_id_spec()
+    #
+    #     sqlite3_db_genes = gffutils.create_db(in_gff_path, dbfn=':memory:', force=True, verbose=True, merge_strategy="merge",
+    #                                   transform=transform, force_merge_fields=['source'], id_spec=id_spec,
+    #                                   disable_infer_genes=disable_infer_genes,
+    #                                   disable_infer_transcripts=disable_infer_transcripts)
+    #
+    #     logger.info('Done.')
 
     # add transcripts equal genes at prokaryotes:
     # sqlite3_db_genes = add_transcripts_prokaryotes(sqlite3_db_genes, logger)
@@ -282,8 +305,8 @@ def get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict,
     return isoforms_dict
 
 
-def clear_gtf_by_reference_chr(in_gtf, ids_chrs, tmp_dir, gene_database_label, logger):
-    out_gtf = os.path.join(tmp_dir, gene_database_label + '.cleared.gtf')
+def clear_gtf_by_reference_chr(in_gtf, ids_chrs, tmp_dir, gtf_label, logger):
+    out_gtf = os.path.join(tmp_dir, gtf_label + '.cleared.gtf')
 
     out_handle = open(out_gtf, 'w')
 

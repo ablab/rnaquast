@@ -242,24 +242,31 @@ class QLogger(object):
     def print_input_files(self, args):
         self.print_timestamp()
         # TRANSCRIPTS:
-        if args.transcripts != None:
+        if args.transcripts is not None:
             self.info('Transcripts:')
             for i_transcripts in range(len(args.labels)):
                 self.info('  %s -> %s' % (args.transcripts[i_transcripts], args.labels[i_transcripts]))
         # REFERENCE:
-        if args.reference != None:
+        if args.reference is not None:
             self.info('Reference:')
             self.info('  %s' % (args.reference))
+
         # GENE DATABASE:
-        if args.gene_database != None:
+        if args.gtf is not None:
+            self.info('Gene coordinates:')
+            self.info('  %s' % (args.gtf))
+        elif args.gene_db is not None:
             self.info('Gene database:')
-            self.info('  %s' % (args.gene_database))
+            self.info('  %s' % (args.gene_db))
+
         # ALIGNMENT:
-        if args.alignment != None:
-            self.info('Alignments:')
-            for i_transcripts in range(len(args.labels)):
-                self.info('  %s' % (args.alignment[i_transcripts]))
+        # if args.alignment is not None:
+        #     self.info('Alignments:')
+        #     for i_transcripts in range(len(args.labels)):
+        #         self.info('  %s' % (args.alignment[i_transcripts]))
+
         self.info()
+
 
     def print_path_results(self, args, separated_reports, comparison_report, short_report):
         self.info('\nTHE QUALITY OF TRANSCRIPTOME ASSEMBLY DONE. RESULTS: {}\n'.format(args.output_dir))

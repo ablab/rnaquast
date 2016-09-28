@@ -163,7 +163,7 @@ def profile_memory(args, reference_dict, db_genes_metrics, transcripts_metrics, 
             logger.info('reference_dict [bit]\t' + str(asizeof.asizeof(reference_dict)))
 
 
-        if args.gene_database is not None:
+        if args.gtf is not None or args.gene_db:
             tracker.track_object(db_genes_metrics)
 
         for i_transcripts in range(len(transcripts_metrics)):
@@ -173,8 +173,8 @@ def profile_memory(args, reference_dict, db_genes_metrics, transcripts_metrics, 
             if args.alignment is not None and args.reference is not None and args.transcripts is not None:
                 tracker.track_object(transcripts_metrics[i_transcripts].simple_metrics)
 
-            if args.gene_database is not None and args.alignment is not None and args.reference is not None and \
-                            args.transcripts is not None:
+            if (args.gtf is not None or args.gene_db is not None) \
+                    and args.alignment is not None and args.reference is not None and args.transcripts is not None:
                 tracker.track_object(transcripts_metrics[i_transcripts].assembly_correctness_metrics)
 
                 tracker.track_object(transcripts_metrics[i_transcripts].assembly_completeness_metrics.exons_coverage)

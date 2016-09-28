@@ -14,7 +14,8 @@ class AssemblyCorrectnessMetrics():
 
         # AVERAGE TRANSCRIPTS COVERAGE;
         self.transcripts_coverage = None
-        if args.gene_database is not None and args.alignment is not None and args.reference is not None and args.transcripts is not None:
+        if (args.gtf is not None or args.gene_db is not None) and \
+                        args.alignment is not None and args.reference is not None and args.transcripts is not None:
             self.transcripts_coverage = TranscriptsCoverage.TranscriptsCoverage()
 
 
