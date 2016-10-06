@@ -140,8 +140,8 @@ To run rnaQUAST you need to provide either FASTA files with transcripts (recomme
 
 <p>
     <code>--gmap_index &lt;INDEX FOLDER>,</code><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;Folder containing pre-built GMAP index for the reference genome. Using previously constucted index dcreases running time. Note, that you still need to provide the refernce genome that was used for index construction when this options is used. 
-</p>  
+    &nbsp;&nbsp;&nbsp;&nbsp;Folder containing pre-built GMAP index for the reference genome. Using previously constructed index decreases running time. Note, that you still need to provide the reference genome that was used for index construction when this option is used.
+</p>
 
 <p>
     <code>-c &lt;TRANSCRIPTS ...>, --transcripts &lt;TRANSCRIPTS, ...> </code><br>
@@ -419,7 +419,7 @@ These files are contained in <code>&lt;assembly_label>_output</code> directories
 <ul>
     <li><code>&lt;assembly_label>.unaligned.fasta</code> &ndash; transcripts without any significant alignments.</li>
     <li><code>&lt;assembly_label>.paralogs.fasta</code> &ndash; transcripts having 2 or more significant alignments.</li>
-    <li><code>&lt;assembly_label>.misassembled.fasta</code> &ndash; misassembly candidates detected by methods described above. See <a href="#misassemblies"><code>misassemblies.txt</code> description</a> for details.</li>
+    <li><code>&lt;assembly_label>.misassembled.fasta</code> &ndash; misassembly candidates detected by methods described above. See <a href="#misassemblies"><code>misassemblies.txt</code></a> description for details.</li>
     <li><code>&lt;assembly_label>.correct.fasta</code> &ndash; transcripts with exactly 1 significant alignment that do not contain misassemblies.</li>
     <li><code>&lt;assembly_label>.x%assembled.list</code> &ndash; IDs of the isoforms from the database that have at least x% captured by a single assembled transcript, where x is specified by the user with an option <code>--upper_threshold</code> (95% by default).</li>
     <li><code>&lt;assembly_label>.unannotated.fasta</code> &ndash; transcripts that do not cover any isoform from the database.</li>
