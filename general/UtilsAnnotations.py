@@ -116,10 +116,10 @@ def load_sqlite3_db(sqlite3_db_path, logger):
 
 
 # create database for gff/gtf file:
-def create_sqlite3_db(in_gene_db, in_gff_path, annotation_label, disable_infer_genes, disable_infer_transcripts,
+def create_sqlite3_db(in_gene_db, in_gff_path, label_db, disable_infer_genes, disable_infer_transcripts,
                       output_dir, tmp_dir, logger):
-    tmp_sqlite3_db_path = os.path.join(tmp_dir, annotation_label + '.db')
-    sqlite3_db_path = os.path.join(output_dir, annotation_label + '.db')
+    tmp_sqlite3_db_path = os.path.join(tmp_dir, label_db + '.db')
+    sqlite3_db_path = os.path.join(output_dir, label_db + '.db')
 
     if in_gene_db is not None:
         sqlite3_db_genes = load_sqlite3_db(in_gene_db, logger)
