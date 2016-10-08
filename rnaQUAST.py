@@ -124,16 +124,26 @@ def main_utils():
     sqlite3_db_genes = None
     sorted_exons_attr = None
     db_genes_metrics = None
-    type_genes, type_isoforms, type_exons = UtilsAnnotations.default_type_genes, UtilsAnnotations.default_type_isoforms, UtilsAnnotations.default_type_exons
-    if args.gtf is not None:
-        annotation_name = os.path.split(args.gtf)[1]
-        gtf_label = annotation_name[:annotation_name.rfind('.g')]
+    type_genes, type_isoforms, type_exons = \
+        UtilsAnnotations.default_type_genes, \
+        UtilsAnnotations.default_type_isoforms, \
+        UtilsAnnotations.default_type_exons
 
-        if ids_chrs is not None:
-            args.gtf = UtilsAnnotations.clear_gtf_by_reference_chr(args.gtf, ids_chrs, tmp_dir, gtf_label, logger)
+    if args.gtf is not None or args.gene_db is not None:
+        if args.gene_db is not None:
+            gene_db_name = os.path.split(args.gene_db)[1]
+            label_db = gene_db_name[:gene_db_name.rfind('.db')]
+        else:
+            gtf_name = os.path.split(args.gtf)[1]
+            label_db = gtf_name[:gtf_name.rfind('.g')]
 
-        sqlite3_db_genes = UtilsAnnotations.create_sqlite3_db(args.gene_db, args.gtf, gtf_label, args.disable_infer_genes,
-                                              args.disable_infer_transcripts, args.output_dir, tmp_dir, logger)
+            if ids_chrs is not None:
+                args.gtf = UtilsAnnotations.clear_gtf_by_reference_chr(args.gtf, ids_chrs, tmp_dir, label_db, logger)
+
+        sqlite3_db_genes = \
+            UtilsAnnotations.create_sqlite3_db(args.gene_db, args.gtf, label_db,
+                                               args.disable_infer_genes, args.disable_infer_transcripts,
+                                               args.output_dir, tmp_dir, logger)
 
         type_genes, type_isoforms, type_exons = \
             UtilsAnnotations.get_type_features(sqlite3_db_genes, UtilsAnnotations.default_type_genes,
@@ -213,11 +223,11 @@ def main_utils():
         else:
             args.blast = True
 
-            isoforms_fa_path = os.path.join(tmp_dir, '{}.isoforms.fa'.format(gtf_label))
+            isoforms_fa_path = os.path.join(tmp_dir, '{}.isoforms.fa'.format(label_db))
             isoforms_list = UtilsGeneral.dict_to_list(UtilsAnnotations.get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict, logger))
             fastaparser.write_fasta(isoforms_fa_path, isoforms_list)
 
-            isoforms_blast_db = UtilsTools.get_blast_db(isoforms_fa_path, gtf_label, tmp_dir, logger, log_dir)
+            isoforms_blast_db = UtilsTools.get_blast_db(isoforms_fa_path, label_db, tmp_dir, logger, log_dir)
 
 
     # LOGGING INPUT DATA:
