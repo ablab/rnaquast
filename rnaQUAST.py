@@ -190,7 +190,7 @@ def main_utils():
         if args.labels is None:
             args.labels = UtilsPipeline.process_labels(args.transcripts, args.labels, all_labels_from_dirs)
     else:
-        logger.warning('No transcripts. Usage: --transcripts TRANSCRIPTS')
+        logger.warning('No transcripts. Use --transcripts option.')
 
 
     # GET PSL ALIGNMENT FILE:
