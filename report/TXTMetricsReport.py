@@ -14,33 +14,38 @@ class TXTMetricsReport():
 
         self.txt_reports_dir = txt_report_dir
 
-        self.widths = TXTMetricsReport.get_column_widths(labels)
-
         if db_genes_metrics is not None:
+            self.widths = [rqconfig.space_label, rqconfig.space_value]
+
             self.path_txt_database_metrics = os.path.join(self.txt_reports_dir, 'database_metrics.txt')
             self.get_db_genes_metrics_report(db_genes_metrics, logger, PRECISION)
 
         if reads_coverage is not None:
+            self.widths = [rqconfig.space_label, rqconfig.space_value]
+
             self.path_txt_reads_coverage_metrics = self.path_txt_database_metrics
             self.get_reads_coverage_report(reads_coverage, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
             self.path_txt_relative_database_coverage = os.path.join(self.txt_reports_dir, 'relative_database_coverage.txt')
             self.get_relative_database_coverage_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
-        self.path_txt_basic = os.path.join(self.txt_reports_dir, 'basic_metrics.txt')
-        self.get_basic_metrics_report(transcripts_metrics, logger, TRANSCRIPT_LENS, PRECISION)
+        if len(transcripts_metrics) != 0:
+            self.widths = TXTMetricsReport.get_column_widths(labels)
 
-        self.path_txt_alignment = os.path.join(self.txt_reports_dir, 'alignment_metrics.txt')
-        self.get_alignment_metrics_report(transcripts_metrics, logger, PRECISION)
+            self.path_txt_basic = os.path.join(self.txt_reports_dir, 'basic_metrics.txt')
+            self.get_basic_metrics_report(transcripts_metrics, logger, TRANSCRIPT_LENS, PRECISION)
 
-        self.path_txt_misassemblies = os.path.join(self.txt_reports_dir, 'misassemblies.txt')
-        self.get_misassemblies_report(args_blast, transcripts_metrics, logger)
+            self.path_txt_alignment = os.path.join(self.txt_reports_dir, 'alignment_metrics.txt')
+            self.get_alignment_metrics_report(transcripts_metrics, logger, PRECISION)
 
-        self.path_txt_sensitivity = os.path.join(self.txt_reports_dir, 'sensitivity.txt')
-        self.get_sensitivity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
+            self.path_txt_misassemblies = os.path.join(self.txt_reports_dir, 'misassemblies.txt')
+            self.get_misassemblies_report(args_blast, transcripts_metrics, logger)
 
-        self.path_txt_specificity = os.path.join(self.txt_reports_dir, 'specificity.txt')
-        self.get_specificity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
+            self.path_txt_sensitivity = os.path.join(self.txt_reports_dir, 'sensitivity.txt')
+            self.get_sensitivity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
+
+            self.path_txt_specificity = os.path.join(self.txt_reports_dir, 'specificity.txt')
+            self.get_specificity_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
         logger.info('  Done.')
 

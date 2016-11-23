@@ -190,8 +190,7 @@ def main_utils():
         if args.labels is None:
             args.labels = UtilsPipeline.process_labels(args.transcripts, args.labels, all_labels_from_dirs)
     else:
-        logger.error('Usage: --transcripts TRANSCRIPTS', exit_with_code=2, to_stderr=True)
-        sys.exit(2)
+        logger.warning('No transcripts. Usage: --transcripts TRANSCRIPTS')
 
 
     # GET PSL ALIGNMENT FILE:
@@ -237,45 +236,44 @@ def main_utils():
     # INITIALIZATION TRANSCRIPTS METRICS AND REPORTS:
     transcripts_metrics = []
     separated_reports = []
-    for i_transcripts in range(len(args.transcripts)):
-        # INITIALIZE TRANSCRIPTS METRICS:
-        #if args.sam_file is not None:
-        #    sam_file_tmp = args.sam_file[i_transcripts]
-        #else:
-        transcripts_metrics.append(
-            TranscriptsMetrics.TranscriptsMetrics(args, args.labels[i_transcripts]))
-
-        # INITIALIZE SEPARATED REPORTS:
-        separated_reports.append(SeparatedReport.SeparatedReport(args.labels[i_transcripts], args.output_dir, transcripts_metrics[i_transcripts], WELL_FULLY_COVERAGE_THRESHOLDS))
-
     if args.transcripts is not None:
-        '''from joblib import Parallel, delayed
-
-        n = len(args.transcripts)
-        run_n = n / args.threads
-        for i_run in range(run_n):
-            tmp = Parallel(n_jobs=args.threads)(delayed(process_one_trascripts_file)(args, i_transcripts, reference_dict, annotation_dict,
-                                                                                          annotated_exons, annotated_isoforms, strands, transcripts_metrics,
-                                                                                          basic_isoforms_metrics, separated_reports)
-                                                     for i_transcripts in range(i_run * args.threads, args.threads * (i_run + 1), 1))
-            for i in range(args.threads):
-                i_transcripts = i + i_run * args.threads
-                transcripts_metrics[i_transcripts] = tmp[i][0]
-                separated_reports[i_transcripts] = tmp[i][1]
-
-        if n - run_n * args.threads != 0:
-            tmp = Parallel(n_jobs=n - run_n * args.threads)(delayed(process_one_trascripts_file)(args, i_transcripts, reference_dict, annotation_dict,
-                                                                                                 annotated_exons, annotated_isoforms, strands, transcripts_metrics,
-                                                                                                 basic_isoforms_metrics, separated_reports)
-                                                            for i_transcripts in range(run_n * args.threads, n, 1))
-            for i in range(n - run_n * args.threads):
-                i_transcripts = i + run_n * args.threads
-                transcripts_metrics[i_transcripts] = tmp[i][0]
-                separated_reports[i_transcripts] = tmp[i][1]'''
-
         alignments_reports = []
         blast_alignments = []
         for i_transcripts in range(len(args.transcripts)):
+            # INITIALIZE TRANSCRIPTS METRICS:
+            #if args.sam_file is not None:
+            #    sam_file_tmp = args.sam_file[i_transcripts]
+            #else:
+            transcripts_metrics.append(
+                TranscriptsMetrics.TranscriptsMetrics(args, args.labels[i_transcripts]))
+
+            # INITIALIZE SEPARATED REPORTS:
+            separated_reports.append(SeparatedReport.SeparatedReport(args.labels[i_transcripts], args.output_dir, transcripts_metrics[i_transcripts], WELL_FULLY_COVERAGE_THRESHOLDS))
+
+            '''from joblib import Parallel, delayed
+
+            n = len(args.transcripts)
+            run_n = n / args.threads
+            for i_run in range(run_n):
+                tmp = Parallel(n_jobs=args.threads)(delayed(process_one_trascripts_file)(args, i_transcripts, reference_dict, annotation_dict,
+                                                                                              annotated_exons, annotated_isoforms, strands, transcripts_metrics,
+                                                                                              basic_isoforms_metrics, separated_reports)
+                                                         for i_transcripts in range(i_run * args.threads, args.threads * (i_run + 1), 1))
+                for i in range(args.threads):
+                    i_transcripts = i + i_run * args.threads
+                    transcripts_metrics[i_transcripts] = tmp[i][0]
+                    separated_reports[i_transcripts] = tmp[i][1]
+
+            if n - run_n * args.threads != 0:
+                tmp = Parallel(n_jobs=n - run_n * args.threads)(delayed(process_one_trascripts_file)(args, i_transcripts, reference_dict, annotation_dict,
+                                                                                                     annotated_exons, annotated_isoforms, strands, transcripts_metrics,
+                                                                                                     basic_isoforms_metrics, separated_reports)
+                                                                for i_transcripts in range(run_n * args.threads, n, 1))
+                for i in range(n - run_n * args.threads):
+                    i_transcripts = i + run_n * args.threads
+                    transcripts_metrics[i_transcripts] = tmp[i][0]
+                    separated_reports[i_transcripts] = tmp[i][1]'''
+
             logger.info()
             logger.info('Processing transcripts from {}:'.format(args.transcripts[i_transcripts]))
 
@@ -322,7 +320,7 @@ def main_utils():
 
     # GET COMPARISON REPORT:
     comparison_report = None
-    if len(separated_reports) > 1:
+    if len(separated_reports) != 1:
         comparison_report = ComparisonReport.ComparisonReport(args.output_dir)
         comparison_report.get_comparison_report(args, args.labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
                                                 WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, rqconfig.TRANSCRIPT_LENS)

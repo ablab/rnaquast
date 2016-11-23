@@ -132,7 +132,8 @@ class ShortReport():
     def get_best_values(self, metrics_dict, best_type):
         best_values = {}
 
-        transcripts_num = [int(num_str) for num_str in metrics_dict['Transcripts']]
+        if 'Transcripts' in metrics_dict:
+            transcripts_num = [int(num_str) for num_str in metrics_dict['Transcripts']]
 
         for metric_label in metrics_dict.keys():
             values = metrics_dict[metric_label]
@@ -234,7 +235,10 @@ class ShortReport():
         logger.print_timestamp()
         logger.info('Getting SHORT SUMMARY report...')
 
-        self.column_widths = ShortReport.get_column_widths(self.metrics_dict, self.first_label)
+        if len(separated_reports) != 0:
+            self.column_widths = ShortReport.get_column_widths(self.metrics_dict, self.first_label)
+        else:
+            self.column_widths = [rqconfig.space_label, rqconfig.space_value]
 
         self.best_values = self.get_best_values(self.metrics_dict, self.best_type)
 
@@ -511,6 +515,8 @@ class ShortReport():
         matplotlib.pyplot.text(0 - float(column_widths[0]) / (2 * sum(column_widths)), 0, extra_info)
 
         colLabels = table_to_draw[0][1:]
+        if len(colLabels) == 0:
+            colLabels = ['']
         rowLabels = [item[0] for item in table_to_draw[1:]]
         restValues = [item[1:] for item in table_to_draw[1:]]
 
