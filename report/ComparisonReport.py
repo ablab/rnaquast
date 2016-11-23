@@ -18,6 +18,9 @@ class ComparisonReport():
 
         self.txt_comparison_report = None
 
+        self.path_well_expressed_list_by_reads = None
+        self.path_fully_expressed_list_by_reads = None
+
         self.distribution_report = None
 
 
@@ -30,6 +33,14 @@ class ComparisonReport():
         self.txt_comparison_report = \
             TXTMetricsReport.TXTMetricsReport(args.blast, self.output_dir, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
                                               WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS)
+
+        if reads_coverage is not None:
+            self.path_well_expressed_list_by_reads = os.path.join(self.output_dir, 'reads.{}%-covered.list'.format(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)))
+            reads_coverage.print_well_expressed_isoforms(self.path_well_expressed_list_by_reads, logger)
+
+            self.path_fully_expressed_list_by_reads = os.path.join(self.output_dir, 'reads.{}%-covered.list'.format(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)))
+            reads_coverage.print_fully_expressed_isoforms(self.path_fully_expressed_list_by_reads, logger)
+
 
         if not args.no_plots:
             self.distribution_report = \

@@ -421,8 +421,14 @@ These files are contained in <code>&lt;assembly_label>_output</code> directories
     <li><code>&lt;assembly_label>.paralogs.fasta</code> &ndash; transcripts having 2 or more significant alignments.</li>
     <li><code>&lt;assembly_label>.misassembled.fasta</code> &ndash; misassembly candidates detected by methods described above. See <a href="#misassemblies"><code>misassemblies.txt</code></a> description for details.</li>
     <li><code>&lt;assembly_label>.correct.fasta</code> &ndash; transcripts with exactly 1 significant alignment that do not contain misassemblies.</li>
-    <li><code>&lt;assembly_label>.x%assembled.list</code> &ndash; IDs of the isoforms from the database that have at least x% captured by a single assembled transcript, where x is specified by the user with an option <code>--upper_threshold</code> (95% by default).</li>
+    <li><code>&lt;assembly_label>.x%-assembled.list</code> &ndash; IDs of the isoforms from the database that have at least x% captured by a single assembled transcript, where x is specified by the user with an option <code>--upper_threshold</code> (95% by default).</li>
     <li><code>&lt;assembly_label>.unannotated.fasta</code> &ndash; transcripts that do not cover any isoform from the database.</li>
+</ul>
+
+<p>
+The following text file is contained in <code> comparison_output</code>  directory and <code>&lt;assembly_label>_output</code> directories for each assembly separately.
+<ul>
+    <li><code>reads.x%-covered.list</code> &ndash; IDs of the isoforms from the database that have at least x% bases covered by all reads, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default).</li>
 </ul>
 
 

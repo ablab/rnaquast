@@ -166,3 +166,22 @@ class ReadsCoverage():
                 self.fraction_annotation_mapped_by_reads = self.num_expressed_pos_at_least_one_by_reads * 1.0 / tot_isoforms_len
 
             logger.info('Done.')
+
+    def print_fully_expressed_isoforms(self, path_fully_expressed_list, logger):
+        logger.info('    Getting Fully covered isoforms list by reads...')
+
+        with open(path_fully_expressed_list, 'w') as fout:
+            for id_isoform in self.ids_fully_expressed_isoforms:
+                fout.write(id_isoform + '\n')
+
+        logger.info('      saved to {}'.format(path_fully_expressed_list))
+
+
+    def print_well_expressed_isoforms(self, path_well_expressed_list, logger):
+        logger.info('    Getting Well covered isoforms list by reads...')
+
+        with open(path_well_expressed_list, 'w') as fout:
+            for id_isoform in self.ids_well_expressed_isoforms:
+                fout.write(id_isoform + '\n')
+
+        logger.info('      saved to {}'.format(path_well_expressed_list))
