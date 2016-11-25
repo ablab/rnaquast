@@ -26,8 +26,11 @@ class TXTMetricsReport():
             self.path_txt_reads_coverage_metrics = self.path_txt_database_metrics
             self.get_reads_coverage_report(reads_coverage, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
-            self.path_txt_relative_database_coverage = os.path.join(self.txt_reports_dir, 'relative_database_coverage.txt')
-            self.get_relative_database_coverage_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
+            if len(transcripts_metrics) != 0:
+                self.widths = TXTMetricsReport.get_column_widths(labels)
+
+                self.path_txt_relative_database_coverage = os.path.join(self.txt_reports_dir, 'relative_database_coverage.txt')
+                self.get_relative_database_coverage_report(transcripts_metrics, logger, WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION)
 
         if len(transcripts_metrics) != 0:
             self.widths = TXTMetricsReport.get_column_widths(labels)
