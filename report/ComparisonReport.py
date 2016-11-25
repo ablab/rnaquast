@@ -11,10 +11,10 @@ from report import TXTMetricsReport
 class ComparisonReport():
     """Class which generate distributions for all assemblies data sets at one from extended report"""
 
-    def __init__(self, output_dir):
+    def __init__(self):
 
         # get folders for compairison report:
-        self.output_dir = UtilsPipeline.create_empty_folder(os.path.join(output_dir, 'comparison_output'))
+        self.output_dir = None
 
         self.txt_comparison_report = None
 
@@ -24,11 +24,16 @@ class ComparisonReport():
         self.distribution_report = None
 
 
-    def get_comparison_report(self, args, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
+    def get_comparison_report(self, args, output_dir, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
                               WELL_FULLY_COVERAGE_THRESHOLDS, PRECISION, TRANSCRIPT_LENS):
 
         logger.print_timestamp()
         logger.info('Getting COMPARISON report...')
+
+        if len(transcripts_metrics) != 0:
+            self.output_dir = UtilsPipeline.create_empty_folder(os.path.join(output_dir, 'comparison_output'))
+        else:
+            self.output_dir = output_dir
 
         self.txt_comparison_report = \
             TXTMetricsReport.TXTMetricsReport(args.blast, self.output_dir, labels, transcripts_metrics, db_genes_metrics, reads_coverage, logger,
