@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 __author__ = 'letovesnoi'
 
 import sys
@@ -33,11 +35,7 @@ def get_arguments():
                                 prog=sys.argv[0])
 
     # INPUT DATA:
-    parser.add_argument('-r', '--reports',
-                                  help='Single file with reference genome in FASTA format OR *.txt file with '
-                                       'one-per-line list of FASTA files with reference sequences',
-                                  type=str,
-                                  nargs='+')
+    parser.add_argument('-r', '--reports', help='Two files with two short rnaQUAST reports', type=str, nargs=2)
 
     parser.add_argument('-o', '--output_dir', help='Directory to store result [default: current_directory/paste_together_results_<datetime>]', type=str)
 
