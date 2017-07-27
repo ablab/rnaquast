@@ -90,7 +90,10 @@ def dict_to_list(dict):
 
 
 def comp(letter):
-    return {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C', 'N': 'N'}[letter.upper()]
+    return {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C', 'N': 'N',
+            'U': 'A', 'R': 'Y', 'Y': 'R', 'K': 'M', 'M': 'K',
+            'S': 'S', 'W': 'W', 'B': 'V', 'D': 'H', 'H': 'D',
+            'V': 'B', '-': '-'}[letter.upper()]
 
 
 def rev_comp(seq):
