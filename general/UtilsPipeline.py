@@ -27,7 +27,7 @@ def get_arguments():
     parser = \
         argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description="QUALITY ASSESSMENT FOR TRANSCRIPTOME ASSEMBLIES %(prog)s v.{}"
-                                              "\n\nUsage:\npython %(prog)s --transcripts TRANSCRIPTS --reference REFERENCE --gene_database GENE_DATABASE".format(version),
+                                              "\n\nUsage:\npython %(prog)s --transcripts TRANSCRIPTS --reference REFERENCE --gtf GENE_COORDINATES".format(version),
                                               #"    pipeline-2: python %(prog)s -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION
                                               #"    pipeline-1: python %(prog)s -p1 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --alignment ALIGNMENT\n"
                                               #"    pipeline-2: python %(prog)s -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION\n"
