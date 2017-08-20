@@ -109,8 +109,8 @@ def main_utils():
         ids_chrs = reference_dict.keys()
 
         # correction for fasta contained Y, W and etc:
-        for id_chr in ids_chrs:
-            reference_dict[id_chr] = UtilsGeneral.correct_nucl_seq(reference_dict[id_chr])
+        # for id_chr in ids_chrs:
+        #     reference_dict[id_chr] = UtilsGeneral.correct_nucl_seq(reference_dict[id_chr])
 
 
     # for strand specific data we store + and - keys in dictionaries and only + for non strand specific data:
