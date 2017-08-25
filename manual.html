@@ -98,12 +98,8 @@ When reference genome and gene database are unavailable, we recommend to run <a 
 
 <p>
     <b>BUSCO requirements </b>
-<p>BUSCO allows to detect core genes in the assembled transcripts. To use it you should install <a href="http://busco.ezlab.org/" target="_blank"> BUSCO v1.1b1</a>, <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank"> tblastn</a>, <a href="http://hmmer.janelia.org/" target="_blank"> HMMER</a> and <a href="ftp://emboss.open-bio.org/pub/EMBOSS/" target="_blank"> transeq</a> and add these tools to the <code>$PATH</code> variable.
-<p>Since BUSCO requires python3, you may also need to add
-<pre class="code">
-<code>#!/usr/bin/env python3</code>
-</pre>
-to the top of <code>BUSCO_v1.1b1.py</code> executable file. Depending on the species you wish to assess, you should download the appropriate lineage-specific profile libraries: Metazoa, Eukaryota, Arthropoda, Vertebrata, Fungi, or Bacteria from <a href="http://busco.ezlab.org" target="_blank">http://busco.ezlab.org</a> and provide it to rnaQUAST with <code>--clade</code> option.
+<p>BUSCO allows to detect core genes in the assembled transcripts. To use it you should install <a href="http://busco.ezlab.org/" target="_blank"> BUSCO v3</a>, <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank"> tblastn</a>, <a href="http://hmmer.janelia.org/" target="_blank"> HMMER</a> and <a href="ftp://emboss.open-bio.org/pub/EMBOSS/" target="_blank"> transeq</a> and add these tools to the <code>$PATH</code> variable.
+<p>Depending on the species you wish to assess, you should download the appropriate lineage-specific profile libraries: Metazoa, Eukaryota, Arthropoda, Vertebrata, Fungi, or Bacteria from <a href="http://busco.ezlab.org" target="_blank">http://busco.ezlab.org</a> and provide it to rnaQUAST with <code>--clade</code> option.
 
 <p>
     <b>GeneMarkS-T requirements</b>

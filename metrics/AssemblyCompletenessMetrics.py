@@ -109,6 +109,7 @@ class BuscoMetrics():
 
         return busco_metrics
 
+
     @classmethod
     def get_busco_completeness_report(cls, args_clade, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
         # run BUSCO:
@@ -126,11 +127,12 @@ class BuscoMetrics():
         tmp_busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO'.format(label))
         busco_completeness_report_path = None
 
-        program_name = 'BUSCO_v1.1b1.py'
-        command = \
-            '{busco} -o {output_dir} -in {transcripts} -l {clade} -m trans -f -c {threads} 1>> {log_out_1} 2>> {log_out_2}'.\
-                format(busco=program_name, output_dir=out_name, transcripts=transcripts_path, clade=args_clade,
-                       threads=args_threads, log_out_1=log_out, log_out_2=log_err)
+        program_name = 'run_BUSCO.py'
+        # WARNING: do not provide a path, need to move to output_dir'
+        command = '{busco} -o {output_name} -i {transcripts} -l {clade} -m trans -f -c {threads} ' \
+                  '1>> {log_out_1} 2>> {log_out_2}'.format(busco=program_name, output_name=out_name,
+                                                           transcripts=transcripts_path, clade=args_clade,
+                                                           threads=args_threads, log_out_1=log_out, log_out_2=log_err)
         logger.debug('    ' + command)
 
         exit_code = subprocess.call(command, shell=True)
@@ -147,6 +149,7 @@ class BuscoMetrics():
         logger.info('    logs can be found in {} and {}.'.format(log_out, log_err))
 
         return busco_completeness_report_path
+
 
     @classmethod
     def get_complete_completeness(cls, busco_completeness_report_path):
