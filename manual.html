@@ -99,7 +99,7 @@ When reference genome and gene database are unavailable, we recommend to run <a 
 <p>
     <b>BUSCO requirements </b>
 <p>BUSCO allows to detect core genes in the assembled transcripts. To use it you should install <a href="http://busco.ezlab.org/" target="_blank"> BUSCO v3</a>, <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank"> tblastn</a>, <a href="http://hmmer.janelia.org/" target="_blank"> HMMER</a> and <a href="ftp://emboss.open-bio.org/pub/EMBOSS/" target="_blank"> transeq</a> and add these tools to the <code>$PATH</code> variable.
-<p>Depending on the species you wish to assess, you should download the appropriate lineage-specific profile libraries: Metazoa, Eukaryota, Arthropoda, Vertebrata, Fungi, or Bacteria from <a href="http://busco.ezlab.org" target="_blank">http://busco.ezlab.org</a> and provide it to rnaQUAST with <code>--clade</code> option.
+<p>Depending on the species you wish to assess, you should download the appropriate lineage-specific profile libraries: Metazoa, Eukaryota, Arthropoda, Vertebrata, Fungi, or Bacteria from <a href="http://busco.ezlab.org" target="_blank">http://busco.ezlab.org</a> and provide it to rnaQUAST with <code>--busco_lineage</code> option.
 
 <p>
     <b>GeneMarkS-T requirements</b>
@@ -233,9 +233,9 @@ To run rnaQUAST you need to provide either FASTA files with transcripts (recomme
 </p>
 
 <p>
-    <code>--busco </code><br>
+    <code>--busco_lineage </code><br>
     &nbsp;&nbsp;&nbsp;&nbsp;
-	Run <a href="http://busco.ezlab.org/" target="_blank"> BUSCO tool</a>, which detects core genes in the assembly (see <a href="#sec2">Installation & requirements</a>). Use <code>--clade &lt;PATH></code> option to provide path to the BUSCO lineage data (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).
+	Run <a href="http://busco.ezlab.org/" target="_blank"> BUSCO tool</a>, which detects core genes in the assembly (see <a href="#sec2">Installation & requirements</a>). Use this option to provide path to the BUSCO lineage data (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).
 </p>
 
 <p>
@@ -371,7 +371,7 @@ Alignment metrics for non-misassembled transcripts
 </ul>
 
 <p>
-<a href="http://busco.ezlab.org/" target="_blank"> BUSCO</a> metrics. The following metrics are calculated only when <code>--busco</code> and <code>--clade</code> options are used (see <a href="#sec3.3">options</a> for details).
+<a href="http://busco.ezlab.org/" target="_blank"> BUSCO</a> metrics. The following metrics are calculated only when <code>--busco_lineage</code> option is used (see <a href="#sec3.3">options</a> for details).
 <ul>
     <li><b><i>Complete</b></i> &ndash; percentage of completely recovered genes.</li>
     <li><b><i>Partial</b></i> &ndash; percentage of partially recovered genes.</li>
