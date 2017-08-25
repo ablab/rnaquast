@@ -124,7 +124,7 @@ class BuscoMetrics():
         out_dirpath = os.path.join(tmp_dir, 'run_' + out_name)
         log_out = os.path.join(log_dir, '{}.busco.out.log'.format(label))
         log_err = os.path.join(log_dir, '{}.busco.err.log'.format(label))
-        tmp_busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO'.format(label))
+        tmp_busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO.txt'.format(label))
         busco_completeness_report_path = None
 
         program_name = 'run_BUSCO.py'
