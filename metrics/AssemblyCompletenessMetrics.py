@@ -156,7 +156,7 @@ class BuscoMetrics():
         with open(busco_completeness_report_path, 'r') as fin_handle:
             for line in fin_handle:
                 tmp = line.strip().split()
-                if len(tmp) == 4 and tmp[1] == 'Complete' and tmp[2] == 'Single-copy' and tmp[3] == 'BUSCOs':
+                if len(tmp) == 4 and tmp[1] == 'Complete' and tmp[2] == 'BUSCOs' and tmp[3] == '(C)':
                     complete = int(tmp[0])
                 if len(tmp) == 5 and tmp[1] == 'Total' and tmp[2] == 'BUSCO' and tmp[3] == 'groups' and tmp[4] == 'searched':
                     total = int(tmp[0])
@@ -170,7 +170,7 @@ class BuscoMetrics():
         with open(busco_completeness_report_path, 'r') as fin_handle:
             for line in fin_handle:
                 tmp = line.strip().split()
-                if len(tmp) == 3 and tmp[1] == 'Fragmented' and tmp[2] == 'BUSCOs':
+                if len(tmp) == 4 and tmp[1] == 'Fragmented' and tmp[2] == 'BUSCOs' and tmp[3] == '(F)':
                     part = int(tmp[0])
                 if len(tmp) == 5 and tmp[1] == 'Total' and tmp[2] =='BUSCO' and tmp[3] == 'groups' and tmp[4] == 'searched':
                         total = int(tmp[0])
