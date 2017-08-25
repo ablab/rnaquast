@@ -129,7 +129,7 @@ class BuscoMetrics():
 
         program_name = 'run_BUSCO.py'
         # WARNING: do not provide a path, need to move to output_dir'
-        command = '{busco} -o {output_name} -i {transcripts} -l {clade} -m trans -f -c {threads} ' \
+        command = '{busco} -o {output_name} -i {transcripts} -l {clade} -m transcriptome -f -c {threads} ' \
                   '1>> {log_out_1} 2>> {log_out_2}'.format(busco=program_name, output_name=out_name,
                                                            transcripts=transcripts_path, clade=args_clade,
                                                            threads=args_threads, log_out_1=log_out, log_out_2=log_err)
