@@ -77,6 +77,9 @@ def main_utils():
     # THREADING:
     args.threads = UtilsPipeline.get_num_threads(args.threads, logger)
 
+    # metaRNA:
+    args = UtilsPipeline.transform_to_meta_arguments(args, tmp_dir, logger)
+
 
     # GET SINGLE FASTA REFERENCE FILE:
     fa_flag = False
