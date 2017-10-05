@@ -191,7 +191,7 @@ def main_utils():
     # GET PSL ALIGNMENT FILE:
     if args.alignment is None and args.reference is not None and args.transcripts is not None:
         if args.blat:
-            args.alignment = UtilsTools.run_blat(args.database, args.reference, transcripts_dicts, args.labels,
+            args.alignment = UtilsTools.run_blat(None, args.reference, transcripts_dicts, args.labels,
                                                  args.threads, tmp_dir, logger, log_dir)
         else:
             args.alignment = UtilsTools.run_gmap(args.reference, genome_len, args.transcripts, args.labels,

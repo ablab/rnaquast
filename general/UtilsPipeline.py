@@ -454,7 +454,7 @@ def get_list_from_txt(txt_path):
 
 
 def add_id_to_chrs_in_gtf(in_path, tmp_dir, addition_str, logger):
-    logger.info('Adding suffixes in {}...'.format(in_path))
+    logger.info('  Adding suffixes in {}...'.format(in_path))
     out_path = os.path.join(tmp_dir, 'gene_database.{}.gtf'.format(addition_str))
     out_handle = open(out_path, 'w')
     with open(in_path, 'r') as in_handle:
@@ -466,12 +466,12 @@ def add_id_to_chrs_in_gtf(in_path, tmp_dir, addition_str, logger):
                 new_line = line.replace(gtf_chr, gtf_chr + '_' + addition_str)
             out_handle.write(new_line)
     out_handle.close()
-    logger.info('  saved to ' + out_path)
+    logger.info('    saved to ' + out_path)
     return out_path
 
 
 def add_id_to_chrs_in_fasta(in_path, tmp_dir, addition_str, logger):
-    logger.info('Adding suffixes in {}...'.format(in_path))
+    logger.info('  Adding suffixes in {}...'.format(in_path))
     out_path = os.path.join(tmp_dir, 'reference.{}.fa'.format(addition_str))
     out_handle = open(out_path, 'w')
     with open(in_path, 'r') as in_handle:
@@ -483,5 +483,5 @@ def add_id_to_chrs_in_fasta(in_path, tmp_dir, addition_str, logger):
                 new_line = line
             out_handle.write(new_line)
     out_handle.close()
-    logger.info('  saved to ' + out_path)
+    logger.info('    saved to ' + out_path)
     return out_path
