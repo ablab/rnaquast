@@ -77,26 +77,18 @@ def main_utils():
     # THREADING:
     args.threads = UtilsPipeline.get_num_threads(args.threads, logger)
 
-    # metaRNA:
-    args = UtilsPipeline.transform_to_meta_arguments(args, tmp_dir, logger)
+    if args.meta:
+        logger.info('\nYOU RUN QUALITY ASSESSMENT FOR METATRANSCRIPTOME ASSEMBLIES')
 
+    # GET segregate FILES:
+    if args.reference and args.gtf and len(args.reference) != len(args.gtf):
+        logger.error('Numbers of references and gene databases are different', exit_with_code=1)
 
-    # GET SINGLE FASTA REFERENCE FILE:
-    fa_flag = False
-    args.database = None
-    if args.reference is not None:
-        list_ext_fasta = ['fa', 'fasta', 'fna', 'ffn', 'frn', 'fsa']
-        # for file with list of pathes to scaffolds/patches/chromosomes:
-        ext_database = 'txt'
+    args.reference = \
+        UtilsPipeline.get_single_file(args.reference, tmp_dir, 'reference', rqconfig.list_ext_fa, args.meta, logger)
 
-        for ext in list_ext_fasta:
-            if ext in args.reference:
-                fa_flag = True
-        if ext_database in args.reference:
-            args.database = args.reference
-            args.reference = UtilsGeneral.glue_scaffolds_together(args.reference, args.database, tmp_dir, logger)
-        elif not fa_flag:
-            logger.warning('Strange FASTA extension.')
+    args.gtf = \
+        UtilsPipeline.get_single_file(args.gtf, tmp_dir, 'gene_database', rqconfig.list_ext_gtf, args.meta, logger)
 
     # READ REFERENCE FROM MULTIFASTA:
     reference_dict = None

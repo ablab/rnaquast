@@ -16,6 +16,11 @@ SUPPORTED_PYTHON_VERSIONS = ['2.5', '2.6', '2.7']
 
 debug = False
 
+# ext constants:
+ext_db = 'txt'
+list_ext_fa = ['fa', 'fasta', 'fna', 'ffn', 'frn', 'fsa']
+list_ext_gtf = ['gtf', 'gff', 'gff3']
+
 # DEFINE MAGIC CONSTANTS:
 # MULTITHREADING CONSTANTS:
 DEFAULT_MAX_THREADS = 1
