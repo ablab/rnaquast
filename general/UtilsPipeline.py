@@ -459,14 +459,37 @@ def add_id_to_chrs_in_gtf(in_path, tmp_dir, addition_str, logger):
     out_handle = open(out_path, 'w')
     with open(in_path, 'r') as in_handle:
         for line in in_handle:
-            gtf_chr = line.strip().split()[0]
-            if gtf_chr[0] == '#':
-                new_line = line
-            else:
-                new_line = line.replace(gtf_chr, gtf_chr + '_' + addition_str)
+            if line[0] == '#':
+                out_handle.write(line)
+                continue
+
+            new_line = line
+            tmp_list = line.strip().split('\t')
+
+            # chg gtf chromosome name:
+            new_line = new_line.replace(tmp_list[0], tmp_list[0] + '_' + addition_str)
+
+            tag_value_pairs = tmp_list[8].split(';')
+            for pair in tag_value_pairs:
+                if 'ID=' in pair:
+                    new_line = new_line.replace(pair[3:], pair[3:] + '_' + addition_str)
+                    # print pair, '\n', line, '\n', new_line
+                elif 'gene_id' in pair:
+                    new_line = new_line.replace(pair, pair[:7] + pair[7:-1] + '_' + addition_str + "\"")
+                    # print pair, 'pair[7:]=', pair[7:-1], '\n', line, '\n', new_line
+                elif 'transcript_id' in pair:
+                    new_line = new_line.replace(pair, pair[:13] + pair[13:-1] + '_' + addition_str + "\"")
+                    # print pair, pair[13:-1], '\n', line, '\n', new_line
+                elif 'exon_id' in pair:
+                    new_line = new_line.replace(pair, pair[:7] + pair[7:-1] + '_' + addition_str + "\"")
+                    # print pair, pair[7:-1], '\n', line, '\n', new_line
+
             out_handle.write(new_line)
+
     out_handle.close()
+
     logger.info('    saved to ' + out_path)
+
     return out_path
 
 
