@@ -266,7 +266,7 @@ def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_thr
 
     args_reference = UtilsGeneral.get_upper_case_fasta(args_reference, tmp_dir, logger)
 
-    ref_label = os.path.split(args_reference)[-1][:os.path.split(args_reference)[-1].rfind('.fa')]
+    ref_label = os.path.split(args_reference)[-1][:os.path.split(args_reference)[-1].rfind('.f')]
 
     # if UtilsGeneral.which(gmap_run) is None or UtilsGeneral.which(gmap_build):
     #     logger.warning('gmap or gmap_build not found! Please add GMAP to PATH or run with BLAT for ALIGNMENT metrics.')
