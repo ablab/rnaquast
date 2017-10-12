@@ -471,18 +471,14 @@ def add_id_to_chrs_in_gtf(in_path, tmp_dir, addition_str, logger):
 
             tag_value_pairs = tmp_list[8].split(';')
             for pair in tag_value_pairs:
-                if 'ID=' in pair:
-                    new_line = new_line.replace(pair[3:], pair[3:] + '_' + addition_str)
+                # for gff files:
+                if 'ID=' in pair or 'Parent=' in pair or 'protein_id=' in pair:
+                    new_line = new_line.replace(pair, pair + '_' + addition_str)
                     # print pair, '\n', line, '\n', new_line
-                elif 'gene_id' in pair:
-                    new_line = new_line.replace(pair, pair[:7] + pair[7:-1] + '_' + addition_str + "\"")
-                    # print pair, 'pair[7:]=', pair[7:-1], '\n', line, '\n', new_line
-                elif 'transcript_id' in pair:
-                    new_line = new_line.replace(pair, pair[:13] + pair[13:-1] + '_' + addition_str + "\"")
-                    # print pair, pair[13:-1], '\n', line, '\n', new_line
-                elif 'exon_id' in pair:
-                    new_line = new_line.replace(pair, pair[:7] + pair[7:-1] + '_' + addition_str + "\"")
-                    # print pair, pair[7:-1], '\n', line, '\n', new_line
+                # for gtf files:
+                elif ('gene_id' in pair or 'transcript_id' in pair or 'exon_id' in pair or 'protein_id' in pair) and ('=' not in pair):
+                    new_line = new_line.replace(pair, pair[:-1] + '_' + addition_str + "\"")
+                    # print pair, '\n', line, '\n', new_line
 
             out_handle.write(new_line)
 
