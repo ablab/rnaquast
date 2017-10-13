@@ -570,7 +570,7 @@ def get_genome_bowtie2_index(reference_path, logger, log_dir):
     logger.print_timestamp()
     logger.info('Indexing {reference} by {program_name}...'.format(reference=reference_path, program_name=program_name))
 
-    out_bowtie2_index_path = reference_path[:reference_path.rfind('.fa')]
+    out_bowtie2_index_path = reference_path[:reference_path.rfind('.f')]
 
     command = '{program_name} {reference} {index} 1>> {log_out_1} 2>> {log_out_2}'.\
         format(program_name=program_name, reference=reference_path, index=out_bowtie2_index_path,
