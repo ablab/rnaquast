@@ -6,7 +6,7 @@ from general import UtilsAnnotations
 class GeneDatabaseMetrics():
     """Class of basic gene database metrics"""
 
-    def __init__(self, sqlite3_db_genes, type_genes, type_isoforms, logger):
+    def __init__(self, sqlite3_db_genes, logger):
         # number of genes in annotations:
         self.genes_num = 0
         # number of protein coding genes in annotations:
@@ -67,9 +67,9 @@ class GeneDatabaseMetrics():
         logger.print_timestamp()
         logger.info('Getting GENE DATABASE metrics...')
 
-        genes = list(sqlite3_db_genes.features_of_type(type_genes))
+        genes = list(sqlite3_db_genes.features_of_type(UtilsAnnotations.default_type_genes))
 
-        isoforms = list(sqlite3_db_genes.features_of_type(type_isoforms))
+        isoforms = list(sqlite3_db_genes.features_of_type(UtilsAnnotations.default_type_isoforms))
 
         # exons = list(sqlite3_db_genes.features_of_type(type_exons))
 
@@ -89,9 +89,6 @@ class GeneDatabaseMetrics():
                 self.protein_coding_isoforms_num += 1
 
             exons = list(sqlite3_db_genes.children(transcript.id, featuretype=UtilsAnnotations.default_type_exons, order_by='start'))
-            # for prokaryotes:
-            if len(exons) == 0:
-                exons = [transcript]
 
             self.tot_exons_num += len(list(exons))
             isoform_len = 0

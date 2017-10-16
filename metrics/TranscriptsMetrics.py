@@ -61,7 +61,7 @@ class TranscriptsMetrics():
             AssemblyCompletenessMetrics.AssemblyCompletenessMetrics(args)
 
 
-    def get_transcripts_metrics(self, args, type_organism, reference_dict, transcripts_path, transcripts_dict, label, threads,
+    def get_transcripts_metrics(self, args, args_prokaryote, reference_dict, transcripts_path, transcripts_dict, label, threads,
                                 sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger, tmp_dir, log_dir,
                                 WELL_FULLY_COVERAGE_THRESHOLDS, TRANSCRIPT_LENS):
         logger.print_timestamp('  ')
@@ -82,7 +82,7 @@ class TranscriptsMetrics():
         if self.assembly_completeness_metrics is not None:
             self.assembly_completeness_metrics. \
                 get_assembly_completeness_metrics(args, sqlite3_db_genes, tot_isoforms_len, reads_coverage,
-                                                  transcripts_path, type_organism, tmp_dir, label, threads,
+                                                  transcripts_path, args_prokaryote, tmp_dir, label, threads,
                                                   WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)
 
 

@@ -10,7 +10,7 @@ import UtilsGeneral
 
 default_type_genes = ['gene', 'miRNA_gene']
 
-default_type_isoforms = ['transcript', 'RNA', 'mRNA', 'miRNA', 'ncRNA', 'tRNA']
+default_type_isoforms = ['transcript', 'RNA', 'mRNA', 'miRNA', 'ncRNA', 'tRNA', "rRNA", "tmRNA"]
 
 default_type_exons = ['exon', 'coding_exon', 'noncoding_exon']
 
@@ -117,7 +117,7 @@ def load_sqlite3_db(sqlite3_db_path, logger):
 
 # create database for gff/gtf file:
 def create_sqlite3_db(in_gene_db, in_gff_path, label_db, disable_infer_genes, disable_infer_transcripts,
-                      output_dir, tmp_dir, logger):
+                      output_dir, tmp_dir, logger, prokaryote):
     tmp_sqlite3_db_path = os.path.join(tmp_dir, label_db + '.db')
     sqlite3_db_path = os.path.join(output_dir, label_db + '.db')
 
@@ -145,10 +145,10 @@ def create_sqlite3_db(in_gene_db, in_gff_path, label_db, disable_infer_genes, di
     #     logger.info('Done.')
 
     # add transcripts equal genes at prokaryotes:
-    # sqlite3_db_genes = add_transcripts_prokaryotes(sqlite3_db_genes, logger)
+    sqlite3_db_genes = add_transcripts_prokaryotes(sqlite3_db_genes, logger, prokaryote)
 
     # add exons equal transcripts at prokaryotes:
-    # sqlite3_db_genes = add_exons_prokaryotes(sqlite3_db_genes, logger)
+    sqlite3_db_genes = add_exons_prokaryotes(sqlite3_db_genes, logger, prokaryote)
 
     # for feature in sqlite3_db_genes.all_features():
     #     print(feature)
@@ -164,62 +164,62 @@ def create_sqlite3_db(in_gene_db, in_gff_path, label_db, disable_infer_genes, di
     return sqlite3_db_genes
 
 
-def get_type_features(sqlite3_db_genes, default_type_genes, default_type_isoforms, default_type_exons, logger):
-    type_genes = get_type_genes(sqlite3_db_genes, default_type_genes, logger)
+# def get_type_features(sqlite3_db_genes, default_type_genes, default_type_isoforms, default_type_exons, logger):
+#     type_genes = get_type_genes(sqlite3_db_genes, default_type_genes, logger)
+#
+#     type_isoforms = get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, logger)
+#
+#     type_exons = get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isoforms, logger)
+#
+#     return type_genes, type_isoforms, type_exons
+#
+#
+# def get_type_genes(sqlite3_db_genes, default_type_genes, logger):
+#     if len(list(sqlite3_db_genes.features_of_type(default_type_genes))) != 0:
+#         type_genes = default_type_genes
+#     else:
+#         type_genes = None
+#         logger.error('Annotated genes not founded.', exit_with_code=2, to_stderr=True)
+#     return type_genes
+#
+#
+# def get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, logger):
+#     if len(list(sqlite3_db_genes.features_of_type(default_type_isoforms))) != 0:
+#         type_isoforms = default_type_isoforms
+#     elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0:
+#         type_isoforms = type_genes
+#     else:
+#         type_isoforms = None
+#         logger.error('Annotated isoforms not founded.', exit_with_code=2, to_stderr=True)
+#     return type_isoforms
+#
+#
+# def get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isoforms, logger):
+#     if len(list(sqlite3_db_genes.features_of_type(default_type_exons))) != 0:
+#         type_exons = default_type_exons
+#    # for prokaryotes or bad annotated species:
+#     elif len(list(sqlite3_db_genes.features_of_type(type_isoforms))) != 0:
+#         type_exons = type_isoforms
+#     elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0:
+#         type_exons = type_genes
+#     else:
+#         type_exons = None
+#         logger.error('Annotated exons not founded.', exit_with_code=2, to_stderr=True)
+#     return type_exons
 
-    type_isoforms = get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, logger)
 
-    type_exons = get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isoforms, logger)
-
-    return type_genes, type_isoforms, type_exons
-
-
-def get_type_genes(sqlite3_db_genes, default_type_genes, logger):
-    if len(list(sqlite3_db_genes.features_of_type(default_type_genes))) != 0:
-        type_genes = default_type_genes
-    else:
-        type_genes = None
-        logger.error('Annotated genes not founded.', exit_with_code=2, to_stderr=True)
-    return type_genes
-
-
-def get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, logger):
-    if len(list(sqlite3_db_genes.features_of_type(default_type_isoforms))) != 0:
-        type_isoforms = default_type_isoforms
-    elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0:
-        type_isoforms = type_genes
-    else:
-        type_isoforms = None
-        logger.error('Annotated isoforms not founded.', exit_with_code=2, to_stderr=True)
-    return type_isoforms
-
-
-def get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isoforms, logger):
-    if len(list(sqlite3_db_genes.features_of_type(default_type_exons))) != 0:
-        type_exons = default_type_exons
-    # for prokaryotes or bad annotated species:
-    elif len(list(sqlite3_db_genes.features_of_type(type_isoforms))) != 0:
-        type_exons = type_isoforms
-    elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0:
-        type_exons = type_genes
-    else:
-        type_exons = None
-        logger.error('Annotated exons not founded.', exit_with_code=2, to_stderr=True)
-    return type_exons
-
-
-'''def add_transcripts_prokaryotes(genes_db, logger):
+def add_transcripts_prokaryotes(genes_db, logger, prokaryote=False):
     logger.print_timestamp()
     logger.info('Add transcripts equal genes in genes database... ')
     missed_transcripts = []
 
-    for gene in genes_db.features_of_type(type_genes):
-        if len(list(genes_db.children(gene.id, featuretype=type_isoforms))) == 0:
+    for gene in genes_db.features_of_type(default_type_genes):
+        if len(list(genes_db.children(gene.id, featuretype=default_type_isoforms))) == 0 or prokaryote:
             transcript = \
                 gffutils.Feature(seqid=gene.seqid, source='equal_gene', featuretype='transcript',
                                  start=gene.start, end=gene.end, score=gene.score,
                                  strand=gene.strand, frame=gene.frame,
-                                 attributes={'ID': [gene.id + '_transcript'], 'gene_id': [gene.id]},
+                                 attributes={'ID': [gene.id + '_t'], 'gene_id': [gene.id]},
                                  id=gene.id + '_transcript')
             missed_transcripts.append(transcript)
 
@@ -231,10 +231,10 @@ def get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isofor
 
     logger.info('Done.')
 
-    return genes_db'''
+    return genes_db
 
 
-'''def add_exons_prokaryotes(genes_db, logger):
+def add_exons_prokaryotes(genes_db, logger, prokaryote=False):
     logger.print_timestamp()
     logger.info('Add exons equal transcripts in genes database... ')
 
@@ -242,24 +242,26 @@ def get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isofor
 
     for gene in genes_db.features_of_type(type_genes):
         for transcript in genes_db.children(gene.id, featuretype=type_isoforms):
-            if len(list(genes_db.children(transcript.id, featuretype=type_exons))) == 0:
+            if len(list(genes_db.children(transcript.id, featuretype=type_exons))) == 0 or prokaryote:
                 exon = \
                     gffutils.Feature(seqid=transcript.seqid, source='equal_transcript', featuretype='exon',
                                      start=transcript.start, end=transcript.end, score=transcript.score,
                                      strand=transcript.strand, frame=transcript.frame,
-                                     attributes={'ID': [transcript.id + '_exon'], 'transcript_id': [transcript.id]},
-                                     id=transcript.id + '_exon')
+                                     attributes={'ID': [transcript.id + '_exon'], 'transcript_id': [transcript.id],'gene_id': [gene.id]},
+                                     id=transcript.id + '_e')
                 missed_exons.append(exon)
 
     for exon in missed_exons:
         logger.debug(str(exon))
         transcript = genes_db[exon.attributes['transcript_id'][0]]
+        gene = genes_db[exon.attributes['gene_id'][0]]
         genes_db.add_relation(transcript, exon, level=1, child_func=child_func(transcript, exon))
+        genes_db.add_relation(gene, exon, level=2, child_func=child_func(gene, exon))
         genes_db.update(UtilsGeneral.get_iterator([exon]), merge_strategy='create_unique')
 
     logger.info('Done.')
 
-    return genes_db'''
+    return genes_db
 
 
 def get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict, logger):

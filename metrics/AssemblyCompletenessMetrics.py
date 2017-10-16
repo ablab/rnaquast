@@ -198,12 +198,12 @@ class GeneMarkS_TMetrics():
 
     # get GeneMarkS-T results
     @classmethod
-    def get_GeneMarkS_T_metrics(cls, type_organism, args_threads, args_ss, transcripts_path, tmp_dir,
+    def get_GeneMarkS_T_metrics(cls, args_prokaryote, args_threads, args_ss, transcripts_path, tmp_dir,
                                 label, logger, log_dir):
         geneMarkS_T_metrics = None
 
         GeneMarkS_T_report_path = \
-            GeneMarkS_TMetrics.get_GeneMarkS_T_report(type_organism, args_threads, args_ss, transcripts_path, tmp_dir,
+            GeneMarkS_TMetrics.get_GeneMarkS_T_report(args_prokaryote, args_threads, args_ss, transcripts_path, tmp_dir,
                                                       label, logger, log_dir)
 
         if GeneMarkS_T_report_path is not None:
@@ -213,7 +213,7 @@ class GeneMarkS_TMetrics():
 
 
     @classmethod
-    def get_GeneMarkS_T_report(cls, type_organism, args_threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir):
+    def get_GeneMarkS_T_report(cls, args_prokaryote, args_threads, args_ss, transcripts_path, tmp_dir, label, logger, log_dir):
         # run GeneMarkS-T:
         logger.print_timestamp()
         logger.info('  Running GeneMarkS-T (Gene Prediction in Transcripts)...')
@@ -234,7 +234,7 @@ class GeneMarkS_TMetrics():
         GeneMarkS_T_run = 'gmst.pl'
         command = '{} {} --output {} 2>> {}'.format(GeneMarkS_T_run, transcripts_path, tmp_GeneMarkS_T_report_path,
                                                     log_err_path)
-        if type_organism == 'prokaryotes':
+        if args_prokaryote:
             command += ' --prok'
 
         if args_ss:
@@ -332,7 +332,7 @@ class AssemblyCompletenessMetrics():
 
 
     def get_assembly_completeness_metrics(self, args, sqlite3_db_genes, tot_isoforms_len, reads_coverage, transcripts_path,
-                                          type_organism, tmp_dir, label, threads, WELL_FULLY_COVERAGE_THRESHOLDS,
+                                          args_prokaryote, tmp_dir, label, threads, WELL_FULLY_COVERAGE_THRESHOLDS,
                                           logger, log_dir):
         # get average metrics of coverage of annotated isoforms (included exons coverages) by aligned transcripts:
         logger.info('  Getting SENSITIVITY metrics...')
@@ -352,7 +352,7 @@ class AssemblyCompletenessMetrics():
         if args.gene_mark or not ((args.gtf is not None or args.gene_db is not None) and args.alignment is not None and
                                           args.reference is not None and args.transcripts is not None):
             self.geneMarkS_T_metrics = \
-                GeneMarkS_TMetrics.get_GeneMarkS_T_metrics(type_organism, threads, args.strand_specific,
+                GeneMarkS_TMetrics.get_GeneMarkS_T_metrics(args_prokaryote, threads, args.strand_specific,
                                                            transcripts_path, tmp_dir, label, logger, log_dir)
 
         logger.info('  Done.')

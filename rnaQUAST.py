@@ -111,18 +111,14 @@ def main_utils():
     # for strand specific data we store + and - keys in dictionaries and only + for non strand specific data:
     strands = UtilsGeneral.get_strands(args, logger)
 
-    type_organism = 'eukaryotes'
-    if args.prokaryote:
-        type_organism = 'prokaryotes'
-
     # USE ANNOTATION:
     sqlite3_db_genes = None
     sorted_exons_attr = None
     db_genes_metrics = None
-    type_genes, type_isoforms, type_exons = \
-        UtilsAnnotations.default_type_genes, \
-        UtilsAnnotations.default_type_isoforms, \
-        UtilsAnnotations.default_type_exons
+    # type_genes, type_isoforms, type_exons = \
+    #     UtilsAnnotations.default_type_genes, \
+    #     UtilsAnnotations.default_type_isoforms, \
+    #     UtilsAnnotations.default_type_exons
 
     if args.gtf is not None or args.gene_db is not None:
         if args.gene_db is not None:
@@ -138,19 +134,9 @@ def main_utils():
         sqlite3_db_genes = \
             UtilsAnnotations.create_sqlite3_db(args.gene_db, args.gtf, label_db,
                                                args.disable_infer_genes, args.disable_infer_transcripts,
-                                               args.output_dir, tmp_dir, logger)
+                                               args.output_dir, tmp_dir, logger, args.prokaryote)
 
-        type_genes, type_isoforms, type_exons = \
-            UtilsAnnotations.get_type_features(sqlite3_db_genes, UtilsAnnotations.default_type_genes,
-                                               UtilsAnnotations.default_type_isoforms,
-                                               UtilsAnnotations.default_type_exons, logger)
-
-        if UtilsAnnotations.default_type_exons == type_exons:
-            type_organism = 'eukaryotes'
-        else:
-            type_organism = 'prokaryotes'
-
-        db_genes_metrics = GeneDatabaseMetrics.GeneDatabaseMetrics(sqlite3_db_genes, type_genes, type_isoforms, logger)
+        db_genes_metrics = GeneDatabaseMetrics.GeneDatabaseMetrics(sqlite3_db_genes, logger)
 
         ALIGNMENT_THRESHOLDS.ERR_SPACE_TARGET_FAKE_BLAT = db_genes_metrics.max_intron_len + 100
         logger.info('\nSets maximum intron size equal {}. Default is 1500000 bp.\n'.format(ALIGNMENT_THRESHOLDS.ERR_SPACE_TARGET_FAKE_BLAT))
@@ -158,7 +144,7 @@ def main_utils():
         # set exons starts / ends and ids for binning strategy:
         if ids_chrs is not None:
             sorted_exons_attr = \
-                SortedExonsAttributes.SortedExonsAttributes(sqlite3_db_genes, type_exons, strands, ids_chrs, reference_dict, logger)
+                SortedExonsAttributes.SortedExonsAttributes(sqlite3_db_genes, UtilsAnnotations.default_type_exons, strands, ids_chrs, reference_dict, logger)
 
     reads_coverage = None
     if args.reads_alignment is not None or \
@@ -304,7 +290,7 @@ def main_utils():
             # GET METRICS:
             tot_isoforms_len = None if db_genes_metrics is None else db_genes_metrics.tot_isoforms_len
             transcripts_metrics[i_transcripts].get_transcripts_metrics\
-                (args, type_organism, reference_dict, args.transcripts[i_transcripts], transcripts_dicts[i_transcripts],
+                (args, args.prokaryote, reference_dict, args.transcripts[i_transcripts], transcripts_dicts[i_transcripts],
                  args.labels[i_transcripts], args.threads, sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger,
                  tmp_dir, log_dir, WELL_FULLY_COVERAGE_THRESHOLDS, rqconfig.TRANSCRIPT_LENS)
 
