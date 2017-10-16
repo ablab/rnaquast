@@ -241,8 +241,8 @@ def add_exons_prokaryotes(genes_db, logger, prokaryote=False):
     missed_exons = []
 
     for gene in genes_db.features_of_type(default_type_genes):
-        for transcript in genes_db.children(gene.id, featuretype=type_isoforms):
-            if len(list(genes_db.children(transcript.id, featuretype=type_exons))) == 0 or prokaryote:
+        for transcript in genes_db.children(gene.id, featuretype=default_type_isoforms):
+            if len(list(genes_db.children(transcript.id, featuretype=default_type_exons))) == 0 or prokaryote:
                 exon = \
                     gffutils.Feature(seqid=transcript.seqid, source='equal_transcript', featuretype='exon',
                                      start=transcript.start, end=transcript.end, score=transcript.score,
