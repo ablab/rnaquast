@@ -435,6 +435,14 @@ def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, r
                logger, log_dir):
     program_name = 'tophat'
 
+    # We are changing the FASTA file ending from .fna to .fa,
+    # because tophat wants a file names .fa, its picky that way
+    if os.path.splitext(reference_path)[1] != '.fa':
+        new_ref_path = os.path.join(output_dir, os.path.basename(reference_path)[:os.path.basename(reference_path).rfind('.f')] + '.fa')
+        command = 'ln -s {} {}'.format(reference_path, new_ref_path)
+        subprocess.call(command, shell=True)
+        reference_path = new_ref_path
+
     tophat_logger_err_path = os.path.join(log_dir, program_name + '.err.log')
 
     tophat_outdir = UtilsPipeline.create_folder(os.path.join(output_dir, program_name + '_out'))
