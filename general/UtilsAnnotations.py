@@ -264,7 +264,7 @@ def add_exons_prokaryotes(genes_db, logger, prokaryote=False):
     return genes_db
 
 
-def get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict, logger):
+def get_fa_isoforms(sqlite3_db_genes, reference_dict, logger):
     logger.print_timestamp()
     logger.info("Extracting isoforms sequences...")
 
@@ -272,7 +272,7 @@ def get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict,
 
     isoforms_dict = {}
 
-    isoforms = list(sqlite3_db_genes.features_of_type(type_isoforms))
+    isoforms = list(sqlite3_db_genes.features_of_type(default_type_isoforms))
 
     for transcript in isoforms:
         if transcript.seqid not in reference_dict:
@@ -280,10 +280,7 @@ def get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict,
 
         isoforms_dict[transcript.id] = ''
 
-        exons = list(sqlite3_db_genes.children(transcript.id, featuretype=type_exons, order_by='start'))
-        # for prokaryotes:
-        if len(exons) == 0:
-            exons = [transcript]
+        exons = list(sqlite3_db_genes.children(transcript.id, featuretype=default_type_exons, order_by='start'))
 
         for exon in exons:
             # start, end: 1-based coordinates; start must be <= end
