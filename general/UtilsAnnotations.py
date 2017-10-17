@@ -220,7 +220,7 @@ def add_transcripts_prokaryotes(genes_db, logger, prokaryote=False):
                                  start=gene.start, end=gene.end, score=gene.score,
                                  strand=gene.strand, frame=gene.frame,
                                  attributes={'ID': [gene.id + '_t'], 'gene_id': [gene.id]},
-                                 id=gene.id + '_transcript')
+                                 id=gene.id + '_t')
             missed_transcripts.append(transcript)
 
     for transcript in missed_transcripts:
@@ -247,7 +247,7 @@ def add_exons_prokaryotes(genes_db, logger, prokaryote=False):
                     gffutils.Feature(seqid=transcript.seqid, source='equal_transcript', featuretype='exon',
                                      start=transcript.start, end=transcript.end, score=transcript.score,
                                      strand=transcript.strand, frame=transcript.frame,
-                                     attributes={'ID': [transcript.id + '_exon'], 'transcript_id': [transcript.id],'gene_id': [gene.id]},
+                                     attributes={'ID': [transcript.id + '_e'], 'transcript_id': [transcript.id], 'gene_id': [gene.id]},
                                      id=transcript.id + '_e')
                 missed_exons.append(exon)
 
