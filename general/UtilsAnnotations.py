@@ -224,7 +224,7 @@ def add_transcripts_prokaryotes(genes_db, logger, prokaryote=False):
             missed_transcripts.append(transcript)
 
     for transcript in missed_transcripts:
-        logger.debug(str(transcript))
+        # logger.debug(str(transcript))
         gene = genes_db[transcript.attributes['gene_id'][0]]
         genes_db.add_relation(gene, transcript, level=1, child_func=child_func(gene, transcript))
         genes_db.update(UtilsGeneral.get_iterator([transcript]), merge_strategy='create_unique')
@@ -252,7 +252,7 @@ def add_exons_prokaryotes(genes_db, logger, prokaryote=False):
                 missed_exons.append(exon)
 
     for exon in missed_exons:
-        logger.debug(str(exon))
+        # logger.debug(str(exon))
         transcript = genes_db[exon.attributes['transcript_id'][0]]
         gene = genes_db[exon.attributes['gene_id'][0]]
         genes_db.add_relation(transcript, exon, level=1, child_func=child_func(transcript, exon))
