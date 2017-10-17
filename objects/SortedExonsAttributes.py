@@ -1,11 +1,11 @@
 __author__ = 'letovesnoi'
 
 from general import rqconfig
-
+from general import UtilsAnnotations
 
 class SortedExonsAttributes():
 
-    def __init__(self, sqlite3_db_genes, type_exons, strands, ids_chrs, reference_dict, logger):
+    def __init__(self, sqlite3_db_genes, strands, ids_chrs, reference_dict, logger):
         # from datetime import datetime
         # start_time = datetime.now()
 
@@ -41,11 +41,11 @@ class SortedExonsAttributes():
 
                 self.index_step[id_chr] = max(1, len(reference_dict[id_chr]) / rqconfig.SORT_INDEX_LEN)
 
-                exons_by_start = list(sqlite3_db_genes.features_of_type(type_exons, order_by='start', strand=strand, limit=(id_chr, 0, len(reference_dict[id_chr]) - 1)))
+                exons_by_start = list(sqlite3_db_genes.features_of_type(UtilsAnnotations.default_type_exons, order_by='start', strand=strand, limit=(id_chr, 0, len(reference_dict[id_chr]) - 1)))
                 self.sort_target_starts[str(strand)][id_chr] = [exon.start - 1 for exon in exons_by_start]
                 self.ids_by_start[str(strand)][id_chr] = [exon.id for exon in exons_by_start]
 
-                exons_by_end = list(sqlite3_db_genes.features_of_type(type_exons, order_by='end', strand=strand, limit=(id_chr, 0, len(reference_dict[id_chr]) - 1)))
+                exons_by_end = list(sqlite3_db_genes.features_of_type(UtilsAnnotations.default_type_exons, order_by='end', strand=strand, limit=(id_chr, 0, len(reference_dict[id_chr]) - 1)))
                 self.sort_target_ends[str(strand)][id_chr] = [exon.end - 1 for exon in exons_by_end]
                 self.ids_by_end[str(strand)][id_chr] = [exon.id for exon in exons_by_end]
 

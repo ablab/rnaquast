@@ -136,7 +136,7 @@ def get_internal_exons(strand, sqlite3_db_genes, target_name, target_starts, tar
     internal_exons = set()
 
     for i_block in range(len(target_starts)):
-        region = sqlite3_db_genes.region(seqid=target_name, featuretype=UtilsAnnotations.type_exons,
+        region = sqlite3_db_genes.region(seqid=target_name, featuretype=UtilsAnnotations.default_type_exons,
                                  start=target_starts[i_block],
                                  end=target_ends[i_block],
                                  strand=strand, completely_within=False)
@@ -145,14 +145,10 @@ def get_internal_exons(strand, sqlite3_db_genes, target_name, target_starts, tar
     return internal_exons
 
 
-def get_internal_isoforms(sqlite3_db_genes, type_isoforms, internal_exons):
+def get_internal_isoforms(sqlite3_db_genes, internal_exons):
     internal_isoforms = set()
     for exon in internal_exons:
-        if exon.featuretype in UtilsAnnotations.default_type_exons:
-            internal_isoforms.update(list(sqlite3_db_genes.parents(exon.id, featuretype=type_isoforms)))
-        # for prokaryotes:
-        else:
-            internal_isoforms.update([exon])
+        internal_isoforms.update(list(sqlite3_db_genes.parents(exon.id, featuretype=UtilsAnnotations.default_type_isoforms)))
 
     return internal_isoforms
 

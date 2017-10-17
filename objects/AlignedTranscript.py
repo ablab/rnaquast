@@ -7,7 +7,7 @@ from general import UtilsCoverage
 class AlignedTranscript(object):
     """class of aligned gene (aligned transcript), which represent line in PSL-file with alignments"""
 
-    def __init__(self, psl_alignment, sorted_exons_attr, strand_specific, sqlite3_db_genes, type_isoforms):
+    def __init__(self, psl_alignment, sorted_exons_attr, strand_specific, sqlite3_db_genes):
         # getting aligned transcript:
         self.alignment = psl_alignment
 
@@ -33,7 +33,7 @@ class AlignedTranscript(object):
             internal_exons = \
                 UtilsCoverage.get_internal_exons_faster(sqlite3_db_genes, sorted_exons_attr, self.alignment.target_fragment.starts,
                                                         self.alignment.target_fragment.ends, strand, self.alignment.target_fragment.name)
-            self.internal_isoforms = list(UtilsCoverage.get_internal_isoforms(sqlite3_db_genes, type_isoforms, internal_exons))
+            self.internal_isoforms = list(UtilsCoverage.get_internal_isoforms(sqlite3_db_genes, internal_exons))
             for internal_isoform in self.internal_isoforms:
                 self.ids_internal_isoforms.add(internal_isoform.id)
 

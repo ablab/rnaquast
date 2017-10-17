@@ -11,7 +11,7 @@ class ReadsCoverage():
     """Class, which represent coverage of annotated isoforms by aligned exons"""
 
     def __init__(self, sorted_sam_path, args_tophat, reference_path, single_reads, left_reads, right_reads,
-                 reference_dict, sqlite3_db_genes, type_isoforms, sorted_exons_attr, strand_specific, tot_isoforms_len, genome_len,
+                 reference_dict, sqlite3_db_genes, sorted_exons_attr, strand_specific, tot_isoforms_len, genome_len,
                  output_dir, threads, WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir):
         # COVERAGE BY READS (upper bound):
         # GENES:
@@ -47,13 +47,13 @@ class ReadsCoverage():
         self.expressed_fraction_exon = {}
 
         self.get_database_coverage_by_reads(sorted_sam_path, args_tophat, reference_path, single_reads, left_reads,
-                                            right_reads, reference_dict, sqlite3_db_genes, type_isoforms, sorted_exons_attr,
+                                            right_reads, reference_dict, sqlite3_db_genes, sorted_exons_attr,
                                             strand_specific, tot_isoforms_len, genome_len, output_dir, threads,
                                             WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)
 
 
     def get_database_coverage_by_reads(self, sam_path, args_tophat, reference_path, single_reads, left_reads,
-                                       right_reads, reference_dict, sqlite3_db_genes, type_isoforms, sorted_exons_attr,
+                                       right_reads, reference_dict, sqlite3_db_genes, sorted_exons_attr,
                                        strand_specific, tot_isoforms_len, genome_len, output_dir, threads,
                                        WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir):
             if sam_path is None:
@@ -88,7 +88,7 @@ class ReadsCoverage():
                         UtilsCoverage.get_internal_exons_faster(sqlite3_db_genes, sorted_exons_attr, curr_sam_alignment.target_fragment.starts,
                                                                     curr_sam_alignment.target_fragment.ends, str(strand), curr_sam_alignment.target_fragment.name)
 
-                    internal_isoforms = list(UtilsCoverage.get_internal_isoforms(sqlite3_db_genes, type_isoforms, internal_exons))
+                    internal_isoforms = list(UtilsCoverage.get_internal_isoforms(sqlite3_db_genes, internal_exons))
 
                     for isoform in internal_isoforms:
                         children_exons = list(sqlite3_db_genes.children(isoform.id, featuretype=UtilsAnnotations.default_type_exons, order_by='start'))
