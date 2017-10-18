@@ -111,9 +111,10 @@ def main_utils():
     # for strand specific data we store + and - keys in dictionaries and only + for non strand specific data:
     strands = UtilsGeneral.get_strands(args, logger)
 
-    type_organism = 'eukaryotes'
     if args.prokaryote:
         type_organism = 'prokaryotes'
+    else:
+        type_organism = 'eukaryotes'
 
     # USE ANNOTATION:
     sqlite3_db_genes = None
@@ -143,12 +144,12 @@ def main_utils():
         type_genes, type_isoforms, type_exons = \
             UtilsAnnotations.get_type_features(sqlite3_db_genes, UtilsAnnotations.default_type_genes,
                                                UtilsAnnotations.default_type_isoforms,
-                                               UtilsAnnotations.default_type_exons, logger)
+                                               UtilsAnnotations.default_type_exons, args.prokaryote, logger)
 
-        if UtilsAnnotations.default_type_exons == type_exons:
-            type_organism = 'eukaryotes'
-        else:
-            type_organism = 'prokaryotes'
+        # if UtilsAnnotations.default_type_exons == type_exons:
+        #     type_organism = 'eukaryotes'
+        # else:
+        #     type_organism = 'prokaryotes'
 
         db_genes_metrics = GeneDatabaseMetrics.GeneDatabaseMetrics(sqlite3_db_genes, type_genes, type_isoforms, logger)
 

@@ -164,12 +164,12 @@ def create_sqlite3_db(in_gene_db, in_gff_path, label_db, disable_infer_genes, di
     return sqlite3_db_genes
 
 
-def get_type_features(sqlite3_db_genes, default_type_genes, default_type_isoforms, default_type_exons, logger):
+def get_type_features(sqlite3_db_genes, default_type_genes, default_type_isoforms, default_type_exons, prokaryote, logger):
     type_genes = get_type_genes(sqlite3_db_genes, default_type_genes, logger)
 
-    type_isoforms = get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, logger)
+    type_isoforms = get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, prokaryote, logger)
 
-    type_exons = get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isoforms, logger)
+    type_exons = get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, prokaryote, logger)
 
     return type_genes, type_isoforms, type_exons
 
@@ -183,10 +183,10 @@ def get_type_genes(sqlite3_db_genes, default_type_genes, logger):
     return type_genes
 
 
-def get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, logger):
-    if len(list(sqlite3_db_genes.features_of_type(default_type_isoforms))) != 0:
+def get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, prokaryote, logger):
+    if len(list(sqlite3_db_genes.features_of_type(default_type_isoforms))) != 0 and not prokaryote:
         type_isoforms = default_type_isoforms
-    elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0:
+    elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0 and prokaryote:
         type_isoforms = type_genes
     else:
         type_isoforms = None
@@ -194,13 +194,11 @@ def get_type_isoforms(sqlite3_db_genes, default_type_isoforms, type_genes, logge
     return type_isoforms
 
 
-def get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, type_isoforms, logger):
-    if len(list(sqlite3_db_genes.features_of_type(default_type_exons))) != 0:
+def get_type_exons(sqlite3_db_genes, default_type_exons, type_genes, prokaryote, logger):
+    if len(list(sqlite3_db_genes.features_of_type(default_type_exons))) != 0 and not prokaryote:
         type_exons = default_type_exons
-    # for prokaryotes or bad annotated species:
-    elif len(list(sqlite3_db_genes.features_of_type(type_isoforms))) != 0:
-        type_exons = type_isoforms
-    elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0:
+    # for prokaryotes
+    elif len(list(sqlite3_db_genes.features_of_type(type_genes))) != 0 and prokaryote:
         type_exons = type_genes
     else:
         type_exons = None

@@ -216,7 +216,7 @@ class TranscriptsMetrics():
             best_aligned_internal_isoforms_coverages.append(curr_internal_isoforms_coverage)
 
         # IN CASE WHEN WE HAVN'T ANNOTATION:
-        if sqlite3_db_genes == None:
+        if sqlite3_db_genes is None:
             elapsed_time = datetime.now() - start_time
 
             return best_lines, best_alignments, best_aligned_transcripts, \
