@@ -43,6 +43,3 @@ class AlignedTranscript(object):
                     self.children_exons_dict[internal_isoform.id] = [internal_isoform]
 
                 self.ids_children_exons_dict[internal_isoform.id] = set([exon.id for exon in self.children_exons_dict[internal_isoform.id]])
-
-            for exon in internal_exons:
-                print str(exon)
