@@ -393,9 +393,9 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
     # 2 Mapping reads to the genome (supplied the genome files generated in the 1st step, as well as the RNA-seq reads
     # (sequences) in the form of FASTA or FASTQ files.)
     readFilesIn = ''
-    if single_reads is not None:
+    if single_reads:
         readFilesIn += single_reads + ' '
-    if right_reads is not None and left_reads is not None:
+    if right_reads and left_reads:
         readFilesIn += left_reads + ' ' + right_reads
     command = '{program_name} --runThreadN {threads} --genomeDir {genome_dir} --readFilesIn {readFilesIn} ' \
               '--outFileNamePrefix {out_file_name_prefix} --outSAMtype SAM ' \
@@ -404,7 +404,7 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
                out_file_name_prefix=star_outdir + '/', log_out_1=star_logger_out_path, log_out_2=star_logger_err_path)
 
     # for compressed read files:
-    if '.gz' in single_reads and '.gz' in left_reads and '.gz' in right_reads:
+    if single_reads and '.gz' in single_reads and left_reads and '.gz' in left_reads and right_reads and '.gz' in right_reads:
         command += ' --readFilesCommand zcat'
     # if '.bz2' in single_reads and '.bz2' in left_reads and '.bz2' in right_reads:
     #     command += ' --readFilesCommand bzcat'
@@ -463,10 +463,10 @@ def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, r
     logger.info('Running {}...'.format(program_name))
 
     reads = ''
-    if reads_1_path is not None and reads_2_path is not None:
+    if reads_1_path and reads_2_path:
         reads += reads_1_path + ' ' + reads_2_path
-    if single_reads is not None:
-        if reads_1_path is not None and reads_2_path is not None:
+    if single_reads:
+        if reads_1_path and reads_2_path:
             reads += ','
         reads += single_reads
 
