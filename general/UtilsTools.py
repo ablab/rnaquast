@@ -454,10 +454,12 @@ def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, r
     logger.info('Running {}...'.format(program_name))
 
     reads = ''
-    if single_reads is not None:
-        reads += single_reads + ' '
     if reads_1_path is not None and reads_2_path is not None:
         reads += reads_1_path + ' ' + reads_2_path
+    if single_reads is not None:
+        if reads_1_path is not None and reads_2_path is not None:
+            reads += ','
+        reads += single_reads
 
     command = \
         '{program_name} -o {output_dir} {index} {reads} -p {threads} 2>> {log_out_2}'.\
