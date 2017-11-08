@@ -123,8 +123,8 @@ def get_arguments():
     group_busco = parser.add_argument_group('BUSCO related options')
     group_busco.add_argument('--busco_lineage', help='Run with BUSCO tool (http://busco.ezlab.org/). Path to the BUSCO lineage data to be used (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi)', type=str)
 
-    group_gene_mark = parser.add_argument_group('GeneMarkS-T related options')
-    group_gene_mark.add_argument('--prokaryote', help='Use this option if the genome is prokaryotic', action='store_true')
+    # group_gene_mark = parser.add_argument_group('GeneMarkS-T related options')
+    group_advanced.add_argument('--prokaryote', help='Use this option if the genome is prokaryotic', action='store_true')
 
     # TOOLS:
     #groupTools = parser.add_argument_group('Tools')
