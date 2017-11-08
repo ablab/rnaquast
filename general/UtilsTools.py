@@ -399,9 +399,18 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
         readFilesIn += left_reads + ' ' + right_reads
     command = '{program_name} --runThreadN {threads} --genomeDir {genome_dir} --readFilesIn {readFilesIn} ' \
               '--outFileNamePrefix {out_file_name_prefix} --outSAMtype SAM ' \
-              '--limitBAMsortRAM 1000706316 1>> {log_out_1} 2>> {log_out_2}'.\
+              '--limitBAMsortRAM 1000706316'.\
         format(program_name=program_name, threads=threads, genome_dir=genome_dir, readFilesIn=readFilesIn,
                out_file_name_prefix=star_outdir + '/', log_out_1=star_logger_out_path, log_out_2=star_logger_err_path)
+
+    # for compressed read files:
+    if '.gz' in single_reads and '.gz' in left_reads and '.gz' in right_reads:
+        command += ' --readFilesCommand zcat'
+    if '.bz2' in single_reads and '.bz2' in left_reads and '.bz2' in right_reads:
+        command += ' --readFilesCommand bzcat'
+
+    command += ' 1>> {log_out_1} 2>> {log_out_2}'
+
     logger.print_timestamp()
     logger.info('  ' + command)
     exit_code = subprocess.call(command, shell=True)
