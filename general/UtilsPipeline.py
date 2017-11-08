@@ -67,10 +67,10 @@ def get_arguments():
 
     group_input_data.add_argument('-sam', '--reads_alignment', help='File with read alignments to the reference genome [SAM]')
 
-    group_input_data.add_argument('-1', '--left_reads', help='File with forward paired-end reads [FASTQ]', type=str)
-    group_input_data.add_argument('-2', '--right_reads', help='File with reverse paired-end reads [FASTQ]', type=str)
-    # group_input_data.add_argument('-12', '--paired_reads', help='File with interplaced forward and reverse paired-end reads [FASTQ]')
-    group_input_data.add_argument('-s', '--single_reads', help='File with unpaired reads [FASTQ]', type=str)
+    group_input_data.add_argument('-1', '--left_reads', help='File with forward paired-end reads [FASTQ or gzip-compressed]', type=str)
+    group_input_data.add_argument('-2', '--right_reads', help='File with reverse paired-end reads [FASTQ or gzip-compressed]', type=str)
+    # group_input_data.add_argument('-12', '--paired_reads', help='File with interplaced forward and reverse paired-end reads [FASTQ or gzip-compressed]')
+    group_input_data.add_argument('-s', '--single_reads', help='File with unpaired reads [FASTQ or gzip-compressed]', type=str)
 
     group_input_data.add_argument('--gmap_index', help='Folder containing GMAP index for the reference genome')
 
