@@ -404,7 +404,7 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
                out_file_name_prefix=star_outdir + '/', log_out_1=star_logger_out_path, log_out_2=star_logger_err_path)
 
     # for compressed read files:
-    if single_reads and '.gz' in single_reads and left_reads and '.gz' in left_reads and right_reads and '.gz' in right_reads:
+    if (single_reads and '.gz' in single_reads) or (left_reads and '.gz' in left_reads and right_reads and '.gz' in right_reads):
         command += ' --readFilesCommand zcat'
     # if '.bz2' in single_reads and '.bz2' in left_reads and '.bz2' in right_reads:
     #     command += ' --readFilesCommand bzcat'
