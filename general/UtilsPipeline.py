@@ -357,48 +357,48 @@ def create_empty_folder(dir):
 
 
 def get_abspath_input_data(args):
-    if args.reference is not None:
+    if args.reference:
         for i_reference in range(len(args.reference)):
             if not os.path.isabs(args.reference[i_reference]):
                 args.reference[i_reference] = os.path.abspath(args.reference[i_reference])
 
-    if args.gtf is not None:
+    if args.gtf:
         for i_gtf in range(len(args.gtf)):
             if not os.path.isabs(args.gtf[i_gtf]):
                 args.gtf[i_gtf] = os.path.abspath(args.gtf[i_gtf])
 
-    if args.gene_db is not None and not os.path.isabs(args.gene_db):
+    if args.gene_db and not os.path.isabs(args.gene_db):
         args.gene_db = os.path.abspath(args.gene_db)
 
-    if args.transcripts is not None:
+    if args.transcripts:
         for i_transcripts in range(len(args.transcripts)):
             if not os.path.isabs(args.transcripts[i_transcripts]):
                 args.transcripts[i_transcripts] = os.path.abspath(args.transcripts[i_transcripts])
 
-    if args.alignment is not None:
+    if args.alignment:
         for i_alignments in range(len(args.alignment)):
             if not os.path.isabs(args.alignment[i_alignments]):
                 args.alignment[i_alignments] = os.path.abspath(args.alignment[i_alignments])
 
-    if args.reads_alignment is not None and not os.path.isabs(args.reads_alignment):
+    if args.reads_alignment and not os.path.isabs(args.reads_alignment):
         args.reads_alignment = os.path.abspath(args.reads_alignment)
 
-    if args.left_reads is not None and not os.path.isabs(args.left_reads):
+    if args.left_reads and not os.path.isabs(args.left_reads):
         args.left_reads = os.path.abspath(args.left_reads)
 
-    if args.right_reads is not None and not os.path.isabs(args.right_reads):
+    if args.right_reads and not os.path.isabs(args.right_reads):
         args.right_reads = os.path.abspath(args.right_reads)
 
-    if args.single_reads is not None and not os.path.isabs(args.single_reads):
+    if args.single_reads and not os.path.isabs(args.single_reads):
         args.single_reads = os.path.abspath(args.single_reads)
 
-    if args.gmap_index is not None and not os.path.isabs(args.gmap_index):
+    if args.gmap_index and not os.path.isabs(args.gmap_index):
         args.gmap_index = os.path.abspath(args.gmap_index)
 
-    if args.output_dir is not None and not os.path.isabs(args.output_dir):
+    if args.output_dir and not os.path.isabs(args.output_dir):
         args.output_dir = os.path.abspath(args.output_dir)
 
-    if args.busco_lineage is not None and not os.path.isabs(args.busco_lineage):
+    if args.busco_lineage and not os.path.isabs(args.busco_lineage):
         args.busco_lineage = os.path.abspath(args.busco_lineage)
 
 
