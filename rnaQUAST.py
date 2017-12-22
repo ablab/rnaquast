@@ -45,8 +45,6 @@ def main_utils():
     # parse running string of main program and get all arguments:
     args = UtilsPipeline.get_arguments()
 
-    UtilsPipeline.get_abspath_input_data(args)
-
     WELL_FULLY_COVERAGE_THRESHOLDS = rqconfig.well_fully_coverage_thresholds(args.lower_threshold, args.upper_threshold)
 
     ALIGNMENT_THRESHOLDS = rqconfig.alignment_thresholds()
@@ -56,6 +54,8 @@ def main_utils():
         UtilsPipeline.run_rnaQUAST_on_test_data(args, rquast_dirpath, program_name)
         # UtilsPipeline.run_rnaQUAST_on_debug_data(args, rquast_dirpath, program_name)
         sys.exit()
+
+    UtilsPipeline.get_abspath_input_data(args)
 
     # create output directory:
     args.output_dir = UtilsPipeline.create_output_folder(args.output_dir, program_name)
@@ -73,6 +73,8 @@ def main_utils():
     logger.set_up_file_handler(log_dir)
     logger.print_command_line([os.path.realpath(__file__)] + sys.argv[1:], wrap_after=None)
     logger.start()
+
+    UtilsPipeline.get_input_data_exist_error(args, logger)
 
     # THREADING:
     args.threads = UtilsPipeline.get_num_threads(args.threads, logger)
