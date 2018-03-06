@@ -1,6 +1,6 @@
 __author__ = 'lenk'
 
-from quast23.libs import fastaparser
+from quast_libs import fastaparser
 
 
 class TranscriptsCoverage(object):

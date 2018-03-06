@@ -8,10 +8,9 @@ import shutil
 from joblib import Parallel, delayed
 
 this_location = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-sys.path.append(os.path.join(this_location, 'quast23', 'libs'))
-sys.path.append(os.path.join(this_location, 'quast23'))
+sys.path.append(os.path.join(this_location, 'quast_libs'))
 
-from quast23.libs import fastaparser
+from quast_libs import fastaparser
 
 from general import log
 import UtilsTools

@@ -8,7 +8,7 @@ import shutil
 import multiprocessing
 import datetime
 
-import quast
+from quast_libs import qutils
 
 import rqconfig
 
@@ -214,24 +214,24 @@ def process_labels(contigs_fpaths, labels, all_labels_from_dirs):
         # process duplicates, empties
         for i, label in enumerate(labels):
             if not label:
-                labels[i] = quast.get_label_from_par_dir_and_fname(contigs_fpaths[i])
+                labels[i] = qutils.get_label_from_par_dir_and_fname(contigs_fpaths[i])
 
     # 2. labels from parent directories if -L flag was privided
     elif all_labels_from_dirs:
-        labels = quast.get_labels_from_par_dirs(contigs_fpaths)
+        labels = qutils.get_labels_from_par_dirs(contigs_fpaths)
 
     # 3. otherwise, labels from fnames
     else:
         # labels from fname
-        labels = [quast.qutils.rm_extentions_for_fasta_file(os.path.basename(fpath)) for fpath in contigs_fpaths]
+        labels = [qutils.rm_extentions_for_fasta_file(os.path.basename(fpath)) for fpath in contigs_fpaths]
 
-        for duplicated_label in quast.get_duplicated(labels):
+        for duplicated_label in qutils.get_duplicated(labels):
             for i, (label, fpath) in enumerate(zip(labels, contigs_fpaths)):
                 if label == duplicated_label:
-                    labels[i] = quast.get_label_from_par_dir_and_fname(contigs_fpaths[i])
+                    labels[i] = qutils.get_label_from_par_dir_and_fname(contigs_fpaths[i])
 
     # fixing remaining duplicates by adding index
-    for duplicated_label in quast.get_duplicated(labels):
+    for duplicated_label in qutils.get_duplicated(labels):
         j = 0
         for i, (label, fpath) in enumerate(zip(labels, contigs_fpaths)):
             if label == duplicated_label:

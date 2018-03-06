@@ -7,7 +7,7 @@ cp -r ./objects rnaQUAST-$VERSION/objects
 cp -r ./general rnaQUAST-$VERSION/general
 cp -r ./report rnaQUAST-$VERSION/report
 cp -r ./test_data rnaQUAST-$VERSION/test_data
-cp -r ./quast23 rnaQUAST-$VERSION/quast23
+cp -r ./quast_libs rnaQUAST-$VERSION/quast_libs
 
 cp ./LICENSE rnaQUAST-$VERSION
 cp ./README rnaQUAST-$VERSION

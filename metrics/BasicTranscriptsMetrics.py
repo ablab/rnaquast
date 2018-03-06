@@ -1,6 +1,6 @@
 __author__ = 'letovesnoi'
 
-from quast23.libs import N50
+from quast_libs import N50
 
 
 class BasicTranscriptsMetrics():

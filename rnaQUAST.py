@@ -8,10 +8,7 @@ import shutil
 
 rquast_dirpath = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
-sys.path.append(os.path.join(rquast_dirpath, 'quast23', 'libs'))
-sys.path.append(os.path.join(rquast_dirpath, 'quast23'))
-sys.path.append(os.path.join(rquast_dirpath, 'libs'))
-sys.path.append(os.path.join(rquast_dirpath, 'libs', 'joblib'))
+sys.path.append(os.path.join(rquast_dirpath, 'quast_libs'))
 
 import fastaparser
 

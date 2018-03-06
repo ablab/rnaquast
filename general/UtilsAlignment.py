@@ -9,7 +9,7 @@ import best_alignment_set
 
 from objects import Alignment
 
-from quast23.libs import fastaparser
+from quast_libs import fastaparser
 
 
 class AlignmentsReport():

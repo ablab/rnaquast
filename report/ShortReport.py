@@ -2,7 +2,7 @@ __author__ = 'letovesnoi'
 
 import os
 
-from quast23.libs import reporting
+from quast_libs import reporting
 
 # Font of plot captions, axes labels and ticks
 font = {'family': 'sans-serif', 'style': 'normal', 'weight': 'medium', 'size': 10}
@@ -460,7 +460,7 @@ class ShortReport():
 
         all_pdf_file = None
         if not args.no_plots:
-            from quast23.libs import plotter  # Do not remove this line! It would lead to a warning in matplotlib.
+            from quast_libs import plotter  # Do not remove this line! It would lead to a warning in matplotlib.
             try:
                 from matplotlib.backends.backend_pdf import PdfPages
                 all_pdf_file = PdfPages(self.path_pdf)
@@ -476,7 +476,7 @@ class ShortReport():
             self.fill_all_pdf_file(all_pdf_file, pdf_tables_figures, short_report_plots, logger)
 
 
-    # draw_report_table from quast23.libs.plotter:
+    # draw_report_table from quast_libs.plotter:
     def get_pdf_table_figure(self, report_name, extra_info, table_to_draw, column_widths, logger):
         # checking if matplotlib and pylab is installed:
         matplotlib_error = False
