@@ -302,10 +302,9 @@ def main_utils():
                         (alignments_reports[i_transcripts].blast6_report.misassembled_blast6_union_file, logger, False)
 
             # GET METRICS:
-            tot_isoforms_len = None if db_genes_metrics is None else db_genes_metrics.tot_isoforms_len
             transcripts_metrics[i_transcripts].get_transcripts_metrics\
                 (args, type_organism, reference_dict, args.transcripts[i_transcripts], transcripts_dicts[i_transcripts],
-                 args.labels[i_transcripts], args.threads, sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger,
+                 args.labels[i_transcripts], args.threads, sqlite3_db_genes, db_genes_metrics, reads_coverage, logger,
                  tmp_dir, log_dir, WELL_FULLY_COVERAGE_THRESHOLDS, rqconfig.TRANSCRIPT_LENS)
 
             # GET SEPARATED REPORT:

@@ -7,16 +7,12 @@ from general import UtilsCoverage
 
 from objects import AlignedTranscript
 
-import BasicTranscriptsMetrics
-
-import SimpleTranscriptsMetrics
-
-import AssemblyCompletenessMetrics
-
-import InternalIsoformsCoverage
-
-import AssemblyCorrectnessMetrics
-import OneTranscriptCoverage
+from metrics import BasicTranscriptsMetrics
+from metrics import SimpleTranscriptsMetrics
+from metrics import AssemblyCompletenessMetrics
+from metrics import InternalIsoformsCoverage
+from metrics import AssemblyCorrectnessMetrics
+from metrics import OneTranscriptCoverage
 
 
 class TranscriptsMetrics():
@@ -62,7 +58,7 @@ class TranscriptsMetrics():
 
 
     def get_transcripts_metrics(self, args, type_organism, reference_dict, transcripts_path, transcripts_dict, label, threads,
-                                sqlite3_db_genes, tot_isoforms_len, reads_coverage, logger, tmp_dir, log_dir,
+                                sqlite3_db_genes, db_genes_metrics, reads_coverage, logger, tmp_dir, log_dir,
                                 WELL_FULLY_COVERAGE_THRESHOLDS, TRANSCRIPT_LENS):
         logger.print_timestamp('  ')
 
@@ -81,7 +77,7 @@ class TranscriptsMetrics():
 
         if self.assembly_completeness_metrics is not None:
             self.assembly_completeness_metrics. \
-                get_assembly_completeness_metrics(args, sqlite3_db_genes, tot_isoforms_len, reads_coverage,
+                get_assembly_completeness_metrics(args, sqlite3_db_genes, db_genes_metrics, reads_coverage,
                                                   transcripts_path, type_organism, tmp_dir, label, threads,
                                                   WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)
 

@@ -11,19 +11,15 @@ import sys
 import gzip
 import zipfile
 
-# try:
-#    from collections import OrderedDict
-# except ImportError:
-#    from quast_libs.site_packages.ordered_dict import OrderedDict
+try:
+   from collections import OrderedDict
+except ImportError:
+   from quast_libs.site_packages.ordered_dict import OrderedDict
 
-from collections import OrderedDict
-
-# try:
-#     import bz2
-# except ImportError:
-#     from quast_libs.site_packages import bz2
-
-import bz2
+try:
+    import bz2
+except ImportError:
+    from quast_libs.site_packages import bz2
 
 if sys.version_info[0] == 3:
     import io

@@ -1,9 +1,7 @@
 __author__ = 'lenk'
 
-import rqconfig
-
-import UtilsGeneral
-import UtilsAnnotations
+from general import UtilsGeneral
+from general import UtilsAnnotations
 
 
 # set count of covered bases of exons/blocks by covering them blocks/exons:

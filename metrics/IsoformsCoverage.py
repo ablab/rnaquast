@@ -238,7 +238,7 @@ class IsoformsCoverage():
                     internal_isoforms_coverage.num_transcripts_covered_pos[id_isoform][id_exon])
 
 
-    def get_isoforms_coverage(self, sqlite3_db_genes, tot_isoforms_len, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS):
+    def get_isoforms_coverage(self, sqlite3_db_genes, db_genes_metrics, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS):
         self.num_assembled_genes = len(self.ids_assembled_genes)
 
         self.num_assembled_isoforms = len(self.ids_assembled_isoforms)
@@ -360,8 +360,8 @@ class IsoformsCoverage():
         self.num_well_covered_genes = len(self.ids_well_covered_genes)
         self.num_fully_covered_genes = len(self.ids_fully_covered_genes)
 
-        if tot_isoforms_len != 0:
-            self.fraction_annotation_mapped = self.num_covered_pos_at_least_one * 1.0 / tot_isoforms_len
+        if db_genes_metrics and db_genes_metrics.tot_isoforms_len != 0:
+            self.fraction_annotation_mapped = self.num_covered_pos_at_least_one * 1.0 / db_genes_metrics.tot_isoforms_len
 
         if self.num_covered_pos_at_least_one != 0:
             self.avg_duplication_ratio /= self.num_covered_pos_at_least_one

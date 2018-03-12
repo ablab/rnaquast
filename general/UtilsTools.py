@@ -9,12 +9,10 @@ import math
 
 import datetime
 
-import rqconfig
-
-import UtilsGeneral
-import UtilsPipeline
-
-import parallel_blat_run
+from general import rqconfig
+from general import UtilsGeneral
+from general import UtilsPipeline
+from general import parallel_blat_run
 
 
 def run_blat(args_database, args_reference, transcripts_dicts, args_labels, args_threads, tmp_dir, logger, log_dir):
@@ -135,74 +133,6 @@ def get_upper_case_database_split_chr(database, tmp_dir, logger):
     logger.info('  saved to {}'.format(chrs_database_path))
 
     return reference_pathes
-
-
-def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, output_dir, label, log_out_1):
-    tmp_out_names_psl = []
-
-    # create folder for alignments one file with transcripts to several chromosomes/scaffolds/patches:
-    if len(reference_pathes) > 1:
-        alignment_dir_i = os.path.join(output_dir, 'tmp', 'alignment_dir_{}'.format(label))
-        command = 'mkdir {}'.format(alignment_dir_i)
-        exit_code = subprocess.call(command, shell=True)
-        if exit_code != 0:
-            #logger.error(message='mkdir {} failed!'.format(alignment_dir_i), exit_with_code=2, to_stderr=True)
-            sys.exit(exit_code)
-    else:
-        alignment_dir_i = os.path.join(output_dir, 'tmp')
-
-    for i_reference in range(len(reference_pathes)):
-
-        if len(reference_pathes) > 1:
-            tmp_out_names_psl.append(os.path.join(alignment_dir_i, '{}.{}.psl'.format(label, i_reference)))
-        else:
-            tmp_out_names_psl.append(os.path.join(alignment_dir_i, '{}.psl'.format(label)))
-
-        #logger.print_timestamp()
-        #logger.info('Getting psl file by blat for {} and {}...'.format(transcripts_pathes[i_transcripts], reference_pathes[i_reference]))
-
-        blat_run = os.path.join(rqconfig.rnaOUAST_LOCATION, '.', 'blat')
-        if not os.path.isfile(blat_run):
-            blat_run = "blat"
-
-        command = '{} {} {} {} -q=rna -trimHardA -trimT -noHead 1>> {}'.\
-            format(blat_run, reference_pathes[i_reference], transcripts_path, tmp_out_names_psl[-1], log_out_1)
-        exit_code = subprocess.call(command, shell=True)
-        if exit_code != 0:
-            #logger.error(message='blat failed!', exit_with_code=2, to_stderr=True)
-            sys.exit(exit_code)
-
-        #logger.info('  saved to {}'.format(tmp_out_names_psl[i_transcripts][-1]))
-
-    if len(reference_pathes) > 1:
-        # glue all files with alignments for all chromosomes/scaffolds/patches and one file with transcripts:
-        #logger.info('Gluing psl files by pslSort for {}...'.format(alignment_dir_i))
-
-        pslSort_run = os.path.join(rqconfig.rnaOUAST_LOCATION, '.', 'pslSort')
-
-        tmp_alignment_dir_i = os.path.join(alignment_dir_i, 'tmp')
-
-        OUTPSL = os.path.join(output_dir, 'tmp', '{}.psl'.format(label))
-
-        if not os.path.isfile(pslSort_run):
-            pslSort_run = "pslSort"
-        command = '{} dirs {} {} {} -nohead 1>> {}'.\
-            format(pslSort_run, OUTPSL, tmp_alignment_dir_i, alignment_dir_i, log_out_1)
-        exit_code = subprocess.call(command, shell=True)
-        if exit_code != 0:
-            #logger.error(message='pslSort failed! File with reference more than 4G, please install pslSort '
-            #                     '(http://hgwdev.cse.ucsc.edu/~kent/exe/linux/), add them to PATH and restart', exit_with_code=2, to_stderr=True)
-            sys.exit(exit_code)
-
-        # remove temporary directory with separately transcripts to chromosomes/scaffolds/patches alignments:
-        if os.path.exists(alignment_dir_i):
-            #logger.debug('Remove temporary directory {}'.format(alignment_dir_i))
-            shutil.rmtree(alignment_dir_i)
-            #logger.debug('Done.')
-    else:
-        OUTPSL = tmp_out_names_psl[0]
-
-    return OUTPSL
 
 
 def get_blast_db(isoforms_fa_path, gtf_label, tmp_dir, logger, log_dir):

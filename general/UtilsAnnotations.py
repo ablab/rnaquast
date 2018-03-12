@@ -6,7 +6,7 @@ import subprocess
 
 import gffutils
 
-import UtilsGeneral
+from general import UtilsGeneral
 
 default_type_genes = ['gene', 'miRNA_gene']
 

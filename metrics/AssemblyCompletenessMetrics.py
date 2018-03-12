@@ -8,7 +8,7 @@ import shutil
 
 from datetime import datetime
 
-import IsoformsCoverage
+from metrics import IsoformsCoverage
 
 from general import UtilsPipeline
 
@@ -331,7 +331,7 @@ class AssemblyCompletenessMetrics():
         return elapsed_time
 
 
-    def get_assembly_completeness_metrics(self, args, sqlite3_db_genes, tot_isoforms_len, reads_coverage, transcripts_path,
+    def get_assembly_completeness_metrics(self, args, sqlite3_db_genes, db_genes_metrics, reads_coverage, transcripts_path,
                                           type_organism, tmp_dir, label, threads, WELL_FULLY_COVERAGE_THRESHOLDS,
                                           logger, log_dir):
         # get average metrics of coverage of annotated isoforms (included exons coverages) by aligned transcripts:
@@ -339,7 +339,7 @@ class AssemblyCompletenessMetrics():
 
         # get coverages of annotated isoforms:
         if self.isoforms_coverage is not None:
-            self.isoforms_coverage.get_isoforms_coverage(sqlite3_db_genes, tot_isoforms_len, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS)
+            self.isoforms_coverage.get_isoforms_coverage(sqlite3_db_genes, db_genes_metrics, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS)
 
         # CEGMA:
         # if self.cegma_metrics is not None:

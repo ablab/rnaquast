@@ -3,9 +3,8 @@ __author__ = 'letovesnoi'
 from datetime import datetime
 import os
 
-import UtilsGeneral
-
-import best_alignment_set
+from general import UtilsGeneral
+from general import best_alignment_set
 
 from objects import Alignment
 

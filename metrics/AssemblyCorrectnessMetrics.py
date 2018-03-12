@@ -2,7 +2,7 @@ __author__ = 'letovesnoi'
 
 from datetime import datetime
 
-import TranscriptsCoverage
+from metrics import TranscriptsCoverage
 
 
 class AssemblyCorrectnessMetrics():

@@ -10,9 +10,8 @@ import datetime
 
 from quast_libs import qutils
 
-import rqconfig
-
-import UtilsGeneral
+from general import rqconfig
+from general import UtilsGeneral
 
 
 def get_arguments():
