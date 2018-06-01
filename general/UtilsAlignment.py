@@ -787,7 +787,7 @@ def get_curr_single_transcript_lines_alignments(min_alignment_threshold, line1, 
 
     # get alignment -- the object of Alignment class which represent PSL-line:
     # get alignment from PSL-line means read line in PSL-file and get blocks's and aligned transcript's coordinates:
-    if is_psl_lines == True:
+    if is_psl_lines:
         current_alignment1 = Alignment.PSLFileAlignment.get_alignment_from_psl_line(line1)
     # get alignment -- the object of Alignment class which represent Blast6-line:
     else:
@@ -800,7 +800,7 @@ def get_curr_single_transcript_lines_alignments(min_alignment_threshold, line1, 
         single_transcript_alignments.append(current_alignment1)
 
     if line2 != '':
-        if is_psl_lines == True:
+        if is_psl_lines:
             current_alignment2 = Alignment.PSLFileAlignment.get_alignment_from_psl_line(line2)
         else:
             current_alignment2 = Alignment.BLAST6FileAlignment.get_alignment_from_blast6_line(line2)
@@ -813,7 +813,7 @@ def get_curr_single_transcript_lines_alignments(min_alignment_threshold, line1, 
             current_alignment1 = current_alignment2
             line2 = fin.readline().strip()
             if line2 != '':
-                if is_psl_lines == True:
+                if is_psl_lines:
                     current_alignment2 = Alignment.PSLFileAlignment.get_alignment_from_psl_line(line2)
                 else:
                     current_alignment2 = Alignment.BLAST6FileAlignment.get_alignment_from_blast6_line(line2)

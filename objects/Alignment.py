@@ -330,13 +330,13 @@ class BLAST6FileAlignment(Alignment):
     class TargetAttributes(Alignment.TargetAttributes):
         """Class of Target's attributes, which represent line in BLAST6-file"""
         def set_from_blast6_line(self, parameters_list):
-            # Query sequence name
+            # Target sequence name
             self.name = parameters_list[1]
-            # Query sequence size
+            # Target sequence size
             # self.size = int(parameters_list[4])
-            # Alignment start position in query
+            # Alignment start position in target
             self.start = int(parameters_list[8]) - 1
-            # Alignment end position in query
+            # Alignment end position in target
             self.end = int(parameters_list[9]) - 1
             if parameters_list[12] == 'minus':
                 tmp = self.start
