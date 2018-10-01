@@ -22,20 +22,30 @@ def extract_genes_info(sim_results):
     with open(sim_results, 'r') as fin:
         for line in fin:
             curr_list = line.strip().split()
-            if curr_list[0] == 'gene_id':
+            if curr_list[0] == 'transcript_id':
                 continue
+            # genes_info[curr_list[0]] = \
+            #     {'transcript_id(s)': curr_list[1].split(','),
+            #      'length': float(curr_list[2]),
+            #      'effective_length': float(curr_list[3]),
+            #      'count': float(curr_list[4]),
+            #      'TPM': float(curr_list[5]),
+            #      'FPKM': float(curr_list[6])}
             genes_info[curr_list[0]] = \
-                {'transcript_id(s)': curr_list[1].split(','),
+                {'gene_id': curr_list[1],
                  'length': float(curr_list[2]),
                  'effective_length': float(curr_list[3]),
                  'count': float(curr_list[4]),
                  'TPM': float(curr_list[5]),
-                 'FPKM': float(curr_list[6])}
+                 'FPKM': float(curr_list[6]),
+                 'IsoPct': float(curr_list[7])}
     return genes_info
 
 
 def split_genes_by_counts(sim_results, key='TPM', log_scale=True, cumulative=True, step=1):
     genes_info = extract_genes_info(sim_results)
+
+    genes_info
 
     genes_bins = {}
     for gene_id in genes_info:
@@ -44,11 +54,11 @@ def split_genes_by_counts(sim_results, key='TPM', log_scale=True, cumulative=Tru
         curr_value = genes_info[gene_id][key]
         # print 'TPM ', curr_value
 
-        if curr_value == 0:
-            curr_bin = 0
-        else:
-            curr_key = math.log10(curr_value)
-            curr_bin = int(curr_key / step)
+        # if curr_value == 0:
+        #     curr_bin = 0
+        # else:
+        #     curr_key = math.log10(curr_value)
+        #     curr_bin = int(curr_key / step)
             # print 'curr_key ', curr_key
 
         # print 'curr_bin ', curr_bin
@@ -56,7 +66,7 @@ def split_genes_by_counts(sim_results, key='TPM', log_scale=True, cumulative=Tru
 
         if curr_bin not in genes_bins:
             genes_bins[curr_bin] = set()
-        genes_bins[curr_bin].add(gene_id)
+        genes_bins[curr_value].add(gene_id)
 
     return genes_bins
 
@@ -67,9 +77,8 @@ def get_bins_values(assembled_path, genes_bins):
     with open(assembled_path, 'r') as fin:
         end_len = len('_transcript')
         for line in fin:
-            if line[0] == '>':
-                gene_id = line.strip().split()[1:-end_len]
-                ass_genes.add(gene_id)
+            gene_id = line.strip()[0:-end_len]
+            ass_genes.add(gene_id)
     for bin in genes_bins:
         value = len(genes_bins[bin].intersection(ass_genes))
         bins_values[bin] = value
@@ -126,7 +135,7 @@ def get_hist(paths_to_ass, sim_results, step=1):
     legend(legend_text, fontsize='x-small', loc='center left', bbox_to_anchor=(1.01, 0.5))
 
     xlabel('TPM')
-    xscale('log')
+    # xscale('log')
     ylabel('Number')
 
     fig_path = 'hist.png'
