@@ -36,7 +36,11 @@ class SeparatedReport():
             self.path_fa_unique_aligned = os.path.join(self.output_dir, '{}.correct.fasta'.format(label))
 
         if transcripts_metrics.assembly_completeness_metrics is not None:
-            self.path_fully_assembled_list = os.path.join(self.output_dir, '{}.{}%-assembled.list'.format(label, int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)))
+            self.path_fully_assembled_genes = os.path.join(self.output_dir, '{}.{}%-assembled.genes'.format(label, int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)))
+            self.path_well_assembled_genes = os.path.join(self.output_dir, '{}.{}%-assembled.genes'.format(label, int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)))
+            self.path_fully_assembled_isoforms = os.path.join(self.output_dir, '{}.{}%-assembled.isoforms'.format(label, int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)))
+            self.path_well_assembled_isoforms = os.path.join(self.output_dir, '{}.{}%-assembled.isoforms'.format(label, int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)))
+
 
         if transcripts_metrics.assembly_correctness_metrics is not None:
             self.path_fa_unannotated = os.path.join(self.output_dir, '{}.unannotated.fasta'.format(label))
@@ -85,13 +89,17 @@ class SeparatedReport():
                                                                     self.path_fa_unique_aligned, logger, transcripts_name='Unique aligned')
 
         if transcripts_metrics.assembly_completeness_metrics is not None:
-            if transcripts_metrics.assembly_correctness_metrics.transcripts_coverage is not None:
+            t_cov = transcripts_metrics.assembly_correctness_metrics.transcripts_coverage
+            if t_cov:
                 # UNANNOTATED:
-                transcripts_metrics.assembly_correctness_metrics.transcripts_coverage.print_unannotated_transcripts(transcripts_dict, self.path_fa_unannotated, logger)
+                t_cov.print_unannotated_transcripts(transcripts_dict, self.path_fa_unannotated, logger)
 
-            if transcripts_metrics.assembly_completeness_metrics.isoforms_coverage is not None:
-                # 90%-ASSEMBLED:
-                transcripts_metrics.assembly_completeness_metrics.isoforms_coverage.print_fully_assembled_isoforms(self.path_fully_assembled_list, logger)
+            gene_db_cov = transcripts_metrics.assembly_completeness_metrics.isoforms_coverage
+            if gene_db_cov:
+                gene_db_cov.print_fully_assembled_genes(self.path_fully_assembled_genes, logger)
+                gene_db_cov.print_well_assembled_genes(self.path_well_assembled_genes, logger)
+                gene_db_cov.print_fully_assembled_isoforms(self.path_fully_assembled_isoforms, logger)
+                gene_db_cov.print_well_assembled_isoforms(self.path_well_assembled_isoforms, logger)
 
 
         logger.info('  Done.')

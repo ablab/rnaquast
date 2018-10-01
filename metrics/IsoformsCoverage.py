@@ -428,11 +428,22 @@ class IsoformsCoverage():
             self.relative_database_coverage = IsoformsCoverage.RelativeDatabaseCoverage(reads_coverage, self)
 
 
-    def print_fully_assembled_isoforms(self, path_fully_assembled_list, logger):
-        logger.info('    Getting Fully assembled isoforms list...')
+    def print_assembled_ids(self, path, ids, logger):
+        logger.info('    Getting assembled list...')
+        with open(path, 'w') as fout:
+            for id in ids:
+                fout.write(id + '\n')
+        logger.info('      saved to {}'.format(path))
 
-        with open(path_fully_assembled_list, 'w') as fout:
-            for id_isoform in self.ids_fully_assembled_isoforms:
-                fout.write(id_isoform + '\n')
 
-        logger.info('      saved to {}'.format(path_fully_assembled_list))
+    def print_fully_assembled_genes(self, path, logger):
+        self.print_assembled_ids(path, self.ids_fully_assembled_genes, logger)
+
+    def print_well_assembled_genes(self, path, logger):
+        self.print_assembled_ids(path, self.ids_well_assembled_genes, logger)
+
+    def print_fully_assembled_isoforms(self, path, logger):
+        self.print_assembled_ids(path, self.ids_fully_assembled_isoforms, logger)
+
+    def print_well_assembled_isoforms(self, path, logger):
+        self.print_assembled_ids(path, self.ids_well_assembled_isoforms, logger)
