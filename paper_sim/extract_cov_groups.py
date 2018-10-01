@@ -126,6 +126,7 @@ def get_hist(paths_to_ass, sim_results, step=1):
     legend(legend_text, fontsize='x-small', loc='center left', bbox_to_anchor=(1.01, 0.5))
 
     xlabel('TPM')
+    xscale('log')
     ylabel('Number')
 
     fig_path = 'hist.png'
