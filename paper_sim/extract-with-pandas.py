@@ -13,7 +13,7 @@ df_filtered = df[df.transcript_id.isin(good_transcripts)]
 bins = np.logspace(0, max_degree, max_degree + 1)
 groups = df_filtered.groupby(np.digitize(df_filtered.TPM, bins))
 
-x = np.insert(bins, 0, 0)
+x = np.insert(bins, len(bins), 10 ** (max_degree + 1))
 plt.plot(x, np.cumsum(groups.size()), 'ro')
 # plt.ylim(0, len(df_filtered) + 100)
 plt.xscale('symlog')
