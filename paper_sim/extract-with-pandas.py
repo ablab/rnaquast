@@ -29,11 +29,11 @@ for i_path in range(len(paths)):
     groups = df_filtered.groupby(np.digitize(df_filtered.TPM, bins))
 
     x = np.insert(bins, len(bins), 10 ** (max_degree + 1))
-    plt.plot(x, np.cumsum(groups.size()), 'ro', color=list_colors[i_path % len(list_colors)])
+    plt.plot(x, np.cumsum(groups.size()), '.', color=list_colors[i_path % len(list_colors)])
     # plt.ylim(0, len(df_filtered) + 100)
     plt.xscale('symlog')
     plt.yscale('log')
 
 plt.legend(legend_text, fontsize='x-small', loc='center left', bbox_to_anchor=(1.01, 0.5))
-plt.savefig('plot.png')
+plt.savefig(sys.argv[3], additional_artists='art', bbox_inches='tight')
 plt.show()
