@@ -1,0 +1,1 @@
+/home/letovesnoi/bioinformatics/chihua/paper_aug/rsem_simulation/mouse/rnaquast_out/transcripts_output/transcripts.95%-assembled.list
