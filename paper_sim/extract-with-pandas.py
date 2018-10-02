@@ -14,16 +14,21 @@ list_colors = ['blue', 'red', 'green', 'yellow', 'magenta', 'orange', 'cyan', 'b
 df_g = pandas.read_csv(sys.argv[1], delim_whitespace=True)
 df_i = pandas.read_csv(sys.argv[2], delim_whitespace=True)
 
-def read_paths(txt_path):
-    with open(txt_path, 'r') as fin:
-        paths = fin.readlines()
-    paths = [path.strip() for path in paths]
-    return paths
+def generate_pathes(config_path):
+    partial_paths_df = pandas.read_csv(config_path, header=None)
 
-paths_g50 = read_paths(sys.argv[3])
-paths_g95 = read_paths(sys.argv[4])
-paths_i50 = read_paths(sys.argv[5])
-paths_i95 = read_paths(sys.argv[6])
+    paths_g50 = set(partial_paths_df[0].astype(str) + '.50%-assembled.genes')
+    paths_g95 = set(partial_paths_df[0].astype(str) + '.95%-assembled.genes')
+    paths_i50 = set(partial_paths_df[0].astype(str) + '.50%-assembled.isoforms')
+    paths_i95 = set(partial_paths_df[0].astype(str) + '.95%-assembled.isoforms')
+
+    return paths_g50, paths_g95, paths_i50, paths_i95
+
+paths = generate_pathes(sys.argv[3])
+paths_g50 = paths[0]
+paths_g95 = paths[1]
+paths_i50 = paths[2]
+paths_i95 = paths[3]
 
 def filter_by_assembled(path_assembled, df, postfix):
     # read 50 / 95%-assembled genes / isoforms
