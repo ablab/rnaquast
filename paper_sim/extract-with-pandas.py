@@ -77,7 +77,7 @@ def plot_FP(paths_g50, paths_g95, paths_i50, paths_i95,
             df_g, df_i, postfix_g, postfix_i, name):
     zero_cov_num_g = df_g[df_g.TPM == 0].shape[0]
     zero_cov_num_i = df_i[df_i.TPM == 0].shape[0]
-    plt.title('FP histogram\n (zero coverage genes {}, isoforms {})'.
+    plt.title('Zero coverage genes {}, isoforms {}'.
               format(zero_cov_num_g, zero_cov_num_i))
     legend_text = []
     x = np.array(range(4))
@@ -100,7 +100,7 @@ def plot_FP(paths_g50, paths_g95, paths_i50, paths_i95,
 
     plt.xticks(x, ['50%-assembled\ngenes', '95%-assembled\ngenes',
                    '50%-assembled\nisoforms', '95%-assembled\nisoforms'])
-    plt.ylabel('FP')
+    # plt.ylabel('FP')
     plt.yscale('log')
     plt.legend(legend_text, fontsize='x-small', loc='center left', bbox_to_anchor=(1.01, 0.5))
     plt.savefig(name, additional_artists='art', bbox_inches='tight')
