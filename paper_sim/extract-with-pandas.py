@@ -5,7 +5,7 @@ import numpy as np
 import pandas
 import matplotlib.pyplot as plt
 
-max_degree = 2
+max_degree = 3
 postfix_g = "_gene"
 postfix_i = "_transcript"
 list_colors = ['blue', 'red', 'green', 'yellow', 'magenta', 'orange', 'cyan', 'black']
@@ -17,10 +17,10 @@ df_i = pandas.read_csv(sys.argv[2], delim_whitespace=True)
 def generate_pathes(config_path):
     partial_paths_df = pandas.read_csv(config_path, header=None)
 
-    paths_g50 = set(partial_paths_df[0].astype(str) + '.50%-assembled.genes')
-    paths_g95 = set(partial_paths_df[0].astype(str) + '.95%-assembled.genes')
-    paths_i50 = set(partial_paths_df[0].astype(str) + '.50%-assembled.isoforms')
-    paths_i95 = set(partial_paths_df[0].astype(str) + '.95%-assembled.isoforms')
+    paths_g50 = list(partial_paths_df[0].astype(str) + '.50%-assembled.genes')
+    paths_g95 = list(partial_paths_df[0].astype(str) + '.95%-assembled.genes')
+    paths_i50 = list(partial_paths_df[0].astype(str) + '.50%-assembled.isoforms')
+    paths_i95 = list(partial_paths_df[0].astype(str) + '.95%-assembled.isoforms')
 
     return paths_g50, paths_g95, paths_i50, paths_i95
 
@@ -34,7 +34,10 @@ def filter_by_assembled(path_assembled, df, postfix):
     # read 50 / 95%-assembled genes / isoforms
     good_transcripts_df = pandas.read_csv(path_assembled, header=None)
     good_transcripts = set(good_transcripts_df[0].str[0:-len(postfix)])
-    df_filtered = df[df.transcript_id.isin(good_transcripts)]
+    if postfix == postfix_i:
+        df_filtered = df[df.transcript_id.isin(good_transcripts)]
+    elif postfix == postfix_g:
+        df_filtered = df[df.gene_id.isin(good_transcripts)]
     return df_filtered
 
 
@@ -98,6 +101,7 @@ def plot_FP(paths_g50, paths_g95, paths_i50, paths_i95,
     plt.xticks(x, ['50%-assembled\ngenes', '95%-assembled\ngenes',
                    '50%-assembled\nisoforms', '95%-assembled\nisoforms'])
     plt.ylabel('FP')
+    plt.yscale('log')
     plt.legend(legend_text, fontsize='x-small', loc='center left', bbox_to_anchor=(1.01, 0.5))
     plt.savefig(name, additional_artists='art', bbox_inches='tight')
     plt.show()
