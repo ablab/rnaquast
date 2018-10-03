@@ -404,35 +404,39 @@ def get_abspath_input_data(args):
 def get_input_data_exist_error(args, logger):
     if args.reference:
         for i_reference in range(len(args.reference)):
-            get_path_exist_error(args.reference[i_reference], logger)
+            get_file_exist_error(args.reference[i_reference], logger)
     if args.gtf:
         for i_gtf in range(len(args.gtf)):
-            get_path_exist_error(args.gtf[i_gtf], logger)
+            get_file_exist_error(args.gtf[i_gtf], logger)
     if args.gene_db:
-        get_path_exist_error(args.gene_db, logger)
+        get_file_exist_error(args.gene_db, logger)
     if args.transcripts:
         for i_transcripts in range(len(args.transcripts)):
-            get_path_exist_error(args.transcripts[i_transcripts], logger)
+            get_file_exist_error(args.transcripts[i_transcripts], logger)
     if args.alignment:
         for i_alignments in range(len(args.alignment)):
-            get_path_exist_error(args.alignment[i_alignments], logger)
+            get_file_exist_error(args.alignment[i_alignments], logger)
     if args.reads_alignment:
-        get_path_exist_error(args.reads_alignment, logger)
+        get_file_exist_error(args.reads_alignment, logger)
     if args.left_reads:
-        get_path_exist_error(args.left_reads, logger)
+        get_file_exist_error(args.left_reads, logger)
     if args.right_reads:
-        get_path_exist_error(args.right_reads, logger)
+        get_file_exist_error(args.right_reads, logger)
     if args.single_reads:
-        get_path_exist_error(args.single_reads, logger)
+        get_file_exist_error(args.single_reads, logger)
     if args.gmap_index:
-        get_path_exist_error(args.gmap_index, logger)
+        get_dir_exist_error(args.gmap_index, logger)
     if args.busco_lineage:
-        get_path_exist_error(args.busco_lineage, logger)
+        get_dir_exist_error(args.busco_lineage, logger)
 
 
-def get_path_exist_error(path, logger):
-    if not os.path.exists(path):
+def get_file_exist_error(path, logger):
+    if not os.path.isfile(path):
         logger.error('{} file does not exist'.format(path), exit_with_code=1)
+
+def get_dir_exist_error(path, logger):
+    if not os.path.exists(path):
+        logger.error('{} directory does not exist'.format(path), exit_with_code=1)
 
 
 def transform_to_meta_argument(paths, tmp_dir, ext, logger):
