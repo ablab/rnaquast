@@ -48,6 +48,7 @@ class ShortReport():
                           'Misassemblies',
 
                           'Database coverage',
+                          'Duplication ratio',
                           'Relative database coverage',
                           str(int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)) + '%-assembled genes',
                           str(int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)) + '%-assembled genes',
@@ -80,10 +81,10 @@ class ShortReport():
              metrics_types[2]: metrics_labels[5:9],
              metrics_types[3]: metrics_labels[9:12],
              metrics_types[4]: [metrics_labels[12]],
-             metrics_types[5]: metrics_labels[13:25],
-             metrics_types[6]: metrics_labels[25:27],
-             metrics_types[7]: [metrics_labels[27]],
-             metrics_types[8]: metrics_labels[28:]}
+             metrics_types[5]: metrics_labels[13:26],
+             metrics_types[6]: metrics_labels[26:28],
+             metrics_types[7]: [metrics_labels[28]],
+             metrics_types[8]: metrics_labels[29:]}
         return metrics_type_labels_dict
 
 
@@ -102,15 +103,16 @@ class ShortReport():
 
                      metrics_labels[12]: -2,
 
-                     metrics_labels[13]: 1, metrics_labels[14]: 1, metrics_labels[15]: 1, metrics_labels[16]: 1,
+                     metrics_labels[13]: 1, metrics_labels[14]: -1, metrics_labels[15]: 1, metrics_labels[16]: 1,
                      metrics_labels[17]: 1, metrics_labels[18]: 1, metrics_labels[19]: 1, metrics_labels[20]: 1,
                      metrics_labels[21]: 1, metrics_labels[22]: 1, metrics_labels[23]: 1, metrics_labels[24]: 1,
+                     metrics_labels[25]: 1,
 
-                     metrics_labels[25]: 1, metrics_labels[26]: 1,
+                     metrics_labels[26]: 1, metrics_labels[27]: 1,
 
-                     metrics_labels[27]: 1,
+                     metrics_labels[28]: 1,
 
-                     metrics_labels[28]: 2, metrics_labels[29]: 2, metrics_labels[30]: -2, metrics_labels[31]: 1}
+                     metrics_labels[29]: 2, metrics_labels[30]: 2, metrics_labels[31]: -2, metrics_labels[32]: 1}
 
         return best_type
 
@@ -695,7 +697,7 @@ class ShortReport():
 
 
     def add_assemble_completeness_metrics_to_table(self, transcripts_metrics, PRECISION):
-        for i_label in range(13, 28):
+        for i_label in range(13, 29):
             self.metrics_dict[self.metrics_labels[i_label]] = []
 
         for i_transcripts in range(len(transcripts_metrics)):
@@ -703,44 +705,47 @@ class ShortReport():
             if isoforms_coverage is not None:
                 self.metrics_dict[self.metrics_labels[13]].append(round(isoforms_coverage.fraction_annotation_mapped, PRECISION))
 
+                self.metrics_dict[self.metrics_labels[14]].append(round(isoforms_coverage.avg_duplication_ratio, PRECISION))
+
                 relative_database_coverage = isoforms_coverage.relative_database_coverage
                 if relative_database_coverage is not None:
-                    self.metrics_dict[self.metrics_labels[14]].append(round(relative_database_coverage.database_coverage, PRECISION))
+                    self.metrics_dict[self.metrics_labels[15]].append(round(relative_database_coverage.database_coverage, PRECISION))
                 else:
-                    self.metrics_dict[self.metrics_labels[14]].append('*')
+                    self.metrics_dict[self.metrics_labels[15]].append('*')
 
-                self.metrics_dict[self.metrics_labels[15]].append(isoforms_coverage.num_well_assembled_genes)
-                self.metrics_dict[self.metrics_labels[16]].append(isoforms_coverage.num_fully_assembled_genes)
-                self.metrics_dict[self.metrics_labels[17]].append(isoforms_coverage.num_well_covered_genes)
-                self.metrics_dict[self.metrics_labels[18]].append(isoforms_coverage.num_fully_covered_genes)
+                self.metrics_dict[self.metrics_labels[16]].append(isoforms_coverage.num_well_assembled_genes)
+                self.metrics_dict[self.metrics_labels[17]].append(isoforms_coverage.num_fully_assembled_genes)
+                self.metrics_dict[self.metrics_labels[18]].append(isoforms_coverage.num_well_covered_genes)
+                self.metrics_dict[self.metrics_labels[19]].append(isoforms_coverage.num_fully_covered_genes)
 
-                self.metrics_dict[self.metrics_labels[19]].append(isoforms_coverage.num_well_assembled_isoforms)
-                self.metrics_dict[self.metrics_labels[20]].append(isoforms_coverage.num_fully_assembled_isoforms)
-                self.metrics_dict[self.metrics_labels[21]].append(isoforms_coverage.num_well_covered_isoforms)
-                self.metrics_dict[self.metrics_labels[22]].append(isoforms_coverage.num_fully_covered_isoforms)
+                self.metrics_dict[self.metrics_labels[20]].append(isoforms_coverage.num_well_assembled_isoforms)
+                self.metrics_dict[self.metrics_labels[21]].append(isoforms_coverage.num_fully_assembled_isoforms)
+                self.metrics_dict[self.metrics_labels[22]].append(isoforms_coverage.num_well_covered_isoforms)
+                self.metrics_dict[self.metrics_labels[23]].append(isoforms_coverage.num_fully_covered_isoforms)
 
-                self.metrics_dict[self.metrics_labels[23]].append(round(isoforms_coverage.avg_covered_fraction, PRECISION))
-                self.metrics_dict[self.metrics_labels[24]].append(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
+                self.metrics_dict[self.metrics_labels[24]].append(round(isoforms_coverage.avg_covered_fraction, PRECISION))
+                self.metrics_dict[self.metrics_labels[25]].append(round(isoforms_coverage.avg_assembled_fraction, PRECISION))
             else:
                 self.metrics_dict[self.metrics_labels[13]].append('*')
-                for i_label in range(15, 25):
+                self.metrics_dict[self.metrics_labels[14]].append('*')
+                for i_label in range(16, 26):
                     self.metrics_dict[self.metrics_labels[i_label]].append('*')
 
             busco_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.busco_metrics
             if busco_metrics is not None:
-                self.metrics_dict[self.metrics_labels[25]].append(round(busco_metrics.complete_completeness, PRECISION))
-                self.metrics_dict[self.metrics_labels[26]].append(round(busco_metrics.partial_completeness, PRECISION))
+                self.metrics_dict[self.metrics_labels[26]].append(round(busco_metrics.complete_completeness, PRECISION))
+                self.metrics_dict[self.metrics_labels[27]].append(round(busco_metrics.partial_completeness, PRECISION))
             else:
-                self.metrics_dict[self.metrics_labels[25]].append('*')
                 self.metrics_dict[self.metrics_labels[26]].append('*')
+                self.metrics_dict[self.metrics_labels[27]].append('*')
 
             geneMarkS_T_metrics = transcripts_metrics[i_transcripts].assembly_completeness_metrics.geneMarkS_T_metrics
             if geneMarkS_T_metrics is not None:
-                self.metrics_dict[self.metrics_labels[27]].append(geneMarkS_T_metrics.genes)
+                self.metrics_dict[self.metrics_labels[28]].append(geneMarkS_T_metrics.genes)
             else:
-                self.metrics_dict[self.metrics_labels[27]].append('*')
+                self.metrics_dict[self.metrics_labels[28]].append('*')
 
-        for i_label in range(13, 28):
+        for i_label in range(13, 29):
             if self.metrics_dict[self.metrics_labels[i_label]].count('*') == \
                     len(self.metrics_dict[self.metrics_labels[i_label]]):
                 del self.metrics_dict[self.metrics_labels[i_label]]
