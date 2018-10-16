@@ -173,7 +173,7 @@ class TranscriptsMetrics():
                             assembly_completeness_time += self.assembly_completeness_metrics.\
                                 update_assembly_completeness_metrics(sqlite3_db_genes, best_mapped_internal_isoforms_coverages[i_alignment], id_isoform)
 
-                    logger.info('Processed alignment # ' + str(i_alignment) + ' in ' + str(datetime.now() - prev_time_stamp))
+                    logger.info('> Processed alignment # ' + str(i_alignment) + ' in ' + str(datetime.now() - prev_time_stamp))
                     prev_time_stamp = datetime.now()
 
                 logger.info('Processed ' + str(len(best_mapped_alignments)) + ' alignments in ' + str(datetime.now() - prev_time_stamp))
@@ -219,19 +219,26 @@ class TranscriptsMetrics():
         best_aligned_transcripts_coverages = []
         best_aligned_internal_isoforms_coverages = []
         for i_line_alignment in range(len(best_lines)):
+            prev_for_time_stamp = datetime.now()
             curr_aligned_transcript, curr_aligned_transcript_coverage, curr_internal_isoforms_coverage, \
             elapsed_transcript_time = \
                 self.get_aligned_transcript_and_coverages(best_alignments[i_line_alignment], sorted_exons_attr,
                                                           strand_specific, sqlite3_db_genes, type_isoforms,
-                                                          WELL_FULLY_COVERAGE_THRESHOLDS)
+                                                          WELL_FULLY_COVERAGE_THRESHOLDS, logger)
+
+            logger.info('>> alignment #' + str(i_line_alignment) + ' get_aligned_transcript_and_coverages in ' + str(datetime.now() - prev_for_time_stamp))
+            prev_for_time_stamp = datetime.now()
 
             best_aligned_transcripts.append(curr_aligned_transcript)
 
             best_aligned_transcripts_coverages.append(curr_aligned_transcript_coverage)
 
             best_aligned_internal_isoforms_coverages.append(curr_internal_isoforms_coverage)
+    
+            logger.info('alignment #' + str(i_line_alignment) + ' added in ' + str(datetime.now() - prev_for_time_stamp))
+            prev_for_time_stamp = datetime.now()
 
-        logger.info('get_aligned_transcript_and_coverages DONE in ' + str(datetime.now() - prev_time_stamp))
+        logger.info('> get_aligned_transcript_and_coverages DONE in ' + str(datetime.now() - prev_time_stamp))
         prev_time_stamp = datetime.now()
 
         # IN CASE WHEN WE HAVN'T ANNOTATION:
@@ -279,7 +286,7 @@ class TranscriptsMetrics():
 
             elapsed_time = datetime.now() - start_time
 
-            logger.info('choosen best annotated transcript in ' + str(datetime.now() - prev_time_stamp))
+            logger.info('> choosen best annotated transcript in ' + str(datetime.now() - prev_time_stamp))
             prev_time_stamp = datetime.now()
 
             return best_mapped_lines, best_mapped_alignments, best_mapped_aligned_transcripts, \
@@ -289,13 +296,18 @@ class TranscriptsMetrics():
 
     # get aligned transcript, transcript coverage and internal isoforms coverage:
     def get_aligned_transcript_and_coverages(self, psl_alignment, sorted_exons_attr, strand_specific, sqlite3_db_genes,
-                                             type_isoforms, WELL_FULLY_COVERAGE_THRESHOLDS):
+                                             type_isoforms, WELL_FULLY_COVERAGE_THRESHOLDS, logger):
+
+        prev_time_stamp = datetime.now()
         # CREATE ALIGNED TRANSCRIPT:
         start_time = datetime.now()
 
         # print 'aligned transcript: ', datetime.now()
         aligned_transcript = AlignedTranscript.AlignedTranscript(psl_alignment, sorted_exons_attr, strand_specific,
                                                                  sqlite3_db_genes, type_isoforms)
+
+        logger.info('>>> got aligned transcript in ' + str(datetime.now() - prev_time_stamp))
+        prev_time_stamp = datetime.now()
         # print 'done: ', datetime.now()
 
         elapsed_transcript_time = datetime.now() - start_time
@@ -314,6 +326,10 @@ class TranscriptsMetrics():
                 InternalIsoformsCoverage.InternalIsoformsCoverage(aligned_transcript.internal_isoforms)
             # print 'done: : ', datetime.now()
 
+            logger.info('>>> calculated coverage in ' + str(datetime.now() - prev_time_stamp))
+            prev_time_stamp = datetime.now()
+
+
             # print 'bases exons blocks covered: ', datetime.now()
             # set exons and blocks overlap (covered bases):
             for internal_isoform in aligned_transcript.internal_isoforms:
@@ -331,11 +347,14 @@ class TranscriptsMetrics():
                 aligned_transcript_coverage.update_transcript_coverage(internal_isoform.id, query_cov_pos)
 
             # print 'done: ', datetime.now()
+            logger.info('>>> calculated coverage positions for ' + str(len(aligned_transcript.internal_isoforms)) + ' internal isoforms in ' + str(datetime.now() - prev_time_stamp))
+            prev_time_stamp = datetime.now()
 
             internal_isoforms_coverage.get_internal_isoforms_coverage(aligned_transcript.internal_isoforms,
                                                                       aligned_transcript.children_exons_dict)
 
             aligned_transcript_coverage.get_transcript_coverage(aligned_transcript, internal_isoforms_coverage,
                                                                 WELL_FULLY_COVERAGE_THRESHOLDS)
-
+            logger.info('>>> finalized in ' + str(datetime.now() - prev_time_stamp))
+            prev_time_stamp = datetime.now()
         return aligned_transcript, aligned_transcript_coverage, internal_isoforms_coverage, elapsed_transcript_time
