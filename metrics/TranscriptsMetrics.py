@@ -116,7 +116,7 @@ class TranscriptsMetrics():
                 curr_best_mapped_time, curr_transcript_time = \
                     self.get_best_mapped_from_best_aligned(best_lines, best_alignments, sorted_exons_attr,
                                                            strand_specific, sqlite3_db_genes, type_isoforms,
-                                                           WELL_FULLY_COVERAGE_THRESHOLDS)
+                                                           WELL_FULLY_COVERAGE_THRESHOLDS, logger)
 
                 logger.info('get_best_mapped_from_best_aligned DONE in ' + str(datetime.now() - prev_time_stamp))
                 prev_time_stamp = datetime.now()
@@ -211,7 +211,7 @@ class TranscriptsMetrics():
 
 
     def get_best_mapped_from_best_aligned(self, best_lines, best_alignments, sorted_exons_attr, strand_specific,
-                                          sqlite3_db_genes, type_isoforms, WELL_FULLY_COVERAGE_THRESHOLDS):
+                                          sqlite3_db_genes, type_isoforms, WELL_FULLY_COVERAGE_THRESHOLDS, logger):
         start_time = datetime.now()
         prev_time_stamp = datetime.now()
 
