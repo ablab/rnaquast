@@ -99,10 +99,16 @@ class TranscriptsMetrics():
         with open(assembled_psl_file, 'r') as fin:
             line1 = fin.readline().strip()
             line2 = fin.readline().strip()
+            line_count = 0
             while line1 != '':
+                logger.print_timestamp('Line #' + str(line_count))
+                prev_time_stamp = datetime.now()
+
                 best_lines, best_alignments, line1, line2 = \
                     UtilsAlignment.get_curr_single_transcript_lines_alignments(0, line1, line2, fin, True)
 
+                logger.info('get_curr_single_transcript_lines_alignments DONE in ' + str(datetime.now() - prev_time_stamp))
+                prev_time_stamp = datetime.now()
                 # GET BEST MAPPED ALIGNMENTS:
                 # in case when we havn't annotation:
                 best_mapped_lines, best_mapped_alignments, best_mapped_aligned_transcripts, \
@@ -111,6 +117,9 @@ class TranscriptsMetrics():
                     self.get_best_mapped_from_best_aligned(best_lines, best_alignments, sorted_exons_attr,
                                                            strand_specific, sqlite3_db_genes, type_isoforms,
                                                            WELL_FULLY_COVERAGE_THRESHOLDS)
+
+                logger.info('get_best_mapped_from_best_aligned DONE in ' + str(datetime.now() - prev_time_stamp))
+                prev_time_stamp = datetime.now()
 
                 best_mapped_time += curr_best_mapped_time
                 transcript_time += curr_transcript_time
@@ -143,6 +152,7 @@ class TranscriptsMetrics():
 
                 for i_alignment in range(len(best_mapped_alignments)):
                     # UPDATE SIMPLE TRANSCRIPTS METRICS:
+
                     if self.simple_metrics is not None:
                         # update metrics of assembled transcripts with alignments by best single alignment:
                         simple_time += self.simple_metrics.update_metrics_by_best_mapped_transcript\
@@ -162,6 +172,15 @@ class TranscriptsMetrics():
                         if id_isoform is not None:
                             assembly_completeness_time += self.assembly_completeness_metrics.\
                                 update_assembly_completeness_metrics(sqlite3_db_genes, best_mapped_internal_isoforms_coverages[i_alignment], id_isoform)
+
+                    logger.info('Processed alignment # ' + str(i_alignment) + ' in ' + str(datetime.now() - prev_time_stamp))
+                    prev_time_stamp = datetime.now()
+
+                logger.info('Processed ' + str(len(best_mapped_alignments)) + ' alignments in ' + str(datetime.now() - prev_time_stamp))
+                prev_time_stamp = datetime.now()
+
+                logger.print_timestamp('Line #' + str(line_count) + ' done')
+                line_count += 1
 
         logger.info('  Done.')
 
@@ -194,6 +213,7 @@ class TranscriptsMetrics():
     def get_best_mapped_from_best_aligned(self, best_lines, best_alignments, sorted_exons_attr, strand_specific,
                                           sqlite3_db_genes, type_isoforms, WELL_FULLY_COVERAGE_THRESHOLDS):
         start_time = datetime.now()
+        prev_time_stamp = datetime.now()
 
         best_aligned_transcripts = []
         best_aligned_transcripts_coverages = []
@@ -210,6 +230,9 @@ class TranscriptsMetrics():
             best_aligned_transcripts_coverages.append(curr_aligned_transcript_coverage)
 
             best_aligned_internal_isoforms_coverages.append(curr_internal_isoforms_coverage)
+
+        logger.info('get_aligned_transcript_and_coverages DONE in ' + str(datetime.now() - prev_time_stamp))
+        prev_time_stamp = datetime.now()
 
         # IN CASE WHEN WE HAVN'T ANNOTATION:
         if sqlite3_db_genes is None:
@@ -255,6 +278,9 @@ class TranscriptsMetrics():
                 best_mapped_internal_isoforms_coverages.append(best_aligned_internal_isoforms_coverages[i_line_alignment])
 
             elapsed_time = datetime.now() - start_time
+
+            logger.info('choosen best annotated transcript in ' + str(datetime.now() - prev_time_stamp))
+            prev_time_stamp = datetime.now()
 
             return best_mapped_lines, best_mapped_alignments, best_mapped_aligned_transcripts, \
                    best_mapped_aligned_transcripts_coverages, best_mapped_internal_isoforms_coverages,\
