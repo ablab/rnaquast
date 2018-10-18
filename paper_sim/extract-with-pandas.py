@@ -62,7 +62,7 @@ def plot_coverage_plot(paths, df, postfix, name):
         plt.plot(x, np.cumsum(groups_filtered_by_TPM.size()) * 1.0 / np.cumsum(groups_not_zero_by_TPM.size()), '.-', color=list_colors[(i_path + 1) % len(list_colors)])
         # plt.ylim(0, len(df_filtered) + 100)
         plt.xscale('symlog')
-        plt.yscale('log')
+        # plt.yscale('log')
 
     plt.xlabel('TPM')
     plt.ylabel('Number')
