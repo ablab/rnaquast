@@ -48,7 +48,7 @@ def plot_coverage_plot(paths, df, postfix, name):
     x = np.insert(bins, len(bins), 10 ** (max_degree + 1))
     df_not_zero = df[df.TPM != 0]
     groups_not_zero_by_TPM = df_not_zero.groupby(np.digitize(df_not_zero.TPM, bins))
-    legend_text.append('Simulated {}'.format(df_not_zero.shape[0]))
+    # legend_text.append('Simulated {}'.format(df_not_zero.shape[0]))
     # plt.plot(x, np.cumsum(groups_not_zero_by_TPM.size()), '.-', color=list_colors[0])
     for i_path in range(len(paths)):
         path = paths[i_path]
@@ -65,7 +65,7 @@ def plot_coverage_plot(paths, df, postfix, name):
         # plt.yscale('log')
 
     plt.xlabel('TPM')
-    plt.ylabel('Number')
+    plt.ylabel('95%-assembled / simulated')
     plt.legend(legend_text, fontsize='x-small', loc='center left', bbox_to_anchor=(1.01, 0.5))
     plt.savefig(name, additional_artists='art', bbox_inches='tight')
     plt.show()
@@ -108,8 +108,8 @@ def plot_FP(paths_g50, paths_g95, paths_i50, paths_i95,
     plt.savefig(name, additional_artists='art', bbox_inches='tight')
     plt.show()
 
-plot_coverage_plot(paths_g50, df_g, postfix_g, '50%-behavior.genes.png')
-# plot_coverage_plot(paths_g95, df_g, postfix_g, '95%-behavior.genes.png')
+# plot_coverage_plot(paths_g50, df_g, postfix_g, '50%-behavior.genes.png')
+plot_coverage_plot(paths_g95, df_g, postfix_g, '95%-behavior.genes.png')
 # plot_coverage_plot(paths_i50, df_i, postfix_i, '50%-behavior.isoforms.png')
 # plot_coverage_plot(paths_i95, df_i, postfix_i, '95%-behavior.isoforms.png')
 
