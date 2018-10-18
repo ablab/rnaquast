@@ -44,20 +44,22 @@ def filter_by_assembled(path_assembled, df, postfix):
 def plot_coverage_plot(paths, df, postfix, name):
     plt.title('Cumulative plot')
     legend_text = []
+    bins = np.logspace(0, max_degree, max_degree + 1)
+    x = np.insert(bins, len(bins), 10 ** (max_degree + 1))
+    df_not_zero = df[df.TPM != 0]
+    groups_not_zero_by_TPM = df_not_zero.groupby(np.digitize(df_not_zero.TPM, bins))
+    legend_text.append('Simulated {}'.format(df_not_zero.shape[0]))
+    # plt.plot(x, np.cumsum(groups_not_zero_by_TPM.size()), '.-', color=list_colors[0])
     for i_path in range(len(paths)):
         path = paths[i_path]
         i_ext = os.path.basename(path).find('.')
         label = os.path.basename(path)[:i_ext]
         legend_text.append(label)
 
-        bins = np.logspace(0, max_degree, max_degree + 1)
-
         df_filtered = filter_by_assembled(path, df, postfix)
+        groups_filtered_by_TPM = df_filtered.groupby(np.digitize(df_filtered.TPM, bins))
 
-        groups_by_TPM = df_filtered.groupby(np.digitize(df_filtered.TPM, bins))
-
-        x = np.insert(bins, len(bins), 10 ** (max_degree + 1))
-        plt.plot(x, np.cumsum(groups_by_TPM.size()), '.-', color=list_colors[i_path % len(list_colors)])
+        plt.plot(x, np.cumsum(groups_filtered_by_TPM.size()) * 1.0 / np.cumsum(groups_not_zero_by_TPM.size()), '.-', color=list_colors[(i_path + 1) % len(list_colors)])
         # plt.ylim(0, len(df_filtered) + 100)
         plt.xscale('symlog')
         plt.yscale('log')
@@ -107,8 +109,8 @@ def plot_FP(paths_g50, paths_g95, paths_i50, paths_i95,
     plt.show()
 
 plot_coverage_plot(paths_g50, df_g, postfix_g, '50%-behavior.genes.png')
-plot_coverage_plot(paths_g95, df_g, postfix_g, '95%-behavior.genes.png')
-plot_coverage_plot(paths_i50, df_i, postfix_i, '50%-behavior.isoforms.png')
-plot_coverage_plot(paths_i95, df_i, postfix_i, '95%-behavior.isoforms.png')
+# plot_coverage_plot(paths_g95, df_g, postfix_g, '95%-behavior.genes.png')
+# plot_coverage_plot(paths_i50, df_i, postfix_i, '50%-behavior.isoforms.png')
+# plot_coverage_plot(paths_i95, df_i, postfix_i, '95%-behavior.isoforms.png')
 
 plot_FP(paths_g50, paths_g95, paths_i50, paths_g95, df_g, df_i, postfix_g, postfix_i, 'FP.png')
