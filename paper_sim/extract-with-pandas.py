@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 max_degree = 3
 postfix_g = "_gene"
 postfix_i = "_transcript"
-list_colors = ['blue', 'red', 'green', 'yellow', 'magenta', 'orange', 'cyan', 'black']
+list_colors = ['yellow', 'blue', 'cyan', 'red', 'orange',
+               'magenta', 'grey', 'limegreen', 'purple']
 
 # read simulated data file
 df_g = pandas.read_csv(sys.argv[1], delim_whitespace=True)
@@ -82,7 +83,7 @@ def plot_FP(paths_g50, paths_g95, paths_i50, paths_i95,
     plt.title('Zero coverage genes {}, isoforms {}'.
               format(zero_cov_num_g, zero_cov_num_i))
     legend_text = []
-    x = np.array(range(4))
+    shift = 1.0 / len(paths_g50) / 2
     for i_path in range(len(paths_g50)):
         legend_text.append(get_label(paths_g50[i_path]))
 
@@ -98,10 +99,19 @@ def plot_FP(paths_g50, paths_g95, paths_i50, paths_i95,
         df_filtered_i95 = filter_by_assembled(paths_i95[i_path], df_i, postfix_i)
         FP_i95 = df_filtered_i95[df_filtered_i95.TPM == 0].shape[0]
 
-        plt.plot(x, [FP_g50, FP_g95, FP_i50, FP_i95], '.', color=list_colors[i_path % len(list_colors)])
+        curr_shift = i_path * shift
+        x = [1 + curr_shift, 2 + curr_shift, 3 + curr_shift, 4 + curr_shift]
+        y = [FP_g50, FP_g95, FP_i50, FP_i95]
 
-    plt.xticks(x, ['50%-assembled\ngenes', '95%-assembled\ngenes',
-                   '50%-assembled\nisoforms', '95%-assembled\nisoforms'])
+        # plt.plot(x, [FP_g50, FP_g95, FP_i50, FP_i95], '.', color=list_colors[i_path % len(list_colors)])
+        plt.bar(x, y, color=list_colors[i_path % len(list_colors)], width=shift)
+
+    x = [1 + len(paths_g50) / 2 * shift,
+         2 + len(paths_g50) / 2 * shift,
+         3 + len(paths_g50) / 2 * shift,
+         4 + len(paths_g50) / 2 * shift]
+    plt.xticks(x, ['50%-ass\ngenes', '95%-ass\ngenes',
+                   '50%-ass\nisoforms', '95%-ass\nisoforms'])
     # plt.ylabel('FP')
     plt.yscale('log')
     plt.legend(legend_text, fontsize='x-small', loc='center left', bbox_to_anchor=(1.01, 0.5))
