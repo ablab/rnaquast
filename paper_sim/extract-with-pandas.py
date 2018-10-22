@@ -60,7 +60,10 @@ def plot_coverage_plot(paths, df, postfix, name):
         df_filtered = filter_by_assembled(path, df, postfix)
         groups_filtered_by_TPM = df_filtered.groupby(np.digitize(df_filtered.TPM, bins))
 
-        plt.plot(x, np.cumsum(groups_filtered_by_TPM.size()) * 1.0 / np.cumsum(groups_not_zero_by_TPM.size()), '.-', color=list_colors[(i_path + 1) % len(list_colors)])
+        y = np.cumsum(get_sizes(groups_filtered_by_TPM)) * 1.0 \
+            / np.cumsum(get_sizes(groups_not_zero_by_TPM))
+
+        plt.plot(x, y, '.-', color=list_colors[(i_path + 1) % len(list_colors)])
         # plt.ylim(0, len(df_filtered) + 100)
         plt.xscale('symlog')
         # plt.yscale('log')
@@ -70,6 +73,12 @@ def plot_coverage_plot(paths, df, postfix, name):
     plt.legend(legend_text, fontsize='x-small', loc='center left', bbox_to_anchor=(1.01, 0.5))
     plt.savefig(name, additional_artists='art', bbox_inches='tight')
     plt.show()
+
+def get_sizes(groups):
+    sizes = np.zeros(max_degree + 2)
+    for (index, group) in groups:
+        sizes[index] = len(group)
+    return sizes
 
 def get_label(path):
     i_ext = os.path.basename(path).find('.')
