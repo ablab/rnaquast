@@ -22,6 +22,12 @@ def get_coverage_positions(target_ids, target_starts, target_ends, query_ids, qu
 
     i_current = {'blocks_starts': 0, 'blocks_ends': 0, 'exons_starts': 0, 'exons_ends': 0}
 
+    # debug
+    txt_out = open('debug.txt', 'w')
+    txt_out.write('\n\n\n')
+    txt_out.write(str(target_ids) + '\n')
+    txt_out.write(str(dict_coordinates) + '\n')
+
     # get count of covered bases:
     while dict_coordinates != {}:
         (current, key) = min((dict_coordinates[key0][i_current[key0]], key0) for key0 in dict_coordinates.keys())
@@ -61,6 +67,11 @@ def get_coverage_positions(target_ids, target_starts, target_ends, query_ids, qu
                 query_cov_pos[query_ids[i_block]].append((start_coverage - query_starts[query_ids[i_block]],
                                                           end_coverage - query_starts[query_ids[i_block]]))
 
+            txt_out.write('i_blocks: ' + str(tmp_stack_i_blocks) + '\n')
+            txt_out.write('i_exons: ' + str(tmp_stack_i_exons) + '\n')
+            txt_out.write('i_current: ' + str(i_current[key]) + '\n')
+            txt_out.write('query_cov_pos: ' + str(query_cov_pos) + '\n')
+            txt_out.write('key: ' + key + '\n\n')
             tmp_stack_i_exons.remove(i_current[key])
 
         elif key == 'blocks_ends':
@@ -77,6 +88,12 @@ def get_coverage_positions(target_ids, target_starts, target_ends, query_ids, qu
                     query_cov_pos[query_ids[i_current[key]]] = []
                 query_cov_pos[query_ids[i_current[key]]].append((start_coverage - query_starts[query_ids[i_current[key]]],
                                                                  end_coverage - query_starts[query_ids[i_current[key]]]))
+            # debug
+            txt_out.write('i_blocks: ' + str(tmp_stack_i_blocks) + '\n')
+            txt_out.write('i_exons: ' + str(tmp_stack_i_exons) + '\n')
+            txt_out.write('i_current: '+ str(i_current[key]) + '\n')
+            txt_out.write('query_cov_pos: ' + str(query_cov_pos) + '\n')
+            txt_out.write('key: ' + key + '\n\n')
 
             tmp_stack_i_blocks.remove(i_current[key])
         if i_current[key] == len(dict_coordinates[key]) - 1:
