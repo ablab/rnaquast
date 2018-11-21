@@ -68,14 +68,14 @@ class QLogger(object):
 
         self._logger.addHandler(file_handler)
 
-    def start(self):
+    def start(self, blat, tmp_dir):
         if self._indent_val == 0:
             self._logger.info('')
             self.print_version(rqconfig.LOGGER_DEFAULT_NAME, location=rqconfig.rnaQUAST_LOCATION)
             self._logger.info('')
             self.print_system_info()
             self._logger.info('')
-            self.print_tools_versions()
+            self.print_tools_versions(blat, tmp_dir)
 
         self._start_time = self.print_timestamp('Started: ')
         self._logger.info('')
@@ -221,16 +221,35 @@ class QLogger(object):
         else:
             self.info(program_name + " version: " + str(version) + (", " + str(build) if build != "unknown" else ""))
 
-    def print_tools_versions(self, to_stderr=False):
+
+    def print_tools_versions(self, blat, tmp_dir, to_stderr=False):
         import matplotlib, joblib, gffutils
 
         self._logger.info('External tools:')
-        self.print_version('matplotlib', version=matplotlib.__version__, to_stderr=to_stderr)
-        self.print_version('joblib', version=joblib.__version__, to_stderr=to_stderr)
-        self.print_version('gffutils', version=gffutils.__version__, to_stderr=to_stderr)
+        self.print_version('  matplotlib', version=matplotlib.__version__, to_stderr=to_stderr)
+        self.print_version('  joblib', version=joblib.__version__, to_stderr=to_stderr)
+        self.print_version('  gffutils', version=gffutils.__version__, to_stderr=to_stderr)
 
         # BLAST + (blastn)
-        # GMAP( or BLAT)
+        version, build = UtilsGeneral.get_version_by_key('blastn', '-version', tmp_dir,
+                                                         v_ident='blastn: ', b_ident='build ')
+        self.print_version('  blastn', version=version, to_stderr=to_stderr)
+
+        version, build = UtilsGeneral.get_version_by_key('makeblastdb', '-version', tmp_dir,
+                                                         v_ident='makeblastdb: ', b_ident='build ')
+        self.print_version('  makeblastdb', version=version, to_stderr=to_stderr)
+
+        # blat
+        if blat:
+            version, build = UtilsGeneral.get_version_by_key('blat', '', tmp_dir,
+                                                             v_ident='blat - Standalone BLAT v. ')
+            self.print_version('  blat', version=version, to_stderr=to_stderr)
+        else:
+            # GMAP
+            version, build = UtilsGeneral.get_version_by_key('gmap', '--version', tmp_dir,
+                                                             v_ident='Part of GMAP package, version ',
+                                                             b_ident='Build target: ')
+            self.print_version('  gmap', version=version, to_stderr=to_stderr)
 
     def print_system_info(self):
         self._logger.info("System information:")

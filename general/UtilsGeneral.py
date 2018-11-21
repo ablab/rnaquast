@@ -48,6 +48,27 @@ def get_version(location):
     return version, build
 
 
+def get_version_by_key(program_name, key, tmp_dir, v_ident=None, b_ident=None):
+    version = 'unknown'
+    build = 'unknown'
+
+    version_path = os.path.join(tmp_dir, program_name + '.version.log')
+    command = program_name + ' ' + key + ' 1>> ' + version_path + ' 2>> ' + version_path
+    subprocess.call(command, shell=True)
+
+    with open(version_path, 'r') as fin:
+        for line in fin:
+            if v_ident and v_ident in line:
+                version = line.strip().partition(v_ident)[2].split()[0]
+            if b_ident and b_ident in line:
+                build = line.strip().partition(b_ident)[2].split()[0]
+
+    command = 'rm ' + version_path
+    subprocess.call(command, shell=True)
+
+    return version, build
+
+
 def read_fasta(fasta_path):
     seq = ''
     with open(fasta_path, 'r') as fin:
