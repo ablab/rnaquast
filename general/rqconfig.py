@@ -8,9 +8,9 @@ LOGGER_DEFAULT_NAME = 'rnaQUAST'
 
 GENERAL_LOCATION = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
-rnaOUAST_LOCATION = os.path.abspath(os.path.join(GENERAL_LOCATION, '..'))
+rnaQUAST_LOCATION = os.path.abspath(os.path.join(GENERAL_LOCATION, '..'))
 
-BUSCO_LOCATION = os.path.abspath(os.path.join(rnaOUAST_LOCATION, 'others_libs', 'Busco'))
+BUSCO_LOCATION = os.path.abspath(os.path.join(rnaQUAST_LOCATION, 'others_libs', 'Busco'))
 
 SUPPORTED_PYTHON_VERSIONS = ['2.5', '2.6', '2.7']
 

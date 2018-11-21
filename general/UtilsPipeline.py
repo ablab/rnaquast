@@ -21,7 +21,7 @@ def get_arguments():
         subprocess.call(command, shell=True)
         sys.exit(0)
 
-    version, build = UtilsGeneral.get_version(rqconfig.GENERAL_LOCATION)
+    version, build = UtilsGeneral.get_version(rqconfig.rnaQUAST_LOCATION)
 
     parser = \
         argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,

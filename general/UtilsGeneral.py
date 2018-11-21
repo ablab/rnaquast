@@ -29,8 +29,8 @@ def check_python_version(SUPPORTED_PYTHON_VERSIONS):
         sys.exit(1)
 
 
-def get_version(GENERAL_LOCATION):
-    version_fpath = os.path.join(GENERAL_LOCATION, '..', 'VERSION')
+def get_version(location):
+    version_fpath = os.path.join(location, 'VERSION')
     version = "unknown"
     build = "unknown"
     if os.path.isfile(version_fpath):

@@ -118,7 +118,7 @@ def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, outp
         #logger.print_timestamp()
         #logger.info('Getting psl file by blat for {} and {}...'.format(transcripts_pathes[i_transcripts], reference_pathes[i_reference]))
 
-        blat_run = os.path.join(rqconfig.rnaOUAST_LOCATION, '.', 'blat')
+        blat_run = os.path.join(rqconfig.rnaQUAST_LOCATION, '.', 'blat')
         if not os.path.isfile(blat_run):
             blat_run = "blat"
 
@@ -135,7 +135,7 @@ def align_fa_transcripts_to_psl_by_blat(transcripts_path, reference_pathes, outp
         # glue all files with alignments for all chromosomes/scaffolds/patches and one file with transcripts:
         #logger.info('Gluing psl files by pslSort for {}...'.format(alignment_dir_i))
 
-        pslSort_run = os.path.join(rqconfig.rnaOUAST_LOCATION, '.', 'pslSort')
+        pslSort_run = os.path.join(rqconfig.rnaQUAST_LOCATION, '.', 'pslSort')
 
         tmp_alignment_dir_i = os.path.join(alignment_dir_i, 'tmp')
 
