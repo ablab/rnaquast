@@ -17,7 +17,7 @@ from general import parallel_blat_run
 
 def run_blat(args_database, args_reference, transcripts_dicts, args_labels, args_threads, tmp_dir, logger, log_dir):
 
-    blat_run = os.path.join(rqconfig.rnaOUAST_LOCATION, '.', 'blat')
+    blat_run = os.path.join(rqconfig.rnaQUAST_LOCATION, '.', 'blat')
     if not os.path.isfile(blat_run):
         blat_run = "blat"
 

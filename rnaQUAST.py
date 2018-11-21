@@ -208,7 +208,7 @@ def main_utils():
     # GET DATABASE FOR FA ISOFORMS:
     args.blast = False
     if args.reference is not None and sqlite3_db_genes is not None and args.alignment is not None:
-        blastn_run = os.path.join(rqconfig.rnaOUAST_LOCATION, '.', 'blastn')
+        blastn_run = os.path.join(rqconfig.rnaQUAST_LOCATION, '.', 'blastn')
         if not os.path.isfile(blastn_run):
             blastn_run = "blastn"
 

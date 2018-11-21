@@ -71,9 +71,11 @@ class QLogger(object):
     def start(self):
         if self._indent_val == 0:
             self._logger.info('')
-            self.print_version()
+            self.print_version(rqconfig.LOGGER_DEFAULT_NAME, location=rqconfig.rnaQUAST_LOCATION)
             self._logger.info('')
             self.print_system_info()
+            self._logger.info('')
+            self.print_tools_versions()
 
         self._start_time = self.print_timestamp('Started: ')
         self._logger.info('')
@@ -211,12 +213,24 @@ class QLogger(object):
         self.info(message + current_time)
         return now
 
-    def print_version(self, to_stderr=False):
-        version, build = UtilsGeneral.get_version(rqconfig.GENERAL_LOCATION)
+    def print_version(self, program_name, version="unknown", build="unknown", location=None, to_stderr=False):
+        if location:
+            version, build = UtilsGeneral.get_version(location)
         if to_stderr:
-            print >> sys.stderr, "Version", str(version) + (", " + str(build) if build != "unknown" else "")
+            print >> sys.stderr, program_name, " version: ", str(version) + (", " + str(build) if build != "unknown" else "")
         else:
-            self.info("Version " + str(version) + (", " + str(build) if build != "unknown" else ""))
+            self.info(program_name + " version: " + str(version) + (", " + str(build) if build != "unknown" else ""))
+
+    def print_tools_versions(self, to_stderr=False):
+        import matplotlib, joblib, gffutils
+
+        self._logger.info('External tools:')
+        self.print_version('matplotlib', version=matplotlib.__version__, to_stderr=to_stderr)
+        self.print_version('joblib', version=joblib.__version__, to_stderr=to_stderr)
+        self.print_version('gffutils', version=gffutils.__version__, to_stderr=to_stderr)
+
+        # BLAST + (blastn)
+        # GMAP( or BLAT)
 
     def print_system_info(self):
         self._logger.info("System information:")
