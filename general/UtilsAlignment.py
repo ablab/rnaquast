@@ -235,9 +235,9 @@ class AlignmentsReport():
                     best_union_lines = get_best_lines_set(best_union_alignments)
 
                     # GET UNION FAKE BLAT ALIGNMENTS:
-                    best_union_lines, best_union_alignments, single_transcript_lines, single_transcript_alignments = \
-                        get_union_fake_blat_alignments(best_union_lines, best_union_alignments, single_transcript_lines,
-                                                       single_transcript_alignments, fout_fake_blat, ALIGNMENT_THRESHOLDS)
+                    # best_union_lines, best_union_alignments, single_transcript_lines, single_transcript_alignments = \
+                    #     get_union_fake_blat_alignments(best_union_lines, best_union_alignments, single_transcript_lines,
+                    #                                    single_transcript_alignments, fout_fake_blat, ALIGNMENT_THRESHOLDS)
 
                     # REMOVE LOW COMPLEXITY TAILS:
                     best_union_lines, best_union_alignments, single_transcript_lines, single_transcript_alignments = \
@@ -281,9 +281,9 @@ class AlignmentsReport():
                                 best_union_lines = get_best_lines_set(best_union_alignments)
 
                                 # GET UNION FAKE BLAT ALIGNMENTS:
-                                best_union_lines, best_union_alignments, curr_single_transcript_lines, curr_single_transcript_alignments = \
-                                    get_union_fake_blat_alignments(best_union_lines, best_union_alignments, curr_single_transcript_lines,
-                                                                   curr_single_transcript_alignments, fout_fake_blat, ALIGNMENT_THRESHOLDS)
+                                # best_union_lines, best_union_alignments, curr_single_transcript_lines, curr_single_transcript_alignments = \
+                                #     get_union_fake_blat_alignments(best_union_lines, best_union_alignments, curr_single_transcript_lines,
+                                #                                    curr_single_transcript_alignments, fout_fake_blat, ALIGNMENT_THRESHOLDS)
 
                                 curr_single_score = best_union_alignments[0].matches
 
