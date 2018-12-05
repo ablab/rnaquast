@@ -467,18 +467,20 @@ def add_id_to_chrs_in_gtf(in_path, tmp_dir, addition_str, logger):
             tmp_list = line.strip().split('\t')
 
             # chg gtf chromosome name:
-            new_line = new_line.replace(tmp_list[0], tmp_list[0] + '_' + addition_str)
+            tmp_list[0] += '_' + addition_str
+            new_line = '\t'.join(tmp_list) + '\n'
+            # new_line = new_line.replace(tmp_list[0], tmp_list[0] + '_' + addition_str)
 
-            tag_value_pairs = tmp_list[8].split(';')
-            for pair in tag_value_pairs:
-                # for gff files:
-                if 'ID=' in pair or 'Parent=' in pair or 'protein_id=' in pair:
-                    new_line = new_line.replace(pair, pair + '_' + addition_str)
-                    # print pair, '\n', line, '\n', new_line
-                # for gtf files:
-                elif ('gene_id' in pair or 'transcript_id' in pair or 'exon_id' in pair or 'protein_id' in pair) and ('=' not in pair):
-                    new_line = new_line.replace(pair, pair[:-1] + '_' + addition_str + "\"")
-                    # print pair, '\n', line, '\n', new_line
+            # tag_value_pairs = tmp_list[8].split(';')
+            # for pair in tag_value_pairs:
+            #    # for gff files:
+            #     if 'ID=' in pair or 'Parent=' in pair or 'protein_id=' in pair:
+            #         new_line = new_line.replace(pair, pair + '_' + addition_str)
+            #        # print pair, '\n', line, '\n', new_line
+            #    # for gtf files:
+            #     elif ('gene_id' in pair or 'transcript_id' in pair or 'exon_id' in pair or 'protein_id' in pair) and ('=' not in pair):
+            #         new_line = new_line.replace(pair, pair[:-1] + '_' + addition_str + "\"")
+            #        # print pair, '\n', line, '\n', new_line
 
             out_handle.write(new_line)
 
