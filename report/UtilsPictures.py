@@ -39,6 +39,10 @@ class Plot():
         self.def_step = def_step
 
         self.path = os.path.join(out_dir, name_fig + '.' + ext_plots)
+        txt_dir = os.path.join(out_dir, 'txt_dir')
+        if not os.path.exists(txt_dir):
+            os.mkdir(txt_dir)
+        self.txt = os.path.join(txt_dir, name_fig + '.' + 'txt')
 
         self.caption = caption
         self.title_name = title_name
@@ -116,7 +120,19 @@ class Plot():
         return self.fig
 
 
+    # write plot points separated by tab to txt file:
+    def write_plot_points_to_file(self):
+        with open(self.txt, 'w') as fin:
+            for distr, label in zip(self.transcripts_distributions, self.transcripts_labels):
+                fin.write(label + '\n')
+                for key, val in distr.items():
+                    fin.write(str(key) + '\t' + str(val) + '\n')
+                fin.write('\n\n')
+
+
     def plot_compare_distribution(self, short_report_plots, num_points=100):
+        self.write_plot_points_to_file()
+
         self.num_points = num_points
 
         if matplotlib_error:
@@ -204,6 +220,8 @@ class Plot():
 
 
     def plot_compare_histogram(self, transcripts_metrics, short_report_plots, num_points=10):
+        self.write_plot_points_to_file()
+
         self.num_points = num_points
 
         if matplotlib_error:
