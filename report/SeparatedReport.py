@@ -37,6 +37,7 @@ class SeparatedReport():
 
         if transcripts_metrics.assembly_completeness_metrics is not None:
             self.path_fully_assembled_list = os.path.join(self.output_dir, '{}.{}%-assembled.list'.format(label, int(WELL_FULLY_COVERAGE_THRESHOLDS.fully_isoform_threshold * 100)))
+            self.path_well_assembled_list = os.path.join(self.output_dir, '{}.{}%-assembled.list'.format(label, int(WELL_FULLY_COVERAGE_THRESHOLDS.well_isoform_threshold * 100)))
 
         if transcripts_metrics.assembly_correctness_metrics is not None:
             self.path_fa_unannotated = os.path.join(self.output_dir, '{}.unannotated.fasta'.format(label))
@@ -91,7 +92,9 @@ class SeparatedReport():
 
             if transcripts_metrics.assembly_completeness_metrics.isoforms_coverage is not None:
                 # 90%-ASSEMBLED:
-                transcripts_metrics.assembly_completeness_metrics.isoforms_coverage.print_fully_assembled_isoforms(self.path_fully_assembled_list, logger)
+                transcripts_metrics.assembly_completeness_metrics.isoforms_coverage.print_assembled_isoforms(self.path_fully_assembled_list, logger, is_fully=True)
+                # 50%-assembled:
+                transcripts_metrics.assembly_completeness_metrics.isoforms_coverage.print_assembled_isoforms(self.path_well_assembled_list, logger, is_fully=False)
 
 
         logger.info('  Done.')
