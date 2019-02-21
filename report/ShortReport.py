@@ -134,15 +134,12 @@ class ShortReport():
     def get_best_values(self, metrics_dict, best_type):
         best_values = {}
 
-        if 'Transcripts' in metrics_dict:
-            transcripts_num = [int(num_str) for num_str in metrics_dict['Transcripts']]
-
         for metric_label in metrics_dict.keys():
             values = metrics_dict[metric_label]
             if metric_label not in best_type:
                 best_values[metric_label] = None
             else:
-                if best_type[metric_label] == 1:
+                if best_type[metric_label] == 1 or best_type[metric_label] == 2:
                     max_value = - float('Inf')
                     for i_v in range(len(values)):
                         if values[i_v] == '*':
@@ -152,7 +149,7 @@ class ShortReport():
                             max_value = float_value
                             argmax = values[i_v]
                     best_values[metric_label] = argmax
-                if best_type[metric_label] == -1:
+                if best_type[metric_label] == -1 or best_type[metric_label] == -2:
                     min_value = float('Inf')
                     for i_v in range(len(values)):
                         if values[i_v] == '*':
@@ -162,27 +159,7 @@ class ShortReport():
                             min_value = float_value
                             argmin = values[i_v]
                     best_values[metric_label] = argmin
-                if best_type[metric_label] == 2:
-                    max_rel_value = - float('Inf')
-                    for i_v in range(len(values)):
-                        if values[i_v] == '*':
-                            continue
-                        rel_value = float(values[i_v]) / transcripts_num[i_v]
-                        if rel_value > max_rel_value:
-                            max_rel_value = rel_value
-                            argmax = values[i_v]
-                    best_values[metric_label] = argmax
-                if best_type[metric_label] == -2:
-                    min_rel_value = float('Inf')
-                    for i_v in range(len(values)):
-                        if values[i_v] == '*':
-                            continue
-                        rel_value = float(values[i_v]) / transcripts_num[i_v]
-                        if rel_value < min_rel_value:
-                            min_rel_value = rel_value
-                            argmin = values[i_v]
-                    best_values[metric_label] = argmin
-
+                
         return best_values
 
 
