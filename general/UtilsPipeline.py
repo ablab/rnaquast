@@ -17,7 +17,7 @@ from general import UtilsGeneral
 def get_arguments():
     # use --help for running without arguments:
     if len(sys.argv) == 1:
-        command = 'python {} -h'.format(sys.argv[0])
+        command = 'python2 {} -h'.format(sys.argv[0])
         subprocess.call(command, shell=True)
         sys.exit(0)
 
@@ -26,7 +26,7 @@ def get_arguments():
     parser = \
         argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description="QUALITY ASSESSMENT FOR TRANSCRIPTOME ASSEMBLIES %(prog)s v.{}"
-                                              "\n\nUsage:\npython %(prog)s --transcripts TRANSCRIPTS --reference REFERENCE --gtf GENE_COORDINATES".format(version),
+                                              "\n\nUsage:\npython2 %(prog)s --transcripts TRANSCRIPTS --reference REFERENCE --gtf GENE_COORDINATES".format(version),
                                               #"    pipeline-2: python %(prog)s -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION
                                               #"    pipeline-1: python %(prog)s -p1 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --alignment ALIGNMENT\n"
                                               #"    pipeline-2: python %(prog)s -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION\n"
@@ -255,7 +255,7 @@ def run_rnaQUAST_on_test_data(args, rquast_dirpath, program_name):
 
     args.output_dir = '{}_test_output'.format(program_name)
 
-    command = 'python {} --transcripts {} --reference {} --gtf {} --output_dir {} --disable_infer_genes --disable_infer_transcripts'.\
+    command = 'python2 {} --transcripts {} --reference {} --gtf {} --output_dir {} --disable_infer_genes --disable_infer_transcripts'.\
         format(sys.argv[0], args.transcripts, args.reference, args.gtf, args.output_dir)
 
     subprocess.call(command, shell=True)
@@ -271,7 +271,7 @@ def run_rnaQUAST_on_debug_data(args, rquast_dirpath, program_name):
 
     args.output_dir = '{}_debug_output'.format(program_name)
 
-    command = 'python {} --transcripts {} --reference {} --gtf {} --output_dir {} --debug --no_plots'.\
+    command = 'python2 {} --transcripts {} --reference {} --gtf {} --output_dir {} --debug --no_plots'.\
         format(sys.argv[0], args.transcripts, args.reference, args.gtf, args.output_dir)
 
     subprocess.call(command, shell=True)
