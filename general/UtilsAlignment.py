@@ -833,11 +833,14 @@ def remove_strange_psl_alignments(in_psl_path, out_psl_path):
     for line in in_handle:
         psl_alignment = Alignment.PSLFileAlignment.get_alignment_from_psl_line(line)
         strange = False
-        for i_block in range(psl_alignment.blocks_num - 1):
-            if psl_alignment.query_fragment.ends[i_block] - psl_alignment.query_fragment.starts[i_block + 1] > 0:
-                strange = True
-                break
-        if strange == False:
+        if psl_alignment.blocks_num == 0:
+            strange = True
+        else:
+            for i_block in range(psl_alignment.blocks_num - 1):
+                if psl_alignment.query_fragment.ends[i_block] - psl_alignment.query_fragment.starts[i_block + 1] > 0:
+                    strange = True
+                    break
+        if not strange:
             out_handle.write(line)
 
     in_handle.close()

@@ -178,6 +178,9 @@ class PSLFileAlignment(Alignment):
         self.n_num = int(parameters_list[3])
         self.strand = parameters_list[8]
         self.blocks_num = int(parameters_list[17])
+        # Needs to remove this alignment in remove_strange_psl_alignments procedure
+        if self.blocks_num == 0:
+            return
         self.blocks_sizes = parameters_list[18][:-1].split(',')
         for i in range(len(self.blocks_sizes)):
             self.blocks_sizes[i] = int(self.blocks_sizes[i])
