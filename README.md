@@ -94,7 +94,7 @@ To run rnaQUAST you need to provide either FASTA files with transcripts (recomme
 
 `-r <REFERENCE>, --reference <REFERENCE>`  
     Single file with reference genome containing all chromosomes/scaffolds in FASTA format (preferably with `*.fasta, *.fa, *.fna, *.ffn or *.frn` extension) OR  
-    `***.txt**` file containing the one-per-line list of FASTA files with reference sequences.
+    **`*.txt`** file containing the one-per-line list of FASTA files with reference sequences.
 
 `--gtf <GENE_COORDINATES>`  
     File with gene coordinates in GTF/GFF format (needs information about parent relations). We recommend to use files downloaded from [GENCODE](http://www.gencodegenes.org/) or [Ensembl](ftp://ftp.ensembl.org/pub/).
@@ -300,18 +300,15 @@ Relative database coverage metrics are calculated only when raw reads (or read a
 *   Relative x%-assembled genes / isoforms / exons – ratio between transcripts x%-assembled and reads x%-covered genes / isoforms / exons.
 *   Relative x%-covered genes / isoforms / exons – ratio between transcripts x%-covered and reads x%-covered genes / isoforms / exons.
 
-<a name="sec4.2">
+<a name="sec4.2"></a>
 
 ### 4.2 Detailed output
 
-These files are contained in `<assembly_label>_output` directories for each assembly separately.
+These files are contained in `<assembly_label>_output` directories for each assembly separately.  
 
-</a>
-
-<a name="sec4.2"> 
 *   `<assembly_label>.unaligned.fasta` – transcripts without any significant alignments.
 *   `<assembly_label>.paralogs.fasta` – transcripts having 2 or more significant alignments.</a>
-*   <a name="sec4.2">`<assembly_label>.misassembled.fasta` – misassembly candidates detected by methods described above. See</a> [`misassemblies.txt`](#misassemblies) description for details.
+*   `<assembly_label>.misassembled.fasta` – misassembly candidates detected by methods described above. See</a> [`misassemblies.txt`](#misassemblies) description for details.
 *   `<assembly_label>.correct.fasta` – transcripts with exactly 1 significant alignment that do not contain misassemblies.
 *   `<assembly_label>.x%-assembled.list` – IDs of the isoforms from the database that have at least x% captured by a single assembled transcript, where x is specified by the user with an option `--upper_threshold` (95% by default).
 *   `<assembly_label>.unannotated.fasta` – transcripts that do not cover any isoform from the database.
@@ -340,7 +337,7 @@ The following plots are similarly contained in both `comparison_output` director
 **Sensitivity**
 
 *   **_`x-assembled.png`_** – a histogram in which each bar represents the number of isoforms from the database that have at least x% captured by a single assembled transcript.
-*   `x-covered.png_**` – a histogram in which each bar represents the number of isoforms from the database that have at least x% of bases covered by all alignments.
+*   `x-covered.png` – a histogram in which each bar represents the number of isoforms from the database that have at least x% of bases covered by all alignments.
 *   `x-assembled_exons.png` – a histogram in which each bar represents the number of exons from the database that have at least x% captured by a single assembled transcript.
 *   `x-covered_exons.png` – a histogram in which each bar represents the number of exons from the database that have at least x% of bases covered by all alignments.
 *   `alignments_per_isoform.png` – plot showing number of transcript alignments per isoform
