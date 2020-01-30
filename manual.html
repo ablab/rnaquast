@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>rnaQUAST 1.5 Manual</title>
+    <title>rnaQUAST 1.6 Manual</title>
     <style type="text/css">
         .code {
             background-color: lightgray;
@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<h1>rnaQUAST 1.5.1 manual</h1>
+<h1>rnaQUAST 1.6.0 manual</h1>
 
 1. <a href="#sec1">About rnaQUAST</a><br>
 2. <a href="#sec2">Installation  & requirements</a><br>
@@ -35,7 +35,7 @@
 rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene database.
 In addition, rnaQUAST is also capable of estimating gene database coverage by raw reads and <i>de novo</i> quality assessment using third-party software.
 
-<p>rnaQUAST version 1.5.1 was released under GPLv2 on August 31th, 2017 and can be downloaded from <a href="http://cab.spbu.ru/software/rnaquast/" target="_blank">http://cab.spbu.ru/software/rnaquast/</a>.
+<p>rnaQUAST version 1.6.0 was released under GPLv2 on February 31th, 2017 and can be downloaded from <a href="http://cab.spbu.ru/software/rnaquast/" target="_blank">http://cab.spbu.ru/software/rnaquast/</a>.
 
 <p>
 <b>For impatient people:</b><br>
@@ -77,6 +77,8 @@ In addition, rnaQUAST is also capable of estimating gene database coverage by ra
         <li><a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" target="_blank"> NCBI BLAST+ (blastn)</a> </li>
         <li><a href="http://research-pub.gene.com/gmap/" target="_blank"> GMAP</a> (or <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" target="_blank"> BLAT</a>) aligner</li>
     </ul>
+
+<p> Since Python2 is outdated, next rnaQUAST version will work only for Python3.
 
 <p> Note, that due to the limitations of BLAT, in order to work with reference genomes of size more than 4 Gb a pslSort is also required.
 

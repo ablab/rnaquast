@@ -1,5 +1,5 @@
 rnaQUAST
-Copyright (c) 2015-2018 Saint Petersburg State University
+Copyright (c) 2015-2020 Saint Petersburg State University
 Copyright (c) 2014 Saint-Petersburg Academic University
 
 rnaQUAST is free software; you can redistribute it and/or modify
@@ -19,10 +19,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 Current contributors:
 
-    Elena Bushmanova,
-    Dmitry Antipov,
-    Vladimir Suvorov and
+    Elena Bushmanova and 
     Andrey Prjibelski
+
+Previously contributed:
+    Dmitry Antipov,
+    Vladimir Suvorov
 
 Contacts:
     http://cab.spbu.ru/software/rnaquast/
