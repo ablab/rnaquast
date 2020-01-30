@@ -60,8 +60,8 @@ def get_coverage_positions(target_ids, target_starts, target_ends, query_ids, qu
                     query_cov_pos[query_ids[i_block]] = []
                 query_cov_pos[query_ids[i_block]].append((start_coverage - query_starts[query_ids[i_block]],
                                                           end_coverage - query_starts[query_ids[i_block]]))
-
-            tmp_stack_i_exons.remove(i_current[key])
+            if i_current[key] in tmp_stack_i_exons:
+                tmp_stack_i_exons.remove(i_current[key])
 
         elif key == 'blocks_ends':
             for i_exon in tmp_stack_i_exons:
@@ -77,8 +77,8 @@ def get_coverage_positions(target_ids, target_starts, target_ends, query_ids, qu
                     query_cov_pos[query_ids[i_current[key]]] = []
                 query_cov_pos[query_ids[i_current[key]]].append((start_coverage - query_starts[query_ids[i_current[key]]],
                                                                  end_coverage - query_starts[query_ids[i_current[key]]]))
-
-            tmp_stack_i_blocks.remove(i_current[key])
+            if i_current[key] in tmp_stack_i_blocks:
+                tmp_stack_i_blocks.remove(i_current[key])
         if i_current[key] == len(dict_coordinates[key]) - 1:
             del dict_coordinates[key]
         else:
