@@ -312,6 +312,8 @@ def clear_gtf_by_reference_chr(in_gtf, ids_chrs, tmp_dir, gtf_label, logger):
 
     with open(in_gtf, 'r') as in_handle:
         for line in in_handle:
+            if len(line.strip()) == 0:
+                continue
             gtf_chr = line.strip().split()[0]
             if gtf_chr[0] == '#':
                 continue
