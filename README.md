@@ -26,7 +26,7 @@ rnaQUAST version 1.6.0 was released under GPLv2 on February 31th, 2017 and can b
 
 **For impatient people:**  
 
-*   You will need Python 2 (2.5 or higher), [gffutils](https://pythonhosted.org/gffutils/installation.html), [matplotlib](http://matplotlib.org/) and [joblib](http://pythonhosted.org/joblib/). Also you will need [GMAP](http://research-pub.gene.com/gmap/) (or [BLAT](http://hgwdev.cse.ucsc.edu/~kent/exe/)) and [BLASTN](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) installed on your machine and added to the `$PATH` variable.
+*   You will need Python 2 (2.5 or higher), [gffutils](https://pythonhosted.org/gffutils/installation.html), [matplotlib](http://matplotlib.org/) and [joblib](https://joblib.readthedocs.io/en/latest/). Also you will need [GMAP](http://research-pub.gene.com/gmap/) (or [BLAT](http://hgwdev.cse.ucsc.edu/~kent/exe/)) and [BLASTN](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) installed on your machine and added to the `$PATH` variable.
 *   To verify your installation run
 
          python rnaQUAST.py --test 
@@ -82,7 +82,7 @@ Depending on the species you wish to assess, you should download the appropriate
 
 ### 2.3 Read alignment software
 
-rnaQUAST is also capable of calculating various statistics using raw reads (e.g. database coverage by reads). To obtain them you need to install [STAR](https://code.google.com/archive/p/rna-star/) aligner (or alternatively [TopHat](https://ccb.jhu.edu/software/tophat/index.shtml) aligner + [SAM tools](http://samtools.sourceforge.net/)) and add it to the `$PATH` variable. To learn more see [input options](#readopts).<a name="sec3"></a>
+rnaQUAST is also capable of calculating various statistics using raw reads (e.g. database coverage by reads). To obtain them you need to install [STAR](https://github.com/alexdobin/STAR) aligner (or alternatively [TopHat](https://ccb.jhu.edu/software/tophat/index.shtml) aligner + [samtools](http://www.htslib.org/)) and add it to the `$PATH` variable. To learn more see [input options](#readopts).<a name="sec3"></a>
 
 ## 3 Options
 
@@ -170,7 +170,7 @@ To run rnaQUAST you need to provide either FASTA files with transcripts (recomme
      Run [BUSCO tool](http://busco.ezlab.org/), which detects core genes in the assembly (see [Installation & requirements](#sec2)). Use this option to provide path to the BUSCO lineage data (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).
 
 `--tophat`  
-     Run with [TopHat tool](https://ccb.jhu.edu/software/tophat/index.shtml) instead of [STAR](https://code.google.com/archive/p/rna-star/) for analyzing database coverage by reads.
+     Run with [TopHat tool](https://ccb.jhu.edu/software/tophat/index.shtml) instead of [STAR](https://github.com/alexdobin/STAR) for analyzing database coverage by reads.
 
 `--gene_mark`  
      Run with [GeneMarkS-T](http://topaz.gatech.edu/GeneMark/) gene prediction tool. Use `--prokaryote` option if the genome is prokaryotic.
@@ -226,7 +226,7 @@ Basic transcripts metrics are calculated without reference genome and gene datab
 
 *   **_Transcripts_** – total number of assembled transcripts.
 *   **_Transcripts > 500 bp_**
-*   **_Transcripts > 1000 bp_**
+*   Transcripts > 1000 bp
 *   Average length of assembled transcripts
 *   Longest transcript
 *   Total length
@@ -238,7 +238,7 @@ Alignment metrics are calculated with reference genome but without using gene da
 *   **_Transcripts_** – total number of assembled transcripts.
 *   **_Aligned_** – the number of transcripts having at least 1 significant alignment.
 *   **_Uniquely aligned_** – the number of transcripts having a single significant alignment.
-*   **_Multiply aligned_** – the number of transcripts having 2 or more significant alignments. Multiply aligned transcripts are stored in `<assembly_label>.paralogs.fasta` file.
+*   Multiply aligned – the number of transcripts having 2 or more significant alignments. Multiply aligned transcripts are stored in `<assembly_label>.paralogs.fasta` file.
 *   Misassembly candidates reported by GMAP (or BLAT) – transcripts that have discordant best-scored alignment (partial alignments that are either mapped to different strands / different chromosomes / in reverse order / too far away).
 *   **_Unaligned_** – the number of transcripts without any significant alignments. Unaligned transcripts are stored in `<assembly_label>.unaligned.fasta` file.
 
@@ -247,7 +247,7 @@ Number of assembled transcripts = Unaligned + Aligned = Unaligned + (Uniquely al
 Alignment metrics for non-misassembled transcripts
 
 *   **_Average aligned fraction._** Aligned fraction for a single transcript is defined as total number of aligned bases in the transcript divided by the total transcript length.
-*   **_Average alignment length._** Aligned length for a single transcript is defined as total number of aligned bases in the transcript.
+*   Average alignment length. Aligned length for a single transcript is defined as total number of aligned bases in the transcript.
 *   Average blocks per alignment. A block is defined as a continuous alignment fragment without indels.
 *   Average block length (see above).
 *   **_Average mismatches per transcript_** – average number of single nucleotide differences with reference genome per transcript.
@@ -266,10 +266,10 @@ Assembly completeness (sensitivity). For the following metrics (calculated with 
 *   **_Database coverage_** – the total number of bases covered by transcripts (in all isoforms) divided by the total length of all isoforms.
 *   Duplication ratio – total number of aligned bases in assembled transcripts divided by the total number of isoform covered bases. This metric does not count neither paralogous genes nor shared exons, only real overlaps of the assembled sequences that are mapped to the same isoform.
 *   Average number of transcripts mapped to one isoform.
-*   **_x%-assembled genes / isoforms_ **/ exons – number of genes / isoforms / exons from the database that have at least x% captured by a single assembled transcript, where x is specified with `--lower_threshold / --upper_threshold` options (50% / 95% by default). 95%-assembled isoforms are stored in `<assembly_label>.95%assembled.fasta` file.
-*   **_x%-covered genes / isoforms_ **– number of genes / isoforms from the database that have at least x% of bases covered by all alignments, where x is specified with `--lower_threshold / --upper_threshold` options (50% / 95% by default).
+*   **_x%-assembled genes / isoforms_**/ exons – number of genes / isoforms / exons from the database that have at least x% captured by a single assembled transcript, where x is specified with `--lower_threshold / --upper_threshold` options (50% / 95% by default). 95%-assembled isoforms are stored in `<assembly_label>.95%assembled.fasta` file.
+*   x%-covered genes / isoforms– number of genes / isoforms from the database that have at least x% of bases covered by all alignments, where x is specified with `--lower_threshold / --upper_threshold` options (50% / 95% by default).
 *   **_Mean isoform assembly_** – assembled fraction of a single isoform is calculated as the largest number of its bases captured by a single assembled transcript divided by its length; average value is computed for isoforms with > 0 bases covered.
-*   **_Mean isoform coverage_** – coverage of a single isoform is calculated as the number of its bases covered by all assembled transcripts divided by its length; average value is computed for isoforms with > 0 bases covered.
+*   Mean isoform coverage – coverage of a single isoform is calculated as the number of its bases covered by all assembled transcripts divided by its length; average value is computed for isoforms with > 0 bases covered.
 *   Mean exon coverage – coverage of a single exon is calculated as the number of its bases covered by all assembled transcripts divided by its length; average value is computed for exons with > 0 bases covered.
 *   Average percentage of isoform x%-covered exons, where x is specified with `--lower_threshold / --upper_threshold` options (50% / 95% by default). For each isoform rnaQUAST calculates the number of x%-covered exons divided by the total number of exons. Afterwards it computes average value for all covered isoforms.
 
@@ -302,13 +302,15 @@ Relative database coverage metrics are calculated only when raw reads (or read a
 
 <a name="sec4.2">
 
-### 4.3 Detailed output
+### 4.2 Detailed output
 
 These files are contained in `<assembly_label>_output` directories for each assembly separately.
 
 </a>
 
-<a name="sec4.2">*   `<assembly_label>.unaligned.fasta` – transcripts without any significant alignments.*   `<assembly_label>.paralogs.fasta` – transcripts having 2 or more significant alignments.</a>
+<a name="sec4.2"> 
+*   `<assembly_label>.unaligned.fasta` – transcripts without any significant alignments.
+*   `<assembly_label>.paralogs.fasta` – transcripts having 2 or more significant alignments.</a>
 *   <a name="sec4.2">`<assembly_label>.misassembled.fasta` – misassembly candidates detected by methods described above. See</a> [`misassemblies.txt`](#misassemblies) description for details.
 *   `<assembly_label>.correct.fasta` – transcripts with exactly 1 significant alignment that do not contain misassemblies.
 *   `<assembly_label>.x%-assembled.list` – IDs of the isoforms from the database that have at least x% captured by a single assembled transcript, where x is specified by the user with an option `--upper_threshold` (95% by default).
@@ -326,26 +328,26 @@ The following plots are similarly contained in both `comparison_output` director
 
 **Basic**
 
-*   `**_transcript_length.png_**` – assembled transcripts length distribution (+ database isoforms length distribution).
+*   **_`transcript_length.png`_** – assembled transcripts length distribution (+ database isoforms length distribution).
 *   `block_length.png` – alignment blocks length distribution (+ database exons length distribution).
 *   `x-aligned.png` – transcript aligned fraction distribution.
 *   `blocks_per_alignment.png` – distribution of number of blocks per alignment (+ distribution of number of database exons per isoform).
 *   `alignment_multiplicity.png` – distribution for the number of significant alignment for each multiply-aligned transcript.
-*   `**_mismatch_rate.png_**` – substitution errors per alignment distribution.
+*   **_`mismatch_rate.png`_** – substitution errors per alignment distribution.
 *   `Nx.png` – Nx plot for transcripts. Nx is a maximal number N, such that the total length of all transcripts longer than N bp is at least x% of the total length of all transcripts.
-*   `**_NAx.png_**` – Nx plot for alignments.
+*   `NAx.png` – Nx plot for alignments.
 
 **Sensitivity**
 
-*   `**_x-assembled.png_**` – a histogram in which each bar represents the number of isoforms from the database that have at least x% captured by a single assembled transcript.
-*   `**_x-covered.png_**` – a histogram in which each bar represents the number of isoforms from the database that have at least x% of bases covered by all alignments.
+*   **_`x-assembled.png`_** – a histogram in which each bar represents the number of isoforms from the database that have at least x% captured by a single assembled transcript.
+*   `x-covered.png_**` – a histogram in which each bar represents the number of isoforms from the database that have at least x% of bases covered by all alignments.
 *   `x-assembled_exons.png` – a histogram in which each bar represents the number of exons from the database that have at least x% captured by a single assembled transcript.
 *   `x-covered_exons.png` – a histogram in which each bar represents the number of exons from the database that have at least x% of bases covered by all alignments.
 *   `alignments_per_isoform.png` – plot showing number of transcript alignments per isoform
 
 **Specificity**
 
-*   `**_x-matched.png_**` – a histogram in which each bar represents the number of transcripts that have at least x% matched to an isoform from the database.
+*   `x-matched.png` – a histogram in which each bar represents the number of transcripts that have at least x% matched to an isoform from the database.
 *   `x-matched_blocks.png` – a histogram in which each bar represents the number of all blocks from all transcript alignments that have at least x% matched to an isoform from the database.
 
 </a><a name="sec5">
@@ -359,3 +361,4 @@ The following plots are similarly contained in both `comparison_output` director
 ## 6 Feedback and bug reports
 
 Your comments, bug reports, and suggestions are very welcomed. They will help us to further improve rnaQUAST. If you have any troubles running rnaQUAST, please send us `logs/rnaQUAST.log` from the output directory. Address for communications: [rnaquast_support@ablab.spbau.ru](mailto:rnaquast_support@ablab.spbau.ru).
+You may also submit your issue to our [GitHub repository](https://github.com/ablab/rnaquast/).
