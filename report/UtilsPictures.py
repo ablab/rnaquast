@@ -4,6 +4,7 @@ import subprocess
 import os
 import collections
 import itertools
+import math
 
 from general.log import get_logger
 from general import rqconfig
@@ -182,6 +183,10 @@ class Plot():
         if self.y_log_scale:
             # the interval near 0 will be on a linear scale, so 0 can be displayed
             yscale('symlog')
+
+        if math.isinf(x_begin) or math.isinf(x_end) or math.isinf(y_begin) or math.isinf(y_end):
+            logger.warning("Cannot identify axis limits, skipping " + self.title_name.replace('\n', ' ') +  " plot")
+            return
 
         xlim(x_begin, x_end)
         ylim(y_begin, y_end)
