@@ -294,7 +294,7 @@ def run_STAR(threads, reference_path, gtf_path, single_reads, left_reads, right_
         # create tmp_genome_dir directory:
         tmp_genome_dir = UtilsPipeline.create_empty_folder(os.path.join(tmp_dir, 'genome_dir'))
 
-        genomeSAindexNbases = min(14, math.log(genome_len, 2) / 2 - 1)
+        genomeSAindexNbases = min(14, math.log(genome_len, 2) // 2 - 1)
 
         command = '{program_name} {mode} genomeGenerate --runThreadN {threads} --genomeDir {tmp_genome_dir} ' \
                   '--genomeFastaFiles {reference} --genomeSAindexNbases {genomeSAindexNbases}'.\

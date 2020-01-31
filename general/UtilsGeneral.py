@@ -3,6 +3,10 @@ __author__ = 'lenk'
 import os
 import sys
 import subprocess
+try:
+    from itertools import imap
+except ImportError:
+    imap = map
 
 def which(program):
     def is_exe(fpath):
@@ -119,7 +123,7 @@ def comp(letter):
 
 def rev_comp(seq):
     import itertools
-    return ''.join(itertools.imap(comp, seq[::-1]))
+    return ''.join(imap(comp, seq[::-1]))
 
 
 def hamming_dist(s1, s2):
@@ -230,7 +234,7 @@ def get_strands(args, logger):
 def get_order_indexes_elements(elements):
     sort_array = elements[:]
 
-    sort_index = range(len(sort_array))
+    sort_index = list(range(len(sort_array)))
 
     return qsort_i(0, len(elements) - 1, sort_array, sort_index)
 
@@ -276,7 +280,7 @@ def get_bin_search_position_of_element(sort_array, x):
     first = 0
     last = len(sort_array)
     while first < last:
-        middle = first + (last - first) / 2
+        middle = first + (last - first) // 2
         if x <= sort_array[middle]:
             last = middle
         else:

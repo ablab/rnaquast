@@ -79,7 +79,7 @@ def split_file_with_transcripts(transcripts_dict, us_threads, output_dirs):
     f_fa_pathes = []
 
     file_n = len(transcripts_dict)
-    thread_n = file_n / us_threads
+    thread_n = file_n // us_threads
 
     id_transcripts = transcripts_dict.keys()[:]
     for i_thread in range(us_threads):

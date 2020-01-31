@@ -175,7 +175,7 @@ class QLogger(object):
             self._logger.error('')
             self._logger.exception(e)
         else:
-            print >> sys.stderr, str(e)
+            sys.stderr.write(str(e))
 
         if exit_code:
             exit(exit_code)
@@ -217,7 +217,7 @@ class QLogger(object):
         if location:
             version, build = UtilsGeneral.get_version(location)
         if to_stderr:
-            print >> sys.stderr, program_name, " version: ", str(version) + (", " + str(build) if build != "unknown" else "")
+            sys.stderr.write(program_name + " version: " + str(version) + (", " + str(build) if build != "unknown" else ""))
         else:
             self.info(program_name + " version: " + str(version) + (", " + str(build) if build != "unknown" else ""))
 

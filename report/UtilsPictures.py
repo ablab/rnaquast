@@ -1,10 +1,11 @@
 __author__ = 'letovesnoi'
 
-import subprocess
 import os
 import collections
-import itertools
-import math
+try:
+    from itertools import izip
+except ImportError:
+    izip = zip
 
 from general.log import get_logger
 from general import rqconfig
@@ -77,7 +78,7 @@ class Plot():
 
         self.fig = figure()
 
-        for id, (contigs_fpath, lengths) in enumerate(itertools.izip(list_of_labels, lists_of_lengths)):
+        for id, (contigs_fpath, lengths) in enumerate(izip(list_of_labels, lists_of_lengths)):
             if len(lengths) == 0:
                 continue
             lengths.sort(reverse=True)
@@ -168,7 +169,7 @@ class Plot():
 
             cumulate_ordered_isoforms_distribution = Plot.cumulate(collections.OrderedDict(sorted(show_isoforms_distribution.items())))
 
-            plot(cumulate_ordered_isoforms_distribution.keys(), cumulate_ordered_isoforms_distribution.values(), '--',
+            plot(list(cumulate_ordered_isoforms_distribution.keys()), list(cumulate_ordered_isoforms_distribution.values()), '--',
                  label=self.isoforms_label, color=list_colors[-1])
 
             y_begin, y_end = Plot.get_y_begins_ends_plot([cumulate_ordered_isoforms_distribution], self.y_log_scale)
@@ -186,8 +187,8 @@ class Plot():
             cumulate_ordered_transcripts_distribution.append(
                 Plot.cumulate(collections.OrderedDict(sorted(show_transcripts_distributions[i_transcripts].items()))))
 
-            plot(cumulate_ordered_transcripts_distribution[i_transcripts].keys(),
-                 cumulate_ordered_transcripts_distribution[i_transcripts].values(), '-',
+            plot(list(cumulate_ordered_transcripts_distribution[i_transcripts].keys()),
+                 list(cumulate_ordered_transcripts_distribution[i_transcripts].values()), '-',
                  label=self.transcripts_labels[i_transcripts], color=list_colors[i_transcripts % len(list_colors)])
 
         if show_isoforms_distribution is None:

@@ -371,7 +371,7 @@ def usage(show_hidden=False, mode=None, short=True, stream=sys.stdout):
         m_default, i_default, x_default = DEFAULT_MIN_CONTIG, DEFAULT_MIN_ALIGNMENT, DEFAULT_EXT_MIS_SIZE
 
     stream.write("\n")
-    stream.write('Usage: python2 ' + sys.argv[0] + ' [options] <files_with_contigs>\n')
+    stream.write('Usage: python ' + sys.argv[0] + ' [options] <files_with_contigs>\n')
     stream.write("\n")
 
     stream.write("Options:\n")
