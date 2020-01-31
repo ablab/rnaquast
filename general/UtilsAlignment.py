@@ -1,7 +1,8 @@
 __author__ = 'letovesnoi'
 
-from datetime import datetime
 import os
+from datetime import datetime
+from collections import defaultdict
 
 from general import UtilsGeneral
 from general import best_alignment_set
@@ -759,18 +760,14 @@ def remove_low_complexity_tail(union_lines, union_alignments, single_transcript_
 
 # determine low complexity regions as regions containing mainly two types of kmers:
 def is_low_complexity(seq, k=4):
-    k_spect = {}
+    k_spect = defaultdict(int)
     for i in range(len(seq) - k + 1):
-        if seq[i:i + k] not in k_spect:
-            k_spect[seq[i:i + k]] = 0
         k_spect[seq[i:i + k]] += 1
 
-    max_key = k_spect.keys()[0]
-    max_value = k_spect[k_spect.keys()[0]]
-    for key in k_spect:
-        if k_spect[key] > max_value:
-            max_value = k_spect[key]
-            max_key = key
+    max_key, max_value = 0, 0
+    for key, value in k_spect.items():
+        if value > max_value:
+            max_key, max_value = key, value
     majority_num = max_value
     k_spect[max_key] = 0
     majority_num += max(k_spect.values())

@@ -234,8 +234,8 @@ class IsoformsCoverage():
                 self.assembled_fraction_exons[id_exon] = internal_isoforms_coverage.assembled_fraction_exons[id_isoform][id_exon]
 
             self.num_transcripts_covered_pos[id_isoform][id_exon] = \
-                map(lambda a, b: a + b, self.num_transcripts_covered_pos[id_isoform][id_exon],
-                    internal_isoforms_coverage.num_transcripts_covered_pos[id_isoform][id_exon])
+                list(map(lambda a, b: a + b, self.num_transcripts_covered_pos[id_isoform][id_exon],
+                    internal_isoforms_coverage.num_transcripts_covered_pos[id_isoform][id_exon]))
 
 
     def get_isoforms_coverage(self, sqlite3_db_genes, db_genes_metrics, reads_coverage, WELL_FULLY_COVERAGE_THRESHOLDS):

@@ -212,7 +212,7 @@ def get_internal_exons_faster(sqlite3_db_genes, sorted_exons_attr, alignment_t_s
 
 
 def get_bin_indexes(alignment_pos, arr, index_arr, step_i):
-    int_part_start = alignment_pos / step_i
+    int_part_start = alignment_pos // step_i
 
     if int_part_start >= len(index_arr):
         return None, None
@@ -240,10 +240,7 @@ def get_ids_best_mapped(transcripts_covered_bases, isoforms_covered_fraction):
 def get_keys_corr_max_value(dictionary):
     max_value = None
     if len(dictionary.keys()) != 0:
-        max_value = dictionary[dictionary.keys()[0]]
-        for key in dictionary:
-            if dictionary[key] > max_value:
-                max_value = dictionary[key]
+        max_value = max(dictionary.values())
 
     keys_corr_max = []
     for key in dictionary:

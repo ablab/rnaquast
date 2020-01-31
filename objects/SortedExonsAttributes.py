@@ -39,7 +39,7 @@ class SortedExonsAttributes():
                 self.index_sort_starts[str(strand)][id_chr] = []
                 self.index_sort_ends[str(strand)][id_chr] = []
 
-                self.index_step[id_chr] = max(1, len(reference_dict[id_chr]) / rqconfig.SORT_INDEX_LEN)
+                self.index_step[id_chr] = max(1, len(reference_dict[id_chr]) // rqconfig.SORT_INDEX_LEN)
 
                 exons_by_start = list(sqlite3_db_genes.features_of_type(type_exons, order_by='start', strand=strand, limit=(id_chr, 0, len(reference_dict[id_chr]) - 1)))
                 self.sort_target_starts[str(strand)][id_chr] = [exon.start - 1 for exon in exons_by_start]
