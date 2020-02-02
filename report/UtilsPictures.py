@@ -313,10 +313,11 @@ class Plot():
             x_begin = min(x_begin, min(distributions[i_distribution].keys()))
             x_end = max(x_end, max(distributions[i_distribution].keys()))
 
-        if x_log_scale:
-            x_end = round(x_end * pow(x_end, 0.1))
-        else:
-            x_end = round(x_end * 1.1)
+        if not math.isinf(x_end):
+            if x_log_scale:
+                x_end = round(x_end * pow(x_end, 0.1))
+            else:
+                x_end = round(x_end * 1.1)
 
         return x_begin, x_end
 
@@ -332,10 +333,11 @@ class Plot():
             y_begin = min(y_begin, min(distributions[i_distribution].values()))
             y_end = max(y_end, max(distributions[i_distribution].values()))
 
-        if y_log_scale:
-            y_end = round(y_end * pow(y_end, 0.1))
-        else:
-            y_end = round(y_end * 1.1)
+        if not math.isinf(y_end):
+            if y_log_scale:
+                y_end = round(y_end * pow(y_end, 0.1))
+            else:
+                y_end = round(y_end * 1.1)
 
         return y_begin, y_end
 
