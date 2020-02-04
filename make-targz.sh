@@ -10,7 +10,7 @@ cp -r ./test_data rnaQUAST-$VERSION/test_data
 cp -r ./quast23 rnaQUAST-$VERSION/quast23
 
 cp ./LICENSE rnaQUAST-$VERSION
-cp ./README rnaQUAST-$VERSION
+cp ./README.md rnaQUAST-$VERSION
 cp ./VERSION rnaQUAST-$VERSION
 cp ./rnaQUAST.py rnaQUAST-$VERSION
 cp ./manual.html rnaQUAST-$VERSION
