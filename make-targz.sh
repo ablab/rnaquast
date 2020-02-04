@@ -14,6 +14,7 @@ cp ./README.md rnaQUAST-$VERSION
 cp ./VERSION rnaQUAST-$VERSION
 cp ./rnaQUAST.py rnaQUAST-$VERSION
 cp ./manual.html rnaQUAST-$VERSION
+cp ./changelog.html rnaQUAST-$VERSION
 cp ./fig1.png rnaQUAST-$VERSION
 cp ./GPLv2.txt rnaQUAST-$VERSION
 
