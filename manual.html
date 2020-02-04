@@ -1,4 +1,4 @@
-<html> <head>     <title>rnaQUAST Manual</title>     <style type="text/css">         .highlight  pre {           background-color: #f0f2f4;           border-radius: 2px;           font-size: 100%;           line-height: 1.45;           overflow: auto;           padding: 16px;         }     </style> </head> <body><h1>rnaQUAST 1.6.0 manual</h1>
+<html> <head>     <title>rnaQUAST Manual</title>     <style type="text/css">         .highlight  pre {           background-color: #f0f2f4;           border-radius: 2px;           font-size: 100%;           line-height: 1.45;           overflow: auto;           padding: 16px;         }     </style> </head> <body><h1>rnaQUAST 2.0.0 manual</h1>
 <p>1. <a href="#sec1">About rnaQUAST</a><br>
 2. <a href="#sec2">Installation &amp; requirements</a><br>
     2.1. <a href="#sec2.1">General requirements</a><br>
@@ -17,11 +17,11 @@
 <p><a name="sec1"></a></p>
 <h2>1 About rnaQUAST</h2>
 <p>rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene database. In addition, rnaQUAST is also capable of estimating gene database coverage by raw reads and <em>de novo</em> quality assessment using third-party software.</p>
-<p>rnaQUAST version 1.6.0 was released under GPLv2 on February 4th, 2020 and can be downloaded from <a href="http://cab.spbu.ru/software/rnaquast/" rel="nofollow">http://cab.spbu.ru/software/rnaquast/</a>.</p>
+<p>rnaQUAST version 2.0.0 was released under GPLv2 on February 5th, 2020 and can be downloaded from <a href="http://cab.spbu.ru/software/rnaquast/" rel="nofollow">http://cab.spbu.ru/software/rnaquast/</a> or <a href="https://github.com/ablab/rnaquast/releases">https://github.com/ablab/rnaquast/releases</a>.</p>
 <p><strong>For impatient people:</strong></p>
 <ul>
 <li>
-<p>You will need Python 2 (2.5 or higher), <a href="https://pythonhosted.org/gffutils/installation.html" rel="nofollow">gffutils</a>, <a href="http://matplotlib.org/" rel="nofollow">matplotlib</a> and <a href="https://joblib.readthedocs.io/en/latest/" rel="nofollow">joblib</a>. Also you will need <a href="http://research-pub.gene.com/gmap/" rel="nofollow">GMAP</a> (or <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" rel="nofollow">BLAT</a>) and <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" rel="nofollow">BLASTN</a> installed on your machine and added to the <code>$PATH</code> variable.</p>
+<p>You will need Python, <a href="https://pythonhosted.org/gffutils/installation.html" rel="nofollow">gffutils</a>, <a href="http://matplotlib.org/" rel="nofollow">matplotlib</a> and <a href="https://joblib.readthedocs.io/en/latest/" rel="nofollow">joblib</a>. Also you will need <a href="http://research-pub.gene.com/gmap/" rel="nofollow">GMAP</a> (or <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" rel="nofollow">BLAT</a>) and <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" rel="nofollow">BLASTN</a> installed on your machine and added to the <code>$PATH</code> variable.</p>
 </li>
 <li>
 <p>To verify your installation run</p>
@@ -42,14 +42,14 @@
 <h3>2.1 General requirements</h3>
 <p>To run rnaQUAST you need:</p>
 <ul>
-<li>Python 2 (2.5 or higher)</li>
+<li>Python3 or Python2 (2.5+)</li>
 <li><a href="http://matplotlib.org/" rel="nofollow">matplotlib</a> python package</li>
 <li><a href="https://joblib.readthedocs.io/en/latest/" rel="nofollow">joblib</a> python package</li>
 <li><a href="https://pythonhosted.org/gffutils/installation.html" rel="nofollow">gffutils</a> python package (needs <a href="http://biopython.org" rel="nofollow">biopython</a>)</li>
 <li><a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" rel="nofollow">NCBI BLAST+ (blastn)</a></li>
 <li><a href="http://research-pub.gene.com/gmap/" rel="nofollow">GMAP</a> (or <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" rel="nofollow">BLAT</a>) aligner</li>
 </ul>
-<p>Since Python2 is outdated, next rnaQUAST version will work only for Python3.</p>
+<p>rnaQUAST still works under Python2 (2.5+), but since Python2 is outdated, its support is not maintained since version 2.0.</p>
 <p>Note, that due to the limitations of BLAT, in order to work with reference genomes of size more than 4 Gb a pslSort is also required.</p>
 <p>Paths to blastn and GMAP (or BLAT) should be added to the <code>$PATH</code> environmental variable. To check that everything is installed correctly we recommend to run:</p>
 <pre><code>python rnaQUAST.py --test
@@ -281,4 +281,4 @@ Relative database coverage metrics are calculated only when raw reads (or read a
 <p><a name="sec6"></a></p>
 <h2>6 Feedback and bug reports</h2>
 <p>Your comments, bug reports, and suggestions are very welcomed. They will help us to further improve rnaQUAST. If you have any troubles running rnaQUAST, please send us <code>logs/rnaQUAST.log</code> from the output directory. Address for communications: <a href="mailto:rnaquast_support@ablab.spbau.ru">rnaquast_support@ablab.spbau.ru</a>.<br>
-You may also submit your issue to our <a href="https://github.com/ablab/rnaquast/">GitHub repository</a>.</p><br/><br/><br/><br/><br/> </body> </html>
+You may also submit your issue to our <a href="https://github.com/ablab/rnaquast/issues">GitHub repository</a>.</p><br/><br/><br/><br/><br/> </body> </html>
