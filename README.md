@@ -27,6 +27,11 @@ rnaQUAST version 2.0.0 was released under GPLv2 on February 5th, 2020 and can be
 **For impatient people:**  
 
 *   You will need Python, [gffutils](https://pythonhosted.org/gffutils/installation.html), [matplotlib](http://matplotlib.org/) and [joblib](https://joblib.readthedocs.io/en/latest/). Also you will need [GMAP](http://research-pub.gene.com/gmap/) (or [BLAT](http://hgwdev.cse.ucsc.edu/~kent/exe/)) and [BLASTN](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) installed on your machine and added to the `$PATH` variable.
+
+*   You may also install rnaQUAST via conda
+
+         conda install -c rnaquast -c bioconda rnaquast
+
 *   To verify your installation run
 
          python rnaQUAST.py --test 
@@ -45,7 +50,11 @@ rnaQUAST version 2.0.0 was released under GPLv2 on February 5th, 2020 and can be
 
 ### 2.1 General requirements
 
-To run rnaQUAST you need:  
+rnaQUAST can be installed via conda:
+
+        conda install -c rnaquast -c bioconda rnaquast
+
+If you wish to run rnaQUAST from [the release archive](https://github.com/ablab/rnaquast/releases) you need:  
 
 *   Python3 or Python2 (2.5+)
 *   [matplotlib](http://matplotlib.org/) python package
@@ -56,13 +65,13 @@ To run rnaQUAST you need:
 
 rnaQUAST still works under Python2 (2.5+), but since Python2 is outdated, its support is not maintained since version 2.0.
 
-Note, that due to the limitations of BLAT, in order to work with reference genomes of size more than 4 Gb a pslSort is also required.
+Note, that due to the limitations of `BLAT`, in order to work with reference genomes of size more than 4 Gb a `pslSort` is also required.
 
-Paths to blastn and GMAP (or BLAT) should be added to the `$PATH` environmental variable. To check that everything is installed correctly we recommend to run:  
+Paths to `blastn` and `GMAP` (or `BLA`T) should be added to the `$PATH` environmental variable. To check that everything is installed correctly we recommend to run:  
 
     python rnaQUAST.py --test
 
-Note that gffutils is used to complete gene coordinates in case of missing transcripts / genes records. For more information, see [advanced options](#sec3.3).<a name="sec2.2"></a>
+Note that `gffutils` is used to complete gene coordinates in case of missing transcripts / genes records. For more information, see [advanced options](#sec3.3).<a name="sec2.2"></a>
 
 ### 2.2 Software for _de novo_ quality assessment
 

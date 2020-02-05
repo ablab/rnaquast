@@ -24,6 +24,11 @@
 <p>You will need Python, <a href="https://pythonhosted.org/gffutils/installation.html" rel="nofollow">gffutils</a>, <a href="http://matplotlib.org/" rel="nofollow">matplotlib</a> and <a href="https://joblib.readthedocs.io/en/latest/" rel="nofollow">joblib</a>. Also you will need <a href="http://research-pub.gene.com/gmap/" rel="nofollow">GMAP</a> (or <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" rel="nofollow">BLAT</a>) and <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" rel="nofollow">BLASTN</a> installed on your machine and added to the <code>$PATH</code> variable.</p>
 </li>
 <li>
+<p>You may also install rnaQUAST via conda</p>
+<pre><code> conda install -c rnaquast -c bioconda rnaquast
+</code></pre>
+</li>
+<li>
 <p>To verify your installation run</p>
 <pre><code> python rnaQUAST.py --test 
 </code></pre>
@@ -40,7 +45,10 @@
 <h2>2 Installation &amp; requirements</h2>
 <p><a name="sec2.1"></a></p>
 <h3>2.1 General requirements</h3>
-<p>To run rnaQUAST you need:</p>
+<p>rnaQUAST can be installed via conda:</p>
+<pre><code>    conda install -c rnaquast -c bioconda rnaquast
+</code></pre>
+<p>If you wish to run rnaQUAST from <a href="https://github.com/ablab/rnaquast/releases">the release archive</a> you need:</p>
 <ul>
 <li>Python3 or Python2 (2.5+)</li>
 <li><a href="http://matplotlib.org/" rel="nofollow">matplotlib</a> python package</li>
@@ -50,11 +58,11 @@
 <li><a href="http://research-pub.gene.com/gmap/" rel="nofollow">GMAP</a> (or <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" rel="nofollow">BLAT</a>) aligner</li>
 </ul>
 <p>rnaQUAST still works under Python2 (2.5+), but since Python2 is outdated, its support is not maintained since version 2.0.</p>
-<p>Note, that due to the limitations of BLAT, in order to work with reference genomes of size more than 4 Gb a pslSort is also required.</p>
-<p>Paths to blastn and GMAP (or BLAT) should be added to the <code>$PATH</code> environmental variable. To check that everything is installed correctly we recommend to run:</p>
+<p>Note, that due to the limitations of <code>BLAT</code>, in order to work with reference genomes of size more than 4 Gb a <code>pslSort</code> is also required.</p>
+<p>Paths to <code>blastn</code> and <code>GMAP</code> (or <code>BLA</code>T) should be added to the <code>$PATH</code> environmental variable. To check that everything is installed correctly we recommend to run:</p>
 <pre><code>python rnaQUAST.py --test
 </code></pre>
-<p>Note that gffutils is used to complete gene coordinates in case of missing transcripts / genes records. For more information, see <a href="#sec3.3">advanced options</a>.<a name="sec2.2"></a></p>
+<p>Note that <code>gffutils</code> is used to complete gene coordinates in case of missing transcripts / genes records. For more information, see <a href="#sec3.3">advanced options</a>.<a name="sec2.2"></a></p>
 <h3>2.2 Software for <em>de novo</em> quality assessment</h3>
 <p>When reference genome and gene database are unavailable, we recommend to run <a href="http://busco.ezlab.org/" rel="nofollow">BUSCO</a> and <a href="http://topaz.gatech.edu/GeneMark/" rel="nofollow">GeneMarkS-T</a> in rnaQUAST pipeline.</p>
 <p><strong>BUSCO requirements</strong></p>
