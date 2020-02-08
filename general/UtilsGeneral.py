@@ -122,7 +122,6 @@ def comp(letter):
 
 
 def rev_comp(seq):
-    import itertools
     return ''.join(imap(comp, seq[::-1]))
 
 

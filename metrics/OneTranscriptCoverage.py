@@ -99,4 +99,4 @@ class OneTranscriptCoverage(object):
 
         # get mapped to transcript isoform (TEMPORARY: can have better solution):
         if len(aligned_transcript.internal_isoforms) != 0:
-            self.id_mapped_isoform = UtilsCoverage.get_ids_best_mapped(self.covered_bases, internal_isoforms_coverage.assembled_fraction)[0]
+            self.id_mapped_isoform = sorted(UtilsCoverage.get_ids_best_mapped(self.covered_bases, internal_isoforms_coverage.assembled_fraction))[0]
