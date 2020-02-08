@@ -499,6 +499,6 @@ class SimpleTranscriptsMetrics():
         for id_transcript in ids_transcripts:
             chosen_transcripts.append((id_transcript, transcripts_dict[id_transcript]))
 
-        fastaparser.write_fasta(path_fasta, chosen_transcripts)
+        fastaparser.write_fasta(path_fasta, sorted(chosen_transcripts))
 
         logger.info('      saved to {}'.format(path_fasta))

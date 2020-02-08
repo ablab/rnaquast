@@ -219,7 +219,7 @@ def main_utils():
 
             isoforms_fa_path = os.path.join(tmp_dir, '{}.isoforms.fa'.format(label_db))
             isoforms_list = UtilsGeneral.dict_to_list(UtilsAnnotations.get_fa_isoforms(sqlite3_db_genes, type_isoforms, type_exons, reference_dict, logger))
-            fastaparser.write_fasta(isoforms_fa_path, isoforms_list)
+            fastaparser.write_fasta(isoforms_fa_path, sorted(isoforms_list))
 
             isoforms_blast_db = UtilsTools.get_blast_db(isoforms_fa_path, label_db, tmp_dir, logger, log_dir)
 
