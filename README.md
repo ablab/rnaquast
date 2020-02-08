@@ -22,7 +22,7 @@
 
 rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene database. In addition, rnaQUAST is also capable of estimating gene database coverage by raw reads and _de novo_ quality assessment using third-party software.
 
-rnaQUAST version 2.0.0 was released under GPLv2 on February 5th, 2020 and can be downloaded from [http://cab.spbu.ru/software/rnaquast/](http://cab.spbu.ru/software/rnaquast/) or [https://github.com/ablab/rnaquast/releases](https://github.com/ablab/rnaquast/releases).
+rnaQUAST version 2.0.0 was released under GPLv2 on February 8th, 2020 and can be downloaded from [http://cab.spbu.ru/software/rnaquast/](http://cab.spbu.ru/software/rnaquast/) or [https://github.com/ablab/rnaquast/releases](https://github.com/ablab/rnaquast/releases).
 
 **For impatient people:**  
 
@@ -30,7 +30,7 @@ rnaQUAST version 2.0.0 was released under GPLv2 on February 5th, 2020 and can be
 
 *   You may also install rnaQUAST via conda
 
-         conda install -c rnaquast -c bioconda rnaquast
+         conda install -c bioconda rnaquast
 
 *   To verify your installation run
 
@@ -52,7 +52,7 @@ rnaQUAST version 2.0.0 was released under GPLv2 on February 5th, 2020 and can be
 
 rnaQUAST can be installed via conda:
 
-        conda install -c rnaquast -c bioconda rnaquast
+        conda install -c bioconda rnaquast
 
 If you wish to run rnaQUAST from [the release archive](https://github.com/ablab/rnaquast/releases) you need:  
 
