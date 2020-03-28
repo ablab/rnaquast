@@ -369,71 +369,6 @@ def get_sam_by_STAR(threads, reference_path, gtf_path, single_reads, left_reads,
     return out_sam_path
 
 
-# https://ccb.jhu.edu/software/tophat/manual.shtml
-def run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, reads_2_path, output_dir, threads,
-               logger, log_dir):
-    program_name = 'tophat'
-
-    # We are changing the FASTA file ending from .fna to .fa,
-    # because tophat wants a file names .fa, its picky that way
-    if os.path.splitext(reference_path)[1] != '.fa':
-        new_ref_path = os.path.join(output_dir, os.path.basename(reference_path)[:os.path.basename(reference_path).rfind('.f')] + '.fa')
-        command = 'ln -s {} {}'.format(reference_path, new_ref_path)
-        subprocess.call(command, shell=True)
-        reference_path = new_ref_path
-
-    tophat_logger_err_path = os.path.join(log_dir, program_name + '.err.log')
-
-    tophat_outdir = UtilsPipeline.create_folder(os.path.join(output_dir, program_name + '_out'))
-
-    if bowtie2_index_path is None:
-        bowtie2_index_path = get_genome_bowtie2_index(reference_path, logger, log_dir)
-
-    logger.print_timestamp()
-    logger.info('Running {}...'.format(program_name))
-
-    reads = ''
-    if reads_1_path and reads_2_path:
-        reads += reads_1_path + ' ' + reads_2_path
-    if single_reads:
-        if reads_1_path and reads_2_path:
-            reads += ','
-        reads += single_reads
-
-    command = \
-        '{program_name} -o {output_dir} {index} {reads} -p {threads} 2>> {log_out_2}'.\
-            format(program_name=program_name, output_dir=tophat_outdir, index=bowtie2_index_path, reads=reads,
-                   threads=threads, log_out_2=tophat_logger_err_path)
-    exit_code = subprocess.call(command, shell=True)
-    if exit_code != 0:
-        tophat_outdir = None
-
-        logger.error('{program_name} failed!'. format(program_name=program_name))
-    else:
-        logger.info('  saved to {}.'.format(tophat_outdir))
-
-    logger.info('  log can be found in {}.'.format(tophat_logger_err_path))
-
-    return tophat_outdir
-
-
-def get_sam_by_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, reads_2_path, output_dir,
-                      threads, logger, log_dir):
-    tophat_outdir = run_tophat(bowtie2_index_path, reference_path, single_reads, reads_1_path, reads_2_path,
-                               output_dir, threads, logger, log_dir)
-
-    if tophat_outdir is not None:
-        out_bam_path = os.path.join(tophat_outdir, 'accepted_hits.bam')
-
-        out_sam_path = bam2sam(out_bam_path, tophat_outdir, logger)
-    else:
-        out_sam_path = None
-
-    # out_sorted_bam_path = get_sort_bam(out_bam_path, tophat_outdir, logger, type='position')
-
-    return out_sam_path
-
-
 def bam2sam(in_bam_path, output_dir, logger):
     program_name = 'samtools view'
 
@@ -452,32 +387,6 @@ def bam2sam(in_bam_path, output_dir, logger):
     logger.info('  saved to {}.'.format(out_sam_path))
 
     return out_sam_path
-
-
-def chg_ref_names_for_tophat_GTF(in_ref_path, out_ref_path, logger):
-    logger.info('Modify the names of the reference sequences for exactly matching GTF/GFF column which indicates '
-                'the chromosome or contig on which the feature is located')
-
-    fin = open(in_ref_path, 'r')
-
-    fout = open(out_ref_path, 'w')
-
-    for in_line in fin:
-        if in_line[0] == '>':
-            out_line = in_line.strip().split()[0] + '\n'
-            logger.debug(out_line)
-        else:
-            out_line = in_line
-
-        fout.write(out_line)
-
-    fin.close()
-
-    fout.close()
-
-    logger.info('  saved to {}'.format(out_ref_path))
-
-    return out_ref_path
 
 
 # The default is name.

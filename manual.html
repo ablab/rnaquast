@@ -72,7 +72,7 @@
 <p><a href="http://topaz.gatech.edu/GeneMark/" rel="nofollow">GeneMarkS-T</a> allows to predict genes in the assembled transcripts without reference genome. If you wish to use it in rnaQUAST pipeline, GeneMarkS-T should be properly installed and added to the <code>$PATH</code> variable.</p>
 <p><a name="sec2.3"></a></p>
 <h3>2.3 Read alignment software</h3>
-<p>rnaQUAST is also capable of calculating various statistics using raw reads (e.g. database coverage by reads). To obtain them you need to install <a href="https://github.com/alexdobin/STAR">STAR</a> aligner (or alternatively <a href="https://ccb.jhu.edu/software/tophat/index.shtml" rel="nofollow">TopHat</a> aligner + <a href="http://www.htslib.org/" rel="nofollow">samtools</a>) and add it to the <code>$PATH</code> variable. To learn more see <a href="#readopts">input options</a>.</p>
+<p>rnaQUAST is also capable of calculating various statistics using raw reads (e.g. database coverage by reads). To obtain them you need to install <a href="https://github.com/alexdobin/STAR">STAR</a> aligner and add it to the <code>$PATH</code> variable. To learn more see <a href="#readopts">input options</a>.</p>
 <p><a name="sec3"></a></p>
 <h2>3 Options</h2>
 <p><a name="sec3.1"></a></p>
@@ -128,8 +128,6 @@
      Run with <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" rel="nofollow">BLAT alignment tool</a> instead of <a href="http://research-pub.gene.com/gmap/" rel="nofollow">GMAP</a>.</p>
 <p><code>--busco_lineage</code><br>
      Run <a href="http://busco.ezlab.org/" rel="nofollow">BUSCO tool</a>, which detects core genes in the assembly (see <a href="#sec2">Installation &amp; requirements</a>). Use this option to provide path to the BUSCO lineage data (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).</p>
-<p><code>--tophat</code><br>
-     Run with <a href="https://ccb.jhu.edu/software/tophat/index.shtml" rel="nofollow">TopHat tool</a> instead of <a href="https://github.com/alexdobin/STAR">STAR</a> for analyzing database coverage by reads.</p>
 <p><code>--gene_mark</code><br>
      Run with <a href="http://topaz.gatech.edu/GeneMark/" rel="nofollow">GeneMarkS-T</a> gene prediction tool. Use <code>--prokaryote</code> option if the genome is prokaryotic.</p>
 <p><code>--disable_infer_genes</code><br>

@@ -98,7 +98,7 @@ def get_arguments():
     # group_advanced.add_argument('--busco', help='Run with BUSCO tool (http://busco.ezlab.org/)', action='store_true')
     # group_advanced.add_argument('-C', '--cegma', help='Run with CEGMA (Core Eukaryotic Genes Mapping Approach)', action='store_true')
 
-    group_advanced.add_argument('--tophat', help='Run with TopHat tool (https://ccb.jhu.edu/software/tophat/index.shtml) instead of STAR', action='store_true')
+    # group_advanced.add_argument('--tophat', help='Run with TopHat tool (https://ccb.jhu.edu/software/tophat/index.shtml) instead of STAR', action='store_true')
 
     group_advanced.add_argument('--gene_mark', help='Run with GeneMarkS-T tool (http://topaz.gatech.edu/GeneMark/)', action='store_true')
     # groupSpecies = group_basic.add_mutually_exclusive_group(required=False)

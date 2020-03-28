@@ -10,7 +10,7 @@ from objects import Alignment
 class ReadsCoverage():
     """Class, which represent coverage of annotated isoforms by aligned exons"""
 
-    def __init__(self, sorted_sam_path, args_tophat, reference_path, single_reads, left_reads, right_reads,
+    def __init__(self, sorted_sam_path, reference_path, single_reads, left_reads, right_reads,
                  reference_dict, sqlite3_db_genes, type_isoforms, sorted_exons_attr, strand_specific, tot_isoforms_len, genome_len,
                  output_dir, threads, WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir):
         # COVERAGE BY READS (upper bound):
@@ -46,25 +46,20 @@ class ReadsCoverage():
         self.expressed_fraction_isoform = {}
         self.expressed_fraction_exon = {}
 
-        self.get_database_coverage_by_reads(sorted_sam_path, args_tophat, reference_path, single_reads, left_reads,
+        self.get_database_coverage_by_reads(sorted_sam_path, reference_path, single_reads, left_reads,
                                             right_reads, reference_dict, sqlite3_db_genes, type_isoforms, sorted_exons_attr,
                                             strand_specific, tot_isoforms_len, genome_len, output_dir, threads,
                                             WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)
 
 
-    def get_database_coverage_by_reads(self, sam_path, args_tophat, reference_path, single_reads, left_reads,
+    def get_database_coverage_by_reads(self, sam_path, reference_path, single_reads, left_reads,
                                        right_reads, reference_dict, sqlite3_db_genes, type_isoforms, sorted_exons_attr,
                                        strand_specific, tot_isoforms_len, genome_len, output_dir, threads,
                                        WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir):
             if sam_path is None:
-                if args_tophat:
-                    sam_path = \
-                        UtilsTools.get_sam_by_tophat(None, reference_path, single_reads, left_reads, right_reads,
-                                                     output_dir, threads, logger, log_dir)
-                else:
-                    sam_path = \
-                        UtilsTools.get_sam_by_STAR(threads, reference_path, None, single_reads, left_reads, right_reads,
-                                                   output_dir, None, None, genome_len, logger, log_dir)
+                sam_path = \
+                    UtilsTools.get_sam_by_STAR(threads, reference_path, None, single_reads, left_reads, right_reads,
+                                                output_dir, None, None, genome_len, logger, log_dir)
 
             if sam_path is None:
                 return

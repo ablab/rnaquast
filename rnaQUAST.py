@@ -165,7 +165,7 @@ def main_utils():
             ((args.single_reads is not None or (args.left_reads is not None and args.right_reads is not None))
              and args.reference is not None and sqlite3_db_genes is not None):
         reads_coverage = \
-            ReadsCoverage.ReadsCoverage(args.reads_alignment, args.tophat, args.reference, args.single_reads,
+            ReadsCoverage.ReadsCoverage(args.reads_alignment, args.reference, args.single_reads,
                                         args.left_reads, args.right_reads, reference_dict, sqlite3_db_genes, type_isoforms,
                                         sorted_exons_attr, args.strand_specific, db_genes_metrics.tot_isoforms_len,
                                         genome_len, tmp_dir, args.threads, WELL_FULLY_COVERAGE_THRESHOLDS, logger, log_dir)

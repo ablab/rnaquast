@@ -91,7 +91,7 @@ Depending on the species you wish to assess, you should download the appropriate
 
 ### 2.3 Read alignment software
 
-rnaQUAST is also capable of calculating various statistics using raw reads (e.g. database coverage by reads). To obtain them you need to install [STAR](https://github.com/alexdobin/STAR) aligner (or alternatively [TopHat](https://ccb.jhu.edu/software/tophat/index.shtml) aligner + [samtools](http://www.htslib.org/)) and add it to the `$PATH` variable. To learn more see [input options](#readopts).
+rnaQUAST is also capable of calculating various statistics using raw reads (e.g. database coverage by reads). To obtain them you need to install [STAR](https://github.com/alexdobin/STAR) aligner and add it to the `$PATH` variable. To learn more see [input options](#readopts).
 
 <a name="sec3"></a>
 
@@ -179,9 +179,6 @@ To run rnaQUAST you need to provide either FASTA files with transcripts (recomme
 
 `--busco_lineage`  
      Run [BUSCO tool](http://busco.ezlab.org/), which detects core genes in the assembly (see [Installation & requirements](#sec2)). Use this option to provide path to the BUSCO lineage data (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).
-
-`--tophat`  
-     Run with [TopHat tool](https://ccb.jhu.edu/software/tophat/index.shtml) instead of [STAR](https://github.com/alexdobin/STAR) for analyzing database coverage by reads.
 
 `--gene_mark`  
      Run with [GeneMarkS-T](http://topaz.gatech.edu/GeneMark/) gene prediction tool. Use `--prokaryote` option if the genome is prokaryotic.
