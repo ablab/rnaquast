@@ -40,7 +40,7 @@ rnaQUAST version 2.0.1 was released under GPLv2 on March 28th, 2020 and can be d
 
          python rnaQUAST.py \
         --transcripts /PATH/TO/transcripts1.fasta /PATH/TO/ANOTHER/transcripts2.fasta [...] \
-        --reference /PATH/TO/reference.fasta --gtf /PATH/TO/gene_coordinates.gtf
+        --reference /PATH/TO/reference_genome.fasta --gtf /PATH/TO/gene_coordinates.gtf
 
 <a name="sec2"></a>
 
