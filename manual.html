@@ -66,8 +66,8 @@
 <h3>2.2 Software for <em>de novo</em> quality assessment</h3>
 <p>When reference genome and gene database are unavailable, we recommend to run <a href="http://busco.ezlab.org/" rel="nofollow">BUSCO</a> and <a href="http://topaz.gatech.edu/GeneMark/" rel="nofollow">GeneMarkS-T</a> in rnaQUAST pipeline.</p>
 <p><strong>BUSCO requirements</strong></p>
-<p>BUSCO allows to detect core genes in the assembled transcripts. To use it you should install <a href="http://busco.ezlab.org/" rel="nofollow">BUSCO v3</a>, <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" rel="nofollow">tblastn</a>, <a href="http://hmmer.janelia.org/" rel="nofollow">HMMER</a> and transeq and add these tools to the <code>$PATH</code> variable.</p>
-<p>Depending on the species you wish to assess, you should download the appropriate lineage-specific profile libraries: Metazoa, Eukaryota, Arthropoda, Vertebrata, Fungi, or Bacteria from <a href="http://busco.ezlab.org" rel="nofollow">http://busco.ezlab.org</a> and provide it to rnaQUAST with <code>--busco_lineage</code> option.</p>
+<p>BUSCO allows to detect core genes in the assembled transcripts. To use it you should install <a href="http://busco.ezlab.org/" rel="nofollow">BUSCO v4</a>, <a href="http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/" rel="nofollow">tblastn</a>, <a href="http://hmmer.janelia.org/" rel="nofollow">HMMER</a> and transeq and add these tools to the <code>$PATH</code> variable.</p>
+<p>Depending on the species you wish to assess, you should download the appropriate lineage-specific profile libraries from <a href="http://busco.ezlab.org" rel="nofollow">http://busco.ezlab.org</a> and provide it to rnaQUAST with <code>--busco</code> option.</p>
 <p><strong>GeneMarkS-T requirements</strong></p>
 <p><a href="http://topaz.gatech.edu/GeneMark/" rel="nofollow">GeneMarkS-T</a> allows to predict genes in the assembled transcripts without reference genome. If you wish to use it in rnaQUAST pipeline, GeneMarkS-T should be properly installed and added to the <code>$PATH</code> variable.</p>
 <p><a name="sec2.3"></a></p>
@@ -126,8 +126,8 @@
      Do not draw plots (makes rnaQUAST run a bit faster).</p>
 <p><code>--blat</code><br>
      Run with <a href="http://hgwdev.cse.ucsc.edu/~kent/exe/" rel="nofollow">BLAT alignment tool</a> instead of <a href="http://research-pub.gene.com/gmap/" rel="nofollow">GMAP</a>.</p>
-<p><code>--busco_lineage</code><br>
-     Run <a href="http://busco.ezlab.org/" rel="nofollow">BUSCO tool</a>, which detects core genes in the assembly (see <a href="#sec2">Installation &amp; requirements</a>). Use this option to provide path to the BUSCO lineage data (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).</p>
+<p><code>--busco</code><br>
+     Run <a href="http://busco.ezlab.org/" rel="nofollow">BUSCO tool</a>, which detects core genes in the assembly (see <a href="#sec2">Installation &amp; requirements</a>). Use this option to provide path to the BUSCO lineage data or its name from BUSCO list datasets. Also you can choose automated lineage selection</p>
 <p><code>--gene_mark</code><br>
      Run with <a href="http://topaz.gatech.edu/GeneMark/" rel="nofollow">GeneMarkS-T</a> gene prediction tool. Use <code>--prokaryote</code> option if the genome is prokaryotic.</p>
 <p><code>--disable_infer_genes</code><br>
@@ -214,7 +214,7 @@ Assembly completeness (sensitivity). For the following metrics (calculated with 
 <li>Mean exon coverage – coverage of a single exon is calculated as the number of its bases covered by all assembled transcripts divided by its length; average value is computed for exons with &gt; 0 bases covered.</li>
 <li>Average percentage of isoform x%-covered exons, where x is specified with <code>--lower_threshold / --upper_threshold</code> options (50% / 95% by default). For each isoform rnaQUAST calculates the number of x%-covered exons divided by the total number of exons. Afterwards it computes average value for all covered isoforms.</li>
 </ul>
-<p><a href="http://busco.ezlab.org/" rel="nofollow">BUSCO</a> metrics. The following metrics are calculated only when <code>--busco_lineage</code> option is used (see <a href="#sec3.3">options</a> for details).</p>
+<p><a href="http://busco.ezlab.org/" rel="nofollow">BUSCO</a> metrics. The following metrics are calculated only when <code>--busco</code> option is used (see <a href="#sec3.3">options</a> for details).</p>
 <ul>
 <li><strong><em>Complete</em></strong> – percentage of completely recovered genes.</li>
 <li><strong><em>Partial</em></strong> – percentage of partially recovered genes.</li>
