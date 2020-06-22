@@ -120,7 +120,10 @@ def get_arguments():
 
 
     group_busco = parser.add_argument_group('BUSCO related options')
-    group_busco.add_argument('--busco_lineage', help='Run with BUSCO tool (http://busco.ezlab.org/). Path to the BUSCO lineage data to be used (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi)', type=str)
+    group_busco.add_argument('--busco', help='Run with BUSCO tool (http://busco.ezlab.org/). '
+                                             'Automated lineage selection [auto-lineage], '
+                                             'BUSCO dataset name or a '
+                                             'path to the lineage data to be used', type=str)
 
     # group_gene_mark = parser.add_argument_group('GeneMarkS-T related options')
     group_advanced.add_argument('--prokaryote', help='Use this option if the genome is prokaryotic', action='store_true')
@@ -397,8 +400,8 @@ def get_abspath_input_data(args):
     if args.output_dir and not os.path.isabs(args.output_dir):
         args.output_dir = os.path.abspath(args.output_dir)
 
-    if args.busco_lineage and not os.path.isabs(args.busco_lineage):
-        args.busco_lineage = os.path.abspath(args.busco_lineage)
+    # if args.busco_lineage and not os.path.isabs(args.busco_lineage):
+    #     args.busco_lineage = os.path.abspath(args.busco_lineage)
 
 
 def get_input_data_exist_error(args, logger):
@@ -426,8 +429,6 @@ def get_input_data_exist_error(args, logger):
         get_file_exist_error(args.single_reads, logger)
     if args.gmap_index:
         get_dir_exist_error(args.gmap_index, logger)
-    if args.busco_lineage:
-        get_dir_exist_error(args.busco_lineage, logger)
 
 
 def get_file_exist_error(path, logger):

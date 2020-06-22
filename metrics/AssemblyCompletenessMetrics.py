@@ -2,6 +2,8 @@ __author__ = 'letovesnoi'
 
 import os
 
+import glob
+
 import subprocess
 
 import shutil
@@ -97,11 +99,11 @@ class BuscoMetrics():
 
     # get BUSCO (Benchmarking Universal Single-Copy Orthologs) results
     @classmethod
-    def get_busco_metrics(cls, args_busco_lineage, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
+    def get_busco_metrics(cls, args_busco, args_prokaryote, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
         busco_metrics = None
 
         busco_completeness_report_path = \
-            BuscoMetrics.get_busco_completeness_report(args_busco_lineage, args_threads, transcripts_path, tmp_dir,
+            BuscoMetrics.get_busco_completeness_report(args_busco, args_prokaryote, args_threads, transcripts_path, tmp_dir,
                                                        label, logger, log_dir)
 
         if busco_completeness_report_path is not None:
@@ -111,39 +113,52 @@ class BuscoMetrics():
 
 
     @classmethod
-    def get_busco_completeness_report(cls, args_busco_lineage, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
+    def get_busco_completeness_report(cls, args_busco, args_prokaryote, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
         # run BUSCO:
         logger.print_timestamp()
         logger.info('  Running BUSCO (Benchmarking Universal Single-Copy Orthologs)...')
 
+        # since busco download lineage data and log to current directory
         initial_dir = os.getcwd()
-
         os.chdir(tmp_dir)
 
         out_name = label + '_BUSCO'
-        out_dirpath = os.path.join(tmp_dir, 'run_' + out_name)
+        out_dirpath = os.path.join(tmp_dir, out_name)
         log_out = os.path.join(log_dir, '{}.busco.out.log'.format(label))
         log_err = os.path.join(log_dir, '{}.busco.err.log'.format(label))
-        tmp_busco_completeness_report_path = os.path.join(out_dirpath, 'short_summary_{}_BUSCO.txt'.format(label))
+        busco_completeness_report_mask = os.path.join(out_dirpath, 'short_summary.*.txt')
         busco_completeness_report_path = None
 
-        program_name = 'run_BUSCO.py'
-        # WARNING: do not provide a path, need to move to output_dir'
-        command = '{busco} -o {output_name} -i {transcripts} -l {clade} -m transcriptome -f -c {threads} ' \
-                  '1>> {log_out_1} 2>> {log_out_2}'.format(busco=program_name, output_name=out_name,
-                                                           transcripts=transcripts_path, clade=args_busco_lineage,
-                                                           threads=args_threads, log_out_1=log_out, log_out_2=log_err)
+        program_name = 'busco'
+        command = '{busco} -o {output_name} --out_path {out_path} -i {transcripts} -m transcriptome -f -c {threads}'.\
+            format(busco=program_name, output_name=out_name, out_path=tmp_dir, transcripts=transcripts_path, threads=args_threads)
+        if args_busco:
+            if args_busco == 'auto-lineage':
+                # type_str = ''
+                if args_prokaryote:
+                    type_str = '-prok'
+                else:
+                    type_str = '-euk'
+                command += ' --' + args_busco + type_str
+            elif os.path.exists(args_busco):
+                if not os.path.isabs(args_busco):
+                    args_busco = os.path.abspath(args_busco)
+                command += ' -l ' + args_busco
+            else:
+                command += ' -l ' + args_busco
+        command += ' 1>> {log_out_1} 2>> {log_out_2}'.format(log_out_1=log_out, log_out_2=log_err)
+
         logger.debug('    ' + command)
 
         exit_code = subprocess.call(command, shell=True)
 
         os.chdir(initial_dir)
 
-        if exit_code != 0 or not os.path.exists(tmp_busco_completeness_report_path):
+        for file in glob.glob(busco_completeness_report_mask):
+            busco_completeness_report_path = file
+        if exit_code != 0 or not busco_completeness_report_path:
             logger.error(message='{} failed for {}!'.format(program_name, label))
         else:
-            busco_completeness_report_path = tmp_busco_completeness_report_path
-
             logger.info('    saved to {}.'.format(busco_completeness_report_path))
 
         logger.info('    logs can be found in {} and {}.'.format(log_out, log_err))
@@ -345,9 +360,9 @@ class AssemblyCompletenessMetrics():
         # if self.cegma_metrics is not None:
         #     self.cegma_metrics.get_metrics(args.threads, transcripts_path, tmp_dir, self.label, logger)
 
-        if args.busco_lineage is not None:
+        if args.busco:
             self.busco_metrics = \
-                BuscoMetrics.get_busco_metrics(args.busco_lineage, threads, transcripts_path, tmp_dir, label, logger, log_dir)
+                BuscoMetrics.get_busco_metrics(args.busco, args.prokaryote, threads, transcripts_path, tmp_dir, label, logger, log_dir)
 
         if args.gene_mark or not ((args.gtf is not None or args.gene_db is not None) and args.alignment is not None and
                                           args.reference is not None and args.transcripts is not None):
