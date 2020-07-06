@@ -1,4 +1,4 @@
-# rnaQUAST 2.0.1 manual
+# rnaQUAST 2.1.0 manual
 
 1\. [About rnaQUAST](#sec1)  
 2\. [Installation & requirements](#sec2)  
@@ -22,7 +22,7 @@
 
 rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene database. In addition, rnaQUAST is also capable of estimating gene database coverage by raw reads and _de novo_ quality assessment using third-party software.
 
-rnaQUAST version 2.0.1 was released under GPLv2 on March 28th, 2020 and can be downloaded from [http://cab.spbu.ru/software/rnaquast/](http://cab.spbu.ru/software/rnaquast/) or [https://github.com/ablab/rnaquast/releases](https://github.com/ablab/rnaquast/releases).
+rnaQUAST version 2.1.0 was released under GPLv2 on July 6th, 2020 and can be downloaded from [http://cab.spbu.ru/software/rnaquast/](http://cab.spbu.ru/software/rnaquast/) or [https://github.com/ablab/rnaquast/releases](https://github.com/ablab/rnaquast/releases).
 
 **For impatient people:**  
 
@@ -79,9 +79,9 @@ When reference genome and gene database are unavailable, we recommend to run [BU
 
 **BUSCO requirements**
 
-BUSCO allows to detect core genes in the assembled transcripts. To use it you should install [BUSCO v3](http://busco.ezlab.org/), [tblastn](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/), [HMMER](http://hmmer.janelia.org/) and [transeq](ftp://emboss.open-bio.org/pub/EMBOSS/) and add these tools to the `$PATH` variable.
+BUSCO allows to detect core genes in the assembled transcripts. To use it you should install [BUSCO v4+](http://busco.ezlab.org/), [tblastn](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/), [HMMER](http://hmmer.janelia.org/) and [transeq](ftp://emboss.open-bio.org/pub/EMBOSS/) and add these tools to the `$PATH` variable.
 
-Depending on the species you wish to assess, you should download the appropriate lineage-specific profile libraries: Metazoa, Eukaryota, Arthropoda, Vertebrata, Fungi, or Bacteria from [http://busco.ezlab.org](http://busco.ezlab.org) and provide it to rnaQUAST with `--busco_lineage` option.
+To run BUSCO provide lineage-specific database name via `--busco` option. You may also download the appropriate database from [http://busco.ezlab.org](http://busco.ezlab.org) manually and provide it using the same option (see [options](#busco) for details). 
 
 **GeneMarkS-T requirements**
 
@@ -177,8 +177,9 @@ To run rnaQUAST you need to provide either FASTA files with transcripts (recomme
 `--blat`  
      Run with [BLAT alignment tool](http://hgwdev.cse.ucsc.edu/~kent/exe/) instead of [GMAP](http://research-pub.gene.com/gmap/).
 
-`--busco_lineage`  
-     Run [BUSCO tool](http://busco.ezlab.org/), which detects core genes in the assembly (see [Installation & requirements](#sec2)). Use this option to provide path to the BUSCO lineage data (Eukaryota, Metazoa, Arthropoda, Vertebrata or Fungi).
+<a name="busco"></a>
+`--busco`  
+     Run [BUSCO tool](http://busco.ezlab.org/), which detects core genes in the assembly (see [Installation & requirements](#sec2)). Use this option to provide BUSCO database name to use or path to the local database. Also, you can set `auto-lineage` for automated lineage selection.
 
 `--gene_mark`  
      Run with [GeneMarkS-T](http://topaz.gatech.edu/GeneMark/) gene prediction tool. Use `--prokaryote` option if the genome is prokaryotic.
@@ -283,7 +284,7 @@ Assembly completeness (sensitivity). For the following metrics (calculated with 
 *   Mean exon coverage – coverage of a single exon is calculated as the number of its bases covered by all assembled transcripts divided by its length; average value is computed for exons with > 0 bases covered.
 *   Average percentage of isoform x%-covered exons, where x is specified with `--lower_threshold / --upper_threshold` options (50% / 95% by default). For each isoform rnaQUAST calculates the number of x%-covered exons divided by the total number of exons. Afterwards it computes average value for all covered isoforms.
 
-[BUSCO](http://busco.ezlab.org/) metrics. The following metrics are calculated only when `--busco_lineage` option is used (see [options](#sec3.3) for details).
+[BUSCO](http://busco.ezlab.org/) metrics. The following metrics are calculated only when `--busco` option is used (see [options](#busco) for details).
 
 *   **_Complete_** – percentage of completely recovered genes.
 *   **_Partial_** – percentage of partially recovered genes.
