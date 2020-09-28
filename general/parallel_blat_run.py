@@ -81,7 +81,7 @@ def split_file_with_transcripts(transcripts_dict, us_threads, output_dirs):
     file_n = len(transcripts_dict)
     thread_n = file_n // us_threads
 
-    id_transcripts = transcripts_dict.keys()[:]
+    id_transcripts = list(transcripts_dict.keys())
     for i_thread in range(us_threads):
         fpath = os.path.join(output_dirs[i_thread], '{}.fasta'.format(i_thread))
         f_fa_pathes.append(fpath)
