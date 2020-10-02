@@ -68,14 +68,14 @@ class QLogger(object):
 
         self._logger.addHandler(file_handler)
 
-    def start(self, blat, tmp_dir):
+    def start(self, blat, busco, gene_mark, tmp_dir):
         if self._indent_val == 0:
             self._logger.info('')
             self.print_version(rqconfig.LOGGER_DEFAULT_NAME, location=rqconfig.rnaQUAST_LOCATION)
             self._logger.info('')
             self.print_system_info()
             self._logger.info('')
-            self.print_tools_versions(blat, tmp_dir)
+            self.print_tools_versions(blat, busco, gene_mark, tmp_dir)
 
         self._start_time = self.print_timestamp('Started: ')
         self._logger.info('')
@@ -217,12 +217,12 @@ class QLogger(object):
         if location:
             version, build = UtilsGeneral.get_version(location)
         if to_stderr:
-            sys.stderr.write(program_name + " version: " + str(version) + (", " + str(build) if build != "unknown" else ""))
+            sys.stderr.write(program_name + ": " + str(version) + (", " + str(build) if build != "unknown" else ""))
         else:
-            self.info(program_name + " version: " + str(version) + (", " + str(build) if build != "unknown" else ""))
+            self.info(program_name + ": " + str(version) + (", " + str(build) if build != "unknown" else ""))
 
 
-    def print_tools_versions(self, blat, tmp_dir, to_stderr=False):
+    def print_tools_versions(self, blat, busco, gene_mark, tmp_dir, to_stderr=False):
         import matplotlib, joblib, gffutils
 
         self._logger.info('External tools:')
@@ -250,6 +250,15 @@ class QLogger(object):
                                                              v_ident='Part of GMAP package, version ',
                                                              b_ident='Build target: ')
             self.print_version('  gmap', version=version, to_stderr=to_stderr)
+        if busco:
+            version, build = UtilsGeneral.get_version_by_key('busco', '--version', tmp_dir,
+                                                             v_ident='BUSCO ')
+            self.print_version('  BUSCO', version=version, to_stderr=to_stderr)
+        if gene_mark:
+            version, build = UtilsGeneral.get_version_by_key('gmst.pl', '--version', tmp_dir,
+                                                             v_ident='GeneMarkS_T version ')
+            self.print_version('  GeneMarkS_T', version=version, to_stderr=to_stderr)
+
 
     def print_system_info(self):
         self._logger.info("System information:")
