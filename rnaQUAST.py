@@ -69,7 +69,7 @@ def main_utils():
         logger.set_up_console_handler()
     logger.set_up_file_handler(log_dir)
     logger.print_command_line([os.path.realpath(__file__)] + sys.argv[1:], wrap_after=None)
-    logger.start(args.blat, tmp_dir)
+    logger.start(args.blat, args.busco, args.gene_mark, tmp_dir)
 
     UtilsPipeline.get_input_data_exist_error(args, logger)
 
