@@ -126,26 +126,27 @@ class BuscoMetrics():
         out_dirpath = os.path.join(tmp_dir, out_name)
         log_out = os.path.join(log_dir, '{}.busco.out.log'.format(label))
         log_err = os.path.join(log_dir, '{}.busco.err.log'.format(label))
-        busco_completeness_report_mask = os.path.join(out_dirpath, 'short_summary.*.txt')
         busco_completeness_report_path = None
 
         program_name = 'busco'
         command = '{busco} -o {output_name} --out_path {out_path} -i {transcripts} -m transcriptome -f -c {threads}'.\
             format(busco=program_name, output_name=out_name, out_path=tmp_dir, transcripts=transcripts_path, threads=args_threads)
-        if args_busco:
-            if args_busco == 'auto-lineage':
-                # type_str = ''
-                if args_prokaryote:
-                    type_str = '-prok'
-                else:
-                    type_str = '-euk'
-                command += ' --' + args_busco + type_str
-            elif os.path.exists(args_busco):
+        if args_busco == 'auto-lineage':
+            # type_str = ''
+            if args_prokaryote:
+                type_str = 'prok'
+            else:
+                type_str = 'euk'
+            busco_completeness_report_mask = \
+                os.path.join(out_dirpath, 'auto_lineage', 'run_{}aryota_*'.format(type_str), 'short_summary*.txt')
+            command += ' --' + args_busco + '-' + type_str
+        else:
+            if os.path.exists(args_busco):
                 if not os.path.isabs(args_busco):
                     args_busco = os.path.abspath(args_busco)
-                command += ' -l ' + args_busco
-            else:
-                command += ' -l ' + args_busco
+            busco_completeness_report_mask = \
+                os.path.join(out_dirpath, 'short_summary.*.txt')
+            command += ' -l ' + args_busco
         command += ' 1>> {log_out_1} 2>> {log_out_2}'.format(log_out_1=log_out, log_out_2=log_err)
 
         logger.debug('    ' + command)
