@@ -138,7 +138,7 @@ class BuscoMetrics():
             else:
                 type_str = 'euk'
             busco_completeness_report_mask = \
-                os.path.join(out_dirpath, 'auto_lineage', 'run_{}aryota_*'.format(type_str), 'short_summary*.txt')
+                os.path.join(out_dirpath, 'auto_lineage', 'run_*', 'short_summary*.txt')
             command += ' --' + args_busco + '-' + type_str
         else:
             if os.path.exists(args_busco):
