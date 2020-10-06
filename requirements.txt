@@ -1,0 +1,11 @@
+blast
+blat
+busco >=4
+emboss
+gmap
+gffutils
+joblib
+matplotlib-base
+star
+samtools
+ucsc-pslsort
