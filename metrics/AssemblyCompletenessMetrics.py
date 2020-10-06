@@ -92,22 +92,27 @@ class CegmaMetrics():
 
 class BuscoMetrics():
 
-    def __init__(self, busco_completeness_report_path):
-        self.complete_completeness = BuscoMetrics.get_complete_completeness(busco_completeness_report_path)
-        self.partial_completeness = BuscoMetrics.get_partial_completeness(busco_completeness_report_path)
-
+    def __init__(self, busco_completeness_report_pathes):
+        self.complete_completeness = 0
+        self.partial_completeness = 0
+        for path in busco_completeness_report_pathes:
+            complete = BuscoMetrics.get_complete_completeness(path)
+            partial = BuscoMetrics.get_partial_completeness(path)
+            if self.complete_completeness <= complete:
+                self.complete_completeness = complete
+                self.partial_completeness = partial
 
     # get BUSCO (Benchmarking Universal Single-Copy Orthologs) results
     @classmethod
     def get_busco_metrics(cls, args_busco, args_prokaryote, args_threads, transcripts_path, tmp_dir, label, logger, log_dir):
         busco_metrics = None
 
-        busco_completeness_report_path = \
+        busco_completeness_report_pathes = \
             BuscoMetrics.get_busco_completeness_report(args_busco, args_prokaryote, args_threads, transcripts_path, tmp_dir,
                                                        label, logger, log_dir)
 
-        if busco_completeness_report_path is not None:
-            busco_metrics = cls(busco_completeness_report_path)
+        if busco_completeness_report_pathes:
+            busco_metrics = cls(busco_completeness_report_pathes)
 
         return busco_metrics
 
@@ -126,7 +131,7 @@ class BuscoMetrics():
         out_dirpath = os.path.join(tmp_dir, out_name)
         log_out = os.path.join(log_dir, '{}.busco.out.log'.format(label))
         log_err = os.path.join(log_dir, '{}.busco.err.log'.format(label))
-        busco_completeness_report_path = None
+        busco_completeness_report_pathes = set()
 
         program_name = 'busco'
         command = '{busco} -o {output_name} --out_path {out_path} -i {transcripts} -m transcriptome -f -c {threads}'.\
@@ -156,15 +161,15 @@ class BuscoMetrics():
         os.chdir(initial_dir)
 
         for file in glob.glob(busco_completeness_report_mask):
-            busco_completeness_report_path = file
-        if exit_code != 0 or not busco_completeness_report_path:
+            busco_completeness_report_pathes.add(file)
+        if exit_code != 0 or not busco_completeness_report_pathes:
             logger.error(message='{} failed for {}!'.format(program_name, label))
         else:
-            logger.info('    saved to {}.'.format(busco_completeness_report_path))
+            logger.info('    saved to {}.'.format(busco_completeness_report_pathes))
 
         logger.info('    logs can be found in {} and {}.'.format(log_out, log_err))
 
-        return busco_completeness_report_path
+        return busco_completeness_report_pathes
 
 
     @classmethod
