@@ -256,7 +256,7 @@ class QLogger(object):
             self.print_version('  BUSCO', version=version, to_stderr=to_stderr)
         if gene_mark:
             version, build = UtilsGeneral.get_version_by_key('gmst.pl', '--version', tmp_dir,
-                                                             v_ident='GeneMarkS_T version ')
+                                                             v_ident='GeneMarkS version ')
             self.print_version('  GeneMarkS_T', version=version, to_stderr=to_stderr)
 
 
