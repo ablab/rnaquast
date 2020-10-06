@@ -728,22 +728,22 @@ class ShortReport():
 
 
     def add_assemble_correctness_metrics_to_table(self, transcripts_metrics, PRECISION):
-        for i_label in range(28, 32):
+        for i_label in range(29, 33):
             self.metrics_dict[self.metrics_labels[i_label]] = []
 
         for i_transcripts in range(len(transcripts_metrics)):
             transcripts_coverage = transcripts_metrics[i_transcripts].assembly_correctness_metrics.transcripts_coverage
 
             if transcripts_coverage is not None:
-                self.metrics_dict[self.metrics_labels[28]].append(transcripts_coverage.num_well_covered_transcripts)
-                self.metrics_dict[self.metrics_labels[29]].append(transcripts_coverage.num_fully_covered_transcripts)
-                self.metrics_dict[self.metrics_labels[30]].append(transcripts_coverage.num_unannotated_transcripts)
-                self.metrics_dict[self.metrics_labels[31]].append(round(transcripts_coverage.avg_covered_fraction_whole_transcript, PRECISION))
+                self.metrics_dict[self.metrics_labels[29]].append(transcripts_coverage.num_well_covered_transcripts)
+                self.metrics_dict[self.metrics_labels[30]].append(transcripts_coverage.num_fully_covered_transcripts)
+                self.metrics_dict[self.metrics_labels[31]].append(transcripts_coverage.num_unannotated_transcripts)
+                self.metrics_dict[self.metrics_labels[32]].append(round(transcripts_coverage.avg_covered_fraction_whole_transcript, PRECISION))
             else:
-                for i_label in range(28, 32):
+                for i_label in range(29, 33):
                     self.metrics_dict[self.metrics_labels[i_label]].append('*')
 
-        for i_label in range(28, 32):
+        for i_label in range(29, 33):
             if self.metrics_dict[self.metrics_labels[i_label]].count('*') == \
                     len(self.metrics_dict[self.metrics_labels[i_label]]):
                 del self.metrics_dict[self.metrics_labels[i_label]]
