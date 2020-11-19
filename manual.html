@@ -1,4 +1,4 @@
-<html>     <head>         <title>rnaQUAST 2.1.0 Manual</title>         <style type="text/css">             .highlight  pre {               background-color: #f0f2f4;               border-radius: 2px;               font-size: 100%;               line-height: 1.45;               overflow: auto;               padding: 16px;             }         </style>     </head>     <body><h1>rnaQUAST 2.1.0 manual</h1>
+<html>     <head>         <title>rnaQUAST 2.2.0 Manual</title>         <style type="text/css">             .highlight  pre {               background-color: #f0f2f4;               border-radius: 2px;               font-size: 100%;               line-height: 1.45;               overflow: auto;               padding: 16px;             }         </style>     </head>     <body><h1>rnaQUAST 2.2.0 manual</h1>
 <p>1. <a href="#sec1">About rnaQUAST</a><br>
 2. <a href="#sec2">Installation &amp; requirements</a><br>
     2.1. <a href="#sec2.1">General requirements</a><br>
@@ -17,7 +17,7 @@
 <p><a name="sec1"></a></p>
 <h2>1 About rnaQUAST</h2>
 <p>rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene database. In addition, rnaQUAST is also capable of estimating gene database coverage by raw reads and <em>de novo</em> quality assessment using third-party software.</p>
-<p>rnaQUAST version 2.1.0 was released under GPLv2 on July 6th, 2020 and can be downloaded from <a href="http://cab.spbu.ru/software/rnaquast/" rel="nofollow">http://cab.spbu.ru/software/rnaquast/</a> or <a href="https://github.com/ablab/rnaquast/releases">https://github.com/ablab/rnaquast/releases</a>.</p>
+<p>rnaQUAST version 2.2.0 was released under GPLv2 on November 23rd, 2020 and can be downloaded from <a href="http://cab.spbu.ru/software/rnaquast/" rel="nofollow">http://cab.spbu.ru/software/rnaquast/</a> or <a href="https://github.com/ablab/rnaquast/releases">https://github.com/ablab/rnaquast/releases</a>.</p>
 <p><strong>For impatient people:</strong></p>
 <ul>
 <li>
@@ -36,7 +36,7 @@
 <li>
 <p>To run rnaQUAST on your data use the following command</p>
 <pre><code> python rnaQUAST.py \
---transcripts /PATH/TO/transcripts1.fasta /PATH/TO/ANOTHER/transcripts2.fasta [...] \
+--transcripts /PATH/TO/transcripts1.fasta /PATH/TO/ANOTHER/transcripts2.fasta /PATH/TO/MULTIPLE/*.fasta [...] \
 --reference /PATH/TO/reference_genome.fasta --gtf /PATH/TO/gene_coordinates.gtf
 </code></pre>
 </li>
@@ -88,7 +88,7 @@
 <p><code>--gmap_index &lt;INDEX FOLDER&gt;,</code><br>
     Folder containing pre-built GMAP index for the reference genome. Using previously constructed index decreases running time. Note, that you still need to provide the reference genome that was used for index construction when this option is used.</p>
 <p><code>-c &lt;TRANSCRIPTS ...&gt;, --transcripts &lt;TRANSCRIPTS, ...&gt;</code><br>
-     File(s) with transcripts in FASTA format separated by space.</p>
+     File(s) with transcripts in FASTA format separated by space. Wildcards can be used, e.g. <code>--transcripts */*.fasta</code>.</p>
 <p><code>-psl &lt;TRANSCRIPTS_ALIGNMENT ...&gt;, --alignment &lt;TRANSCRIPTS_ALIGNMENT, ...&gt;</code><br>
      File(s) with transcript alignments to the reference genome in PSL format separated by space.</p>
 <p><a name="readopts"></a></p>

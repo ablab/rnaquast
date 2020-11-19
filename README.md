@@ -39,7 +39,7 @@ rnaQUAST version 2.2.0 was released under GPLv2 on November 23rd, 2020 and can b
 *   To run rnaQUAST on your data use the following command
 
          python rnaQUAST.py \
-        --transcripts /PATH/TO/transcripts1.fasta /PATH/TO/ANOTHER/transcripts2.fasta [...] \
+        --transcripts /PATH/TO/transcripts1.fasta /PATH/TO/ANOTHER/transcripts2.fasta /PATH/TO/MULTIPLE/*.fasta [...] \
         --reference /PATH/TO/reference_genome.fasta --gtf /PATH/TO/gene_coordinates.gtf
 
 <a name="sec2"></a>
@@ -117,7 +117,7 @@ To run rnaQUAST you need to provide either FASTA files with transcripts (recomme
     Folder containing pre-built GMAP index for the reference genome. Using previously constructed index decreases running time. Note, that you still need to provide the reference genome that was used for index construction when this option is used.
 
 `-c <TRANSCRIPTS ...>, --transcripts <TRANSCRIPTS, ...>`  
-     File(s) with transcripts in FASTA format separated by space.
+     File(s) with transcripts in FASTA format separated by space. Wildcards can be used, e.g. `--transcripts */*.fasta`.
 
 `-psl <TRANSCRIPTS_ALIGNMENT ...>, --alignment <TRANSCRIPTS_ALIGNMENT, ...>`  
      File(s) with transcript alignments to the reference genome in PSL format separated by space.
