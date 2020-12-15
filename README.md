@@ -1,3 +1,11 @@
+[![BioConda Install](https://img.shields.io/conda/dn/bioconda/rnaquast.svg?style=flag&label=BioConda%20install)](https://anaconda.org/bioconda/rnaquast)
+[![Python version](https://img.shields.io/badge/python-3.7-blue)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/licence-GPLv2-blue)](https://www.gnu.org/licenses/old-licenses/gpl-2.0)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/ablab/rnaquast)](https://github.com/ablab/rnaquast/releases/)
+[![GitHub Downloads](https://img.shields.io/github/downloads/ablab/rnaquast/total.svg?style=social&logo=github&label=Download)](https://github.com/ablab/rnaquast/releases)
+
+
+
 # rnaQUAST 2.2.0 manual
 
 1\. [About rnaQUAST](#sec1)  
