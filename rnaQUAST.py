@@ -48,8 +48,8 @@ def main_utils():
 
     # run rnaQUAST on test_data:
     if args.test:
-        UtilsPipeline.run_rnaQUAST_on_test_data(args, rquast_dirpath, program_name)
-        # UtilsPipeline.run_rnaQUAST_on_debug_data(args, rquast_dirpath, program_name)
+        UtilsPipeline.run_rnaQUAST_on_test_data(args, rquast_dirpath, program_name, logger)
+        # UtilsPipeline.run_rnaQUAST_on_debug_data(args, rquast_dirpath, program_name, logger)
         sys.exit()
 
     UtilsPipeline.get_abspath_input_data(args)
