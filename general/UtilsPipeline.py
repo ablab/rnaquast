@@ -245,7 +245,7 @@ def process_labels(contigs_fpaths, labels, all_labels_from_dirs):
     return labels
 
 
-def run_rnaQUAST_on_test_data(args, rquast_dirpath, program_name):
+def run_rnaQUAST_on_test_data(args, rquast_dirpath, program_name, logger):
     transcripts0_path = os.path.join(rquast_dirpath, 'test_data', 'idba.fasta')
     transcripts1_path = os.path.join(rquast_dirpath, 'test_data', 'Trinity.fasta')
     transcripts2_path = os.path.join(rquast_dirpath, 'test_data', 'spades.311.fasta')
@@ -261,8 +261,9 @@ def run_rnaQUAST_on_test_data(args, rquast_dirpath, program_name):
     command = 'python {} --transcripts {} --reference {} --gtf {} --output_dir {} --disable_infer_genes --disable_infer_transcripts'.\
         format(sys.argv[0], args.transcripts, args.reference, args.gtf, args.output_dir)
 
-    subprocess.call(command, shell=True)
-    sys.exit(0)
+    exit_code = subprocess.call(command, shell=True)
+    if exit_code:
+        logger.error("Test failed", exit_with_code=exit_code, to_stderr=True)
 
 
 def run_rnaQUAST_on_debug_data(args, rquast_dirpath, program_name):
@@ -277,8 +278,9 @@ def run_rnaQUAST_on_debug_data(args, rquast_dirpath, program_name):
     command = 'python {} --transcripts {} --reference {} --gtf {} --output_dir {} --debug --no_plots'.\
         format(sys.argv[0], args.transcripts, args.reference, args.gtf, args.output_dir)
 
-    subprocess.call(command, shell=True)
-    sys.exit(0)
+    exit_code = subprocess.call(command, shell=True)
+    if exit_code:
+        logger.error("Test failed", exit_with_code=exit_code, to_stderr=True)
 
 
 def create_output_folder(output_dir, program_name):
