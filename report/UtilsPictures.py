@@ -111,7 +111,7 @@ class Plot():
         xlabel(self.label_x)
         ylabel(self.label_y)
 
-        savefig(self.path, additional_artists='art', bbox_inches='tight')
+        savefig(self.path, bbox_inches='tight')
         logger.info('      saved to ' + self.path)
 
         if self.short_report_visible:
@@ -213,7 +213,7 @@ class Plot():
         xlabel(self.label_x)
         ylabel(self.label_y)
 
-        savefig(self.path, additional_artists='art', bbox_inches='tight')
+        savefig(self.path, bbox_inches='tight')
 
         logger.info('      saved to ' + self.path)
 
@@ -291,7 +291,7 @@ class Plot():
         xlabel(self.label_x)
         ylabel(self.label_y)
 
-        savefig(self.path, additional_artists='art', bbox_inches='tight')
+        savefig(self.path, bbox_inches='tight')
 
         logger.info('      saved to ' + self.path)
 

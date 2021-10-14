@@ -521,7 +521,7 @@ class ShortReport():
         for figure in pdf_tables_figures:
             all_pdf.savefig(figure, bbox_inches='tight')
         for plot in short_report_plots:
-            all_pdf.savefig(plot.fig, additional_artists='art', bbox_inches='tight')
+            all_pdf.savefig(plot.fig, bbox_inches='tight')
 
         try:  # for matplotlib < v.1.0
             d = all_pdf.infodict()
