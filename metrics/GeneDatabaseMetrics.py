@@ -6,7 +6,7 @@ from general import UtilsAnnotations
 class GeneDatabaseMetrics():
     """Class of basic gene database metrics"""
 
-    def __init__(self, sqlite3_db_genes, type_genes, type_isoforms, logger):
+    def __init__(self, sqlite3_db_genes, type_genes, type_isoforms, logger, prokaryote=False):
         # number of genes in annotations:
         self.genes_num = 0
         # number of protein coding genes in annotations:
@@ -111,15 +111,16 @@ class GeneDatabaseMetrics():
                 self.exons_num_distribution[len(list(exons))] = 0
             self.exons_num_distribution[len(list(exons))] += 1
 
-            introns = list(sqlite3_db_genes.interfeatures(exons))
-            self.tot_introns_num += len(list(introns))
-            for intron in introns:
-                intron_len = len(intron)
+            if not prokaryote:
+                introns = list(sqlite3_db_genes.interfeatures(exons))
+                self.tot_introns_num += len(list(introns))
+                for intron in introns:
+                    intron_len = len(intron)
 
-                self.avg_intron_len += intron_len
+                    self.avg_intron_len += intron_len
 
-                if intron_len > self.max_intron_len:
-                    self.max_intron_len = intron_len
+                    if intron_len > self.max_intron_len:
+                        self.max_intron_len = intron_len
 
         if self.isoforms_num != 0:
             self.avg_isoform_len = float(self.tot_isoforms_len) / self.isoforms_num
