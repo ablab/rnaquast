@@ -16,7 +16,7 @@ cp ./rnaQUAST.py rnaQUAST-$VERSION
 cp ./manual.html rnaQUAST-$VERSION
 cp ./changelog.html rnaQUAST-$VERSION
 cp ./fig1.png rnaQUAST-$VERSION
-cp ./GPLv2.txt rnaQUAST-$VERSION
+cp ./GPL2.txt rnaQUAST-$VERSION
 
 # cleaning .pyc and .pyo
 rm -f rnaQUAST-$VERSION/*.pyc
