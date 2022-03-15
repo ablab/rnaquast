@@ -10,7 +10,7 @@ from general import UtilsGeneral
 
 default_type_genes = ['gene', 'miRNA_gene']
 
-default_type_isoforms = ['transcript', 'RNA', 'mRNA', 'miRNA', 'ncRNA', 'tRNA']
+default_type_isoforms = ['transcript', 'RNA', 'mRNA', 'miRNA', 'ncRNA', 'tRNA', 'rRNA']
 
 default_type_exons = ['exon', 'coding_exon', 'noncoding_exon']
 
