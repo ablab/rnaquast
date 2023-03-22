@@ -1,6 +1,6 @@
 blast
 blat
-busco >=4
+busco >=5
 emboss
 gmap
 gffutils
