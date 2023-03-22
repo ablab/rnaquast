@@ -123,10 +123,6 @@ class BuscoMetrics():
         logger.print_timestamp()
         logger.info('  Running BUSCO (Benchmarking Universal Single-Copy Orthologs)...')
 
-        # since busco download lineage data and log to current directory
-        initial_dir = os.getcwd()
-        os.chdir(tmp_dir)
-
         out_name = label + '_BUSCO'
         out_dirpath = os.path.join(tmp_dir, out_name)
         log_out = os.path.join(log_dir, '{}.busco.out.log'.format(label))
@@ -149,13 +145,20 @@ class BuscoMetrics():
             if os.path.exists(args_busco):
                 if not os.path.isabs(args_busco):
                     args_busco = os.path.abspath(args_busco)
+                command += ' --offline '
+                logger.info('    Using local BUSCO DB: ' + args_busco)
+            else:
+                logger.info('    BUSCO DB %s will be downloaded automatically ' % args_busco)
             busco_completeness_report_mask = \
                 os.path.join(out_dirpath, 'short_summary.*.txt')
             command += ' -l ' + args_busco
         command += ' 1>> {log_out_1} 2>> {log_out_2}'.format(log_out_1=log_out, log_out_2=log_err)
 
-        logger.debug('    ' + command)
+        # since busco download lineage data and log to current directory
+        initial_dir = os.getcwd()
+        os.chdir(tmp_dir)
 
+        logger.debug('    ' + command)
         exit_code = subprocess.call(command, shell=True)
 
         os.chdir(initial_dir)
