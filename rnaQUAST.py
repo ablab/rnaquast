@@ -5,6 +5,7 @@ __author__ = 'lenk'
 import os
 import sys
 import shutil
+import math
 
 rquast_dirpath = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
