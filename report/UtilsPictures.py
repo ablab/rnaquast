@@ -2,6 +2,7 @@ __author__ = 'letovesnoi'
 
 import os
 import collections
+import math
 try:
     from itertools import izip
 except ImportError:
@@ -331,7 +332,7 @@ class Plot():
         for i_distribution in range(len(distributions)):
             if not distributions[i_distribution]:
                 continue
-            val_list = distributions[i_distribution].values()
+            val_list = list(distributions[i_distribution].values())
             y_begin = min([y_begin, min(val_list)])
             y_end = max([y_end, max(val_list)])
 
