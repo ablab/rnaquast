@@ -11,6 +11,7 @@ rquast_dirpath = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
 sys.path.insert(0, os.path.join(rquast_dirpath, 'quast_libs'))
 
+# TODO get rid of this parser
 import fastaparser
 
 from general import rqconfig
