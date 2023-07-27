@@ -308,10 +308,11 @@ class Plot():
         x_begin = +inf
         x_end = -inf
         for i_distribution in range(len(distributions)):
-            if distributions[i_distribution] == {}:
+            if not distributions[i_distribution]:
                 continue
-            x_begin = min(x_begin, min(distributions[i_distribution].keys()))
-            x_end = max(x_end, max(distributions[i_distribution].keys()))
+            key_list = list(distributions[i_distribution].keys())
+            x_begin = min([x_begin, min(key_list)])
+            x_end = max([x_end, max(key_list)])
 
         if not math.isinf(x_end):
             if x_log_scale:
@@ -328,10 +329,11 @@ class Plot():
         y_end = -inf
 
         for i_distribution in range(len(distributions)):
-            if distributions[i_distribution] == {}:
+            if not distributions[i_distribution]:
                 continue
-            y_begin = min(y_begin, min(distributions[i_distribution].values()))
-            y_end = max(y_end, max(distributions[i_distribution].values()))
+            val_list = distributions[i_distribution].values()
+            y_begin = min([y_begin, min(val_list)])
+            y_end = max([y_end, max(val_list)])
 
         if not math.isinf(y_end):
             if y_log_scale:
