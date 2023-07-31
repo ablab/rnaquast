@@ -28,7 +28,8 @@ try:
     matplotlib.use('Agg')  # non-GUI backend
     if matplotlib.__version__.startswith('0'):
         logger.warning('matplotlib version is rather old! Please use matplotlib version 1.0 or higher for better results.')
-    from pylab import *
+    from pylab import figure, title, xlim, ylim, xlabel, ylabel, xscale, yscale, savefig, close, legend, plot, bar
+    from numpy import inf
 except Exception:
     logger.warning('Can\'t draw plots: please install python-matplotlib and pylab.')
     matplotlib_error = True
