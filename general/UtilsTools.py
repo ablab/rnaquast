@@ -214,10 +214,15 @@ def run_gmap(args_reference, genome_len, args_transcripts, args_labels, args_thr
                    log_out_1=gmap_build_logger_out_path, log_out_2=gmap_build_logger_err_path)
         exit_code = subprocess.call(command, shell=True)
 
-        logger.info('  logs can be found in {} and {}.'.format(gmap_build_logger_out_path, gmap_build_logger_err_path))
+        logger.info('  logs can be found in {} and {}'.format(gmap_build_logger_out_path, gmap_build_logger_err_path))
 
         if exit_code != 0:
-            logger.error(message='{} failed!'.format(gmap_build), exit_with_code=exit_code, to_stderr=True)
+            gmap_build_logger_err_file = open(gmap_build_logger_err_path, "r")
+            logger.error(message='{} failed with the following error: '.format(gmap_build))
+            gmap_build_logger_err_file = open(gmap_build_logger_err_path, "r")
+            logger.error(gmap_build_logger_err_file.read())
+            gmap_build_logger_err_file.close()
+            logger.error(message='{} failed! Check you gmap installation. '.format(gmap_build), exit_with_code=exit_code, to_stderr=True)
 
         end_time = datetime.datetime.now()
         spent_time = end_time - start_time
