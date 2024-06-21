@@ -30,7 +30,7 @@
 
 rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and gene database. In addition, rnaQUAST is also capable of estimating gene database coverage by raw reads and _de novo_ quality assessment using third-party software.
 
-rnaQUAST version 2.2.4 was released under GPLv2 on July 31st, 2023 and can be downloaded from [https://github.com/ablab/rnaquast/releases](https://github.com/ablab/rnaquast/releases).
+rnaQUAST version 2.3 was released under GPLv2 on June 21st, 2024 and can be downloaded from [https://github.com/ablab/rnaquast/releases](https://github.com/ablab/rnaquast/releases).
 
 **For impatient people:**  
 
@@ -375,6 +375,6 @@ The following plots are similarly contained in both `comparison_output` director
 
 ## 6 Feedback and bug reports
 
-Your comments, bug reports, and suggestions are very welcomed. They will help us to further improve rnaQUAST. If you have any troubles running rnaQUAST, please send us `logs/rnaQUAST.log` from the output directory. Address for communications: [rnaquast_support@ablab.spbau.ru](mailto:rnaquast_support@ablab.spbau.ru).
-You may also submit your issue to our [GitHub repository](https://github.com/ablab/rnaquast/issues).
+Your comments, bug reports, and suggestions are very welcomed. They will help us to further improve rnaQUAST. If you have any troubles running rnaQUAST, please send us `logs/rnaQUAST.log` from the output directory.
+Submit your issues and comments to our [GitHub repository](https://github.com/ablab/rnaquast/issues).
 

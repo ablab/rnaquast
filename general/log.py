@@ -153,7 +153,7 @@ class QLogger(object):
         if message:
             msg = indent + 'ERROR! ' + str(message)
             if exit_with_code:
-                msg += "\n\nIn case you have troubles running rnaQUAST, you can write to rnaquast_support@ablab.spbau.ru\n"
+                msg += "\n\nIn case you have troubles running rnaQUAST, you can submit the issue to github.com/ablab/rnaquast/issues\n"
                 msg += "Please provide us with {}.log file from the output directory.".format(self._name)
         else:
             msg = ''

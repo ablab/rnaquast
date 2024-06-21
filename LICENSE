@@ -1,4 +1,5 @@
 rnaQUAST
+Copyright (c) 2023-2024 University of Helsinki
 Copyright (c) 2015-2023 Saint Petersburg State University
 Copyright (c) 2014 Saint-Petersburg Academic University
 
@@ -19,17 +20,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 Current contributors:
 
-    Elena Bushmanova,
-    Alla Mikheenko and 
     Andrey Prjibelski
 
 Previously contributed:
+    Elena Bushmanova,
+    Alla Mikheenko,
     Dmitry Antipov,
     Vladimir Suvorov
 
 Contacts:
     https://github.com/ablab/rnaquast
-    http://cab.spbu.ru/software/rnaquast/
-    rnaquast_support@ablab.spbau.ru
 
 
