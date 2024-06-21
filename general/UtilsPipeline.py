@@ -14,27 +14,14 @@ from general import rqconfig
 from general import UtilsGeneral
 
 
-def get_arguments():
-    # use --help for running without arguments:
-    if len(sys.argv) == 1:
-        command = 'python {} -h'.format(sys.argv[0])
-        subprocess.call(command, shell=True)
-        sys.exit(0)
-
+def get_arguments(argv):
     version, build = UtilsGeneral.get_version(rqconfig.rnaQUAST_LOCATION)
 
     parser = \
         argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description="QUALITY ASSESSMENT FOR TRANSCRIPTOME ASSEMBLIES %(prog)s v.{}"
-                                              "\n\nUsage:\npython %(prog)s --transcripts TRANSCRIPTS --reference REFERENCE --gtf GENE_COORDINATES".format(version),
-                                              #"    pipeline-2: python %(prog)s -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION
-                                              #"    pipeline-1: python %(prog)s -p1 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --alignment ALIGNMENT\n"
-                                              #"    pipeline-2: python %(prog)s -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION\n"
-                                              #"    pipeline-3: python %(prog)s -p3 --reference REFERENCE --annotation ANNOTATION --assembler ASSEMBLER --left_reads LEFT_READS --right_reads RIGHT_READS\n"
-                                              #"    pipeline-4: python %(prog)s -p4 --reference REFERENCE --annotation ANNOTATION --simulator SIMULATOR --par PAR --assembler ASSEMBLER\n",
-                                #epilog='If you don\'t use prepared arguments, please add to PATH samtools, bowtie or bowtie-build for fusion and misassamble analyze.', conflict_handler='resolve', prog=sys.argv[0])
-                                epilog='Don\'t forget to add GMAP (or BLAT) to PATH.', conflict_handler='resolve', prog=sys.argv[0])
-
+                                              "\n\nUsage:\n%(prog)s --transcripts TRANSCRIPTS --reference REFERENCE --gtf GENE_COORDINATES".format(version),
+                                epilog='Don\'t forget to add GMAP (or BLAT) to PATH.', conflict_handler='resolve', prog=argv[0])
 
     # PIPELINES:
     #groupPipelines = parser.add_argument_group('Pipeline options')
@@ -132,64 +119,14 @@ def get_arguments():
     #groupTools = parser.add_argument_group('Tools')
     #groupTools.add_argument('--assembler', help='Choose assembler to get FASTA-file with transcripts', type=str, choices=['Trinity', 'SPAdes'], nargs='+')
     #groupTools.add_argument('--simulator', help='Choose simulator to get FASTQ-file with reads', type=str, choices=['Flux'])
+    # use --help for running without arguments:
+    if len(argv) == 1:
+        parser.print_usage()
+        sys.exit(0)
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv[1:])
 
     return args
-
-
-#pipeline-1: python %(prog)s -p1 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --alignment ALIGNMENT --output_dir OUTPUT_DIR
-# def processing_pipeline1(args, logger):
-#     if args.transcripts != None and args.reference != None and args.annotation != None and args.alignment != None and args.output_dir != None and args.threads != None:
-#         return args
-#     else:
-        #logger.error(message='Usage: python {} -p1 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --alignment ALIGNMENT --output_dir OUTPUT_DIR' \
-        #      ' or other pipelines'.format(sys.argv[0]), exit_with_code=1, to_stderr=True)
-        # logger.error(message='Usage: python {0} --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --alignment ALIGNMENT --output_dir OUTPUT_DIR' \
-        #       ' or python {0} --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --output_dir OUTPUT_DIR'.format(sys.argv[0]), exit_with_code=1, to_stderr=True)
-        # sys.exit(1)
-
-
-#pipeline-2: python %(prog)s -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --output_dir OUTPUT_DIR
-# def processing_pipeline2(args, referenceFiles, logger):
-#     if args.transcripts != None and args.reference != None and args.annotation != None and args.output_dir != None and args.threads != None:
-#         args.alignment = align_fa_transcripts_to_psl_by_blat(args.transcripts, referenceFiles, args.output_dir, logger)
-#         return args
-#     else:
-        #logger.error(message='Usage: python {} -p2 --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --output_dir OUTPUT_DIR' \
-        #      ' or other pipelines'.format(sys.argv[0]), exit_with_code=1, to_stderr=True)
-        # logger.error(message='Usage: python {0} --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --alignment ALIGNMENT --output_dir OUTPUT_DIR' \
-        #       ' or python {0} --transcripts TRANSCRIPTS --reference REFERENCE --annotation ANNOTATION --output_dir OUTPUT_DIR'.format(sys.argv[0]), exit_with_code=1, to_stderr=True)
-        # sys.exit(1)
-
-
-#pipeline-3: python %(prog)s -p3 --reference REFERENCE --annotation ANNOTATION --assembler ASSEMBLER --reads READS --output_dir OUTPUT_DIR
-# def processing_pipeline3(args, referenceFiles, logger):
-#     if args.reference != None and args.annotation != None and args.assembler != None and \
-#             ((args.left_reads != None and args.right_reads != None) or (args.paired_reads != None) or (args.single_reads != None)) \
-#             and args.output_dir != None and args.threads != None:
-#         args.transcripts = assemble_fq_reads_to_fa_transcripts(args, logger)
-#         args.alignment = align_fa_transcripts_to_psl_by_blat(args.transcripts, referenceFiles, args.output_dir, logger)
-#         return args
-#     else:
-#         logger.error(message='Usage: python {} -p3 --reference REFERENCE --annotation ANNOTATION --assembler ASSEMBLER --reads READS --output_dir OUTPUT_DIR' \
-#               ' or other pipelines'.format(sys.argv[0]), exit_with_code=1, to_stderr=True)
-#         sys.exit(1)
-
-
-#pipeline-4: python %(prog)s -p4 --reference REFERENCE --annotation ANNOTATION --simulator SIMULATOR --filePAR FILEPAR --assembler ASSEMBLER
-# def processing_pipeline4(args, referenceFiles, logger):
-#     if args.reference != None and args.annotation != None and args.simulator != None and args.par != None and \
-#                     args.assembler != None and args.output_dir != None and args.threads != None:
-        # temporary solution (use single_reads or paired_reads, see par file for flux)
-        # args.paired_reads = simulate_fq_reads_by_flux(args, logger)
-        # args.transcripts = assemble_fq_reads_to_fa_transcripts(args, logger)
-        # args.alignment = align_fa_transcripts_to_psl_by_blat(args.transcripts, referenceFiles, args.output_dir, logger)
-        # return args
-    # else:
-    #     logger.error(message='Usage: python {} -p4 --reference REFERENCE --annotation ANNOTATION --simulator SIMULATOR --filePAR FILEPAR --assembler ASSEMBLER --output_dir OUTPUT_DIR' \
-    #           ' or other pipelines'.format(sys.argv[0]), exit_with_code=1, to_stderr=True)
-    #     sys.exit(1)
 
 
 def get_default_folder_name_for_results(program_name):
@@ -243,44 +180,6 @@ def process_labels(contigs_fpaths, labels, all_labels_from_dirs):
                     labels[i] = label + '_' + str(j)
                 j += 1
     return labels
-
-
-def run_rnaQUAST_on_test_data(args, rquast_dirpath, program_name, logger):
-    transcripts0_path = os.path.join(rquast_dirpath, 'test_data', 'idba.fasta')
-    transcripts1_path = os.path.join(rquast_dirpath, 'test_data', 'Trinity.fasta')
-    transcripts2_path = os.path.join(rquast_dirpath, 'test_data', 'spades.311.fasta')
-
-    args.transcripts = '{} {} {}'.format(transcripts0_path, transcripts1_path, transcripts2_path)
-
-    args.reference = os.path.join(rquast_dirpath, 'test_data', 'Saccharomyces_cerevisiae.R64-1-1.75.dna.toplevel.fa')
-
-    args.gtf = os.path.join(rquast_dirpath, 'test_data', 'Saccharomyces_cerevisiae.R64-1-1.75.gtf')
-
-    args.output_dir = '{}_test_output'.format(program_name)
-
-    command = 'python {} --transcripts {} --reference {} --gtf {} --output_dir {} --disable_infer_genes --disable_infer_transcripts'.\
-        format(sys.argv[0], args.transcripts, args.reference, args.gtf, args.output_dir)
-
-    exit_code = subprocess.call(command, shell=True)
-    if exit_code:
-        logger.error("Test failed", exit_with_code=exit_code, to_stderr=True)
-
-
-def run_rnaQUAST_on_debug_data(args, rquast_dirpath, program_name):
-    args.transcripts = os.path.join(rquast_dirpath, 'test_data', 'Trinity.fasta')
-
-    args.reference = os.path.join(rquast_dirpath, 'test_data', 'Saccharomyces_cerevisiae.R64-1-1.75.dna.toplevel.fa')
-
-    args.gtf = os.path.join(rquast_dirpath, 'test_data', 'Saccharomyces_cerevisiae.R64-1-1.75.gtf')
-
-    args.output_dir = '{}_debug_output'.format(program_name)
-
-    command = 'python {} --transcripts {} --reference {} --gtf {} --output_dir {} --debug --no_plots'.\
-        format(sys.argv[0], args.transcripts, args.reference, args.gtf, args.output_dir)
-
-    exit_code = subprocess.call(command, shell=True)
-    if exit_code:
-        logger.error("Test failed", exit_with_code=exit_code, to_stderr=True)
 
 
 def create_output_folder(output_dir, program_name):

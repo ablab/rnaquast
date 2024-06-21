@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 __author__ = 'lenk'
 
@@ -38,11 +38,12 @@ logger = log.get_logger(rqconfig.LOGGER_DEFAULT_NAME)
 from general.rqconfig import PRECISION
 
 
-def main_utils():
-    program_name = sys.argv[0][:sys.argv[0].rfind('.')]
+def main_utils(argv):
+    program_name = sys.argv[0]
+    program_name = os.path.splitext(os.path.basename(program_name))[0]
 
     # parse running string of main program and get all arguments:
-    args = UtilsPipeline.get_arguments()
+    args = UtilsPipeline.get_arguments(argv)
 
     WELL_FULLY_COVERAGE_THRESHOLDS = rqconfig.well_fully_coverage_thresholds(args.lower_threshold, args.upper_threshold)
 
@@ -50,8 +51,7 @@ def main_utils():
 
     # run rnaQUAST on test_data:
     if args.test:
-        UtilsPipeline.run_rnaQUAST_on_test_data(args, rquast_dirpath, program_name, logger)
-        # UtilsPipeline.run_rnaQUAST_on_debug_data(args, rquast_dirpath, program_name, logger)
+        run_rnaquast_on_test_data(args, rquast_dirpath, program_name, logger)
         sys.exit()
 
     UtilsPipeline.get_abspath_input_data(args)
@@ -345,9 +345,34 @@ def main_utils():
     logger.finish_up()
 
 
+def run_rnaquast_on_test_data(args, rquast_dirpath, program_name, logger):
+    transcripts0_path = os.path.join(rquast_dirpath, 'test_data', 'idba.fasta')
+    transcripts1_path = os.path.join(rquast_dirpath, 'test_data', 'Trinity.fasta')
+    transcripts2_path = os.path.join(rquast_dirpath, 'test_data', 'spades.311.fasta')
+
+    args.transcripts = '{} {} {}'.format(transcripts0_path, transcripts1_path, transcripts2_path)
+
+    args.reference = os.path.join(rquast_dirpath, 'test_data', 'Saccharomyces_cerevisiae.R64-1-1.75.dna.toplevel.fa')
+
+    args.gtf = os.path.join(rquast_dirpath, 'test_data', 'Saccharomyces_cerevisiae.R64-1-1.75.gtf')
+
+    args.output_dir = '{}_test_output'.format(program_name)
+
+    command = [sys.argv[0], "--transcripts", transcripts0_path, transcripts1_path, transcripts2_path,
+               "--reference", args.reference,
+               "--gtf", args.gtf, "--output_dir", args.output_dir,
+               "--disable_infer_genes", "--disable_infer_transcripts"]
+
+    try:
+        main_utils(command)
+    except:
+        logger.error("Test failed", to_stderr=True)
+        exit(-1)
+
+
 if __name__ == '__main__':
     try:
-        return_code = main_utils()
+        return_code = main_utils(sys.argv)
         exit(return_code)
     except Exception:
         _, exc_value, _ = sys.exc_info()
