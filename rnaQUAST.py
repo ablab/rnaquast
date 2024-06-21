@@ -356,7 +356,8 @@ def run_rnaquast_on_test_data(args, rquast_dirpath, program_name, logger):
 
     args.gtf = os.path.join(rquast_dirpath, 'test_data', 'Saccharomyces_cerevisiae.R64-1-1.75.gtf')
 
-    args.output_dir = '{}_test_output'.format(program_name)
+    if not args.output_dir:
+        args.output_dir = '{}_test_output'.format(program_name)
 
     command = [sys.argv[0], "--transcripts", transcripts0_path, transcripts1_path, transcripts2_path,
                "--reference", args.reference,
