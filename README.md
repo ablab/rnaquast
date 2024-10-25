@@ -32,6 +32,8 @@ rnaQUAST is a tool for evaluating RNA-Seq assemblies using reference genome and 
 
 rnaQUAST version 2.3 was released under GPLv2 on June 21st, 2024 and can be downloaded from [https://github.com/ablab/rnaquast/releases](https://github.com/ablab/rnaquast/releases).
 
+There is also a [visualizer software](https://github.com/SimonHegele/rnaQAUSTcompare) developed by one of rnaQUAST users [@SimonHegele](https://github.com/SimonHegele).
+
 **For impatient people:**  
 
 *   You will need Python, [gffutils](https://pythonhosted.org/gffutils/installation.html), [matplotlib](http://matplotlib.org/) and [joblib](https://joblib.readthedocs.io/en/latest/). Also you will need [GMAP](http://research-pub.gene.com/gmap/) (or [BLAT](http://hgwdev.cse.ucsc.edu/~kent/exe/)) and [BLASTN](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) installed on your machine and added to the `$PATH` variable.
@@ -364,6 +366,9 @@ The following plots are similarly contained in both `comparison_output` director
 
 *   `x-matched.png` – a histogram in which each bar represents the number of transcripts that have at least x% matched to an isoform from the database.
 *   `x-matched_blocks.png` – a histogram in which each bar represents the number of all blocks from all transcript alignments that have at least x% matched to an isoform from the database.
+
+
+To compare different reports you can also use a [visualizer software](https://github.com/SimonHegele/rnaQAUSTcompare) developed by one of rnaQUAST users [@SimonHegele](https://github.com/SimonHegele).
 
 <a name="sec5"></a>
 
