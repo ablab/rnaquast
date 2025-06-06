@@ -103,7 +103,7 @@ class DistributionReport():
                     lists_of_lengths.append(transcripts_metrics[i_transcripts].simple_metrics.alignment_lengths)
 
                 caption = 'Nx plot for transcripts. Nx is a maximal number $N$, such that the total length of all ' \
-                          'transcripts longer than $N$ bp is at least $x\%$ of the total length of all transcripts.'
+                          'transcripts longer than $N$ bp is at least $x%$ of the total length of all transcripts.'
                 title_name = 'NAx'
                 label_x = 'x'
                 label_y = 'Contig length'
