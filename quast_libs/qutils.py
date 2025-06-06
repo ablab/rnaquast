@@ -224,8 +224,8 @@ def slugify(value):
     """
     import unicodedata
     value = unicodedata.normalize('NFKD', convert_to_unicode(value)).encode('ascii', 'ignore').decode('utf-8')
-    value = convert_to_unicode(re.sub('[^\w\s-]', '-', value).strip())
-    value = convert_to_unicode(re.sub('[-\s]+', '-', value))
+    value = convert_to_unicode(re.sub(r'[^\w\s-]', '-', value).strip())
+    value = convert_to_unicode(re.sub(r'[-\s]+', '-', value))
     return str(value)
 
 
@@ -712,7 +712,7 @@ def check_java_version(version):
     try:
         p = subprocess.Popen(['java', '-version'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         stdout, stderr = p.communicate()
-        version_pattern = re.compile('java version "(\d\.\d+)')
+        version_pattern = re.compile(r'java version "(\d\.\d+)')
         return float(version_pattern.findall(str(stdout))[0]) >= version
     except:
         return False

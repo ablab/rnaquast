@@ -564,8 +564,8 @@ def save_tex(fpath, all_rows, is_transposed=False):
     tex_file.write('\\begin{document}\n')
     tex_file.write('\\begin{table}[ht]\n')
     tex_file.write('\\begin{center}\n')
-    tex_file.write('\\caption{All statistics are based on contigs of size $\geq$ %d bp, unless otherwise noted ' % qconfig.min_contig + \
-                      '(e.g., "\# contigs ($\geq$ 0 bp)" and "Total length ($\geq$ 0 bp)" include all contigs).}\n')
+    tex_file.write('\\caption{All statistics are based on contigs of size $\\geq$ %d bp, unless otherwise noted ' % qconfig.min_contig + \
+                      '(e.g., "\\# contigs ($\\geq$ 0 bp)" and "Total length ($\\geq$ 0 bp)" include all contigs).}\n')
 
     rows_n = len(all_rows[0]['values'])
     tex_file.write('\\begin{tabular}{|l*{' + val_to_str(rows_n) + '}{|r}|}\n')
@@ -610,7 +610,7 @@ def save_tex(fpath, all_rows, is_transposed=False):
         row = row.replace('>', '$>$')
         # pretty indent
         if row.startswith(Fields.TAB):
-            row = "\hspace{5mm}" + row.lstrip()
+            row = "\\hspace{5mm}" + row.lstrip()
         # pretty highlight
         row = row.replace('HIGHLIGHTEDSTART', '{\\bf ')
         row = row.replace('HIGHLIGHTEDEND', '}')
