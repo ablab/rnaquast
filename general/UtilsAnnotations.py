@@ -10,7 +10,7 @@ from general import UtilsGeneral
 
 default_type_genes = ['gene', 'miRNA_gene']
 
-default_type_isoforms = ['transcript', 'RNA', 'mRNA', 'miRNA', 'ncRNA', 'tRNA', 'rRNA']
+default_type_isoforms = ['transcript', 'RNA', 'mRNA', 'miRNA', 'ncRNA', 'tRNA', 'rRNA', 'snRNA', 'lnc_RNA', 'snoRNA', 'tRNA', 'antisense_RNA', 'RNase_P_RNA', 'telomerase_RNA', 'RNase_MRP_RNA', 'Y_RNA', 'scRNA']
 
 default_type_exons = ['exon', 'coding_exon', 'noncoding_exon']
 
@@ -27,7 +27,7 @@ def transform(feature):
 
 
 def transform_fancy_id(feature):
-    if feature.featuretype not in default_type_genes + default_type_isoforms:
+    if (feature.featuretype not in default_type_genes + default_type_isoforms) or not 'RNA' in feature.featuretype:
         exon_location = '{}:{}:{}-{}:{}'.format(feature.featuretype, feature.seqid, feature.start, feature.stop, feature.strand)
         feature_id = exon_location
         if feature.featuretype == 'CDS':
@@ -48,7 +48,7 @@ def transform_identical_gene_transcript_id(feature):
 
 # set 1-level parent relation:
 def transform_appropriate_parent(feature):
-    if feature.featuretype in default_type_isoforms and 'gene_id' in feature.attributes:
+    if (feature.featuretype in default_type_isoforms or 'RNA' in feature.featuretype) and 'gene_id' in feature.attributes:
         feature.attributes['Parent'] = feature.attributes['gene_id']
     elif feature.featuretype in default_type_exons and 'transcript_id' in feature.attributes:
         feature.attributes['Parent'] = feature.attributes['transcript_id']
@@ -95,6 +95,7 @@ def create_sqlite2_db_in_file(in_gff_path, disable_infer_genes, disable_infer_tr
                                   merge_strategy="merge", transform=transform, force_merge_fields=['source'],
                                   id_spec=id_spec, disable_infer_genes=disable_infer_genes,
                                   disable_infer_transcripts=disable_infer_transcripts)
+    logger.info('Done.')
 
     command = 'mv {} {}'.format(tmp_sqlite3_db_path, sqlite3_db_path)
     subprocess.call(command, shell=True)
